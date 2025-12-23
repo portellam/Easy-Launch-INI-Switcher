@@ -1,4 +1,4 @@
-<a href="https://github.com/portellam/Easy-Launch-INI-Switcher/releases/latest">
+<a href="https://gitea.com/portellam/Easy-Launch-INI-Switcher/releases/latest">
   <img align="left" width="100" height="100" src="../logo.svg" alt="Easy Launch INI Switcher"/>
 </a>
 <br>
@@ -25,7 +25,7 @@ Given the various dashboards and plugins (patches, [stealth servers](../REFERENC
 - DashLaunch installed
 
 ## 4. Installation
-1. Download the [latest release.](https://github.com/portellam/Easy-Launch-INI-Switcher/releases/latest")
+1. Download the [latest release.](https://gitea.com/portellam/Easy-Launch-INI-Switcher/releases/latest")
 2. Extract the script file (typically a `.lua` file) and any supporting files.
 3. Copy the script to the Aurora scripts directory: typically `Hdd:\Aurora\User\Scripts\Utility\`.
 4. Restart Aurora.
@@ -64,7 +64,7 @@ Thanks to the Phoenix team for Aurora and its Lua scripting support.
 Inspired by community discussions on [r/360hacks](../REFERENCES.md/#r360hacks).
 
 ## 9. Contact
-Open an [issue](https://github.com/portellam/Easy-Launch-INI-Switcher/issues) on the repository.
+Open an [issue](https://gitea.com/portellam/Easy-Launch-INI-Switcher/issues) on the repository.
 
 ## [10. References](../REFERENCES.md)
 
