@@ -66,9 +66,12 @@ Inspired by community discussions on [r/360hacks](../REFERENCES.md/#r360hacks).
 ## 9. Contact
 Open an [issue](https://github.com/portellam/Easy-Launch-INI-Switcher/issues) on the repository.
 
-## [10. References](../REFERENCES.md)
+## 10. Support
+[![ko-fi](../support_ko-fi.svg)](https://ko-fi.com/portellam)
 
-## [11. License](../LICENSE)
+## [11. References](../REFERENCES.md)
+
+## [12. License](../LICENSE)
 
 ##
 
