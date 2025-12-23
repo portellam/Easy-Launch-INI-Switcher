@@ -16,21 +16,21 @@ Permutations for subjective experiences on a modded Xbox 360 (configurations of 
 
 | Use Case                                                                 | [[#Primary Dashboard]]               | Secondary Dashboard | Dashboard: ConfigApp | Plugin: [[#3. Stealth Servers]] | [[#Block Xbox Live]] | Requires Internet connection                             | Works?          |
 | ------------------------------------------------------------------------ | ------------------------------------ | ------------------- | -------------------- | ------------------------------- | -------------------- | -------------------------------------------------------- | --------------- |
-| **No** [[#Xbox Live Access]] + **Yes** [[#Original Xbox Compatibility]]  | [[#4. Metro]]                        | **Primary**         | **Primary**          | [[#Cipher]] or NULL.            | True                 | Maybe: [[#Online-Only Stealth Servers Positive Matches]] | Confirmed true. |
-| **No** [[#Xbox Live Access]] + **Yes** [[#Original Xbox Compatibility]]  | Aurora                               | **Primary**         | [[#4. Metro]]        | [[#Cipher]]  or NULL.           | True                 | Maybe: [[#Online-Only Stealth Servers Positive Matches]] | Confirmed true. |
-| **No** [[#Xbox Live Access]] + **Yes** [[#Original Xbox Compatibility]]  | [[#3. Kinect / NXE V2]]              | **Primary**         | **Primary**          | [[#Cipher]]                     | True                 | True: [[#Online-Only Stealth Servers Positive Matches]]  | TODO            |
-| **No** [[#Xbox Live Access]] + **Yes** [[#Original Xbox Compatibility]]  | [[#2. New Xbox Experience (NXE) V1]] | **Primary**         | **Primary**          | [[#Cipher]]                     | True                 | True: [[#Online-Only Stealth Servers Positive Matches]]  | TODO            |
-| **No** [[#Xbox Live Access]] + **Yes** [[#Original Xbox Compatibility]]  | [[#1. Blades]]                       | **Primary**         | **Primary**          | [[#Cipher]]                     | True                 | True: [[#Online-Only Stealth Servers Positive Matches]]  | TODO            |
-| **Yes** [[#Xbox Live Access]] + **Yes** [[#Original Xbox Compatibility]] | [[#4. Metro]]                        | **Primary**         | **Primary**          | [[#Cipher]]                     | False                | True: [[#Online-Only Stealth Servers Positive Matches]]  | Confirmed.      |
-| **Yes** [[#Xbox Live Access]] + **Yes** [[#Original Xbox Compatibility]] | Aurora                               | **Primary**         | [[#4. Metro]]        | [[#Cipher]]                     | False                | True: [[#Online-Only Stealth Servers Positive Matches]]  | TODO            |
-| **Yes** [[#Xbox Live Access]] + **Yes** [[#Original Xbox Compatibility]] | [[#3. Kinect / NXE V2]]              | **Primary**         | **Primary**          | [[#Cipher]]                     | False                | True: [[#Online-Only Stealth Servers Positive Matches]]  | TODO            |
-| **Yes** [[#Xbox Live Access]] + **Yes** [[#Original Xbox Compatibility]] | [[#2. New Xbox Experience (NXE) V1]] | **Primary**         | **Primary**          | [[#Cipher]]                     | False                | True: [[#Online-Only Stealth Servers Positive Matches]]  | TODO            |
-| **Yes** [[#Xbox Live Access]] + **Yes** [[#Original Xbox Compatibility]] | [[#1. Blades]]                       | **Primary**         | **Primary**          | [[#Cipher]]                     | False                | True: [[#Online-Only Stealth Servers Positive Matches]]  | TODO            |
-| **Yes** [[#Xbox Live Access]] + **No** [[#Original Xbox Compatibility]]  | [[#4. Metro]]                        | **Primary**         | **Primary**          | [[#Proto]] or [[#XbGuard]].     | False                | Maybe: [[#Online-Only Stealth Servers]]                  | TODO            |
-| **Yes** [[#Xbox Live Access]] + **No** [[#Original Xbox Compatibility]]  | Aurora                               | **Primary**         | [[#4. Metro]]        | [[#Proto]] or [[#XbGuard]].     | False                | Maybe: [[#Online-Only Stealth Servers]]                  | TODO            |
-| **Yes** [[#Xbox Live Access]] + **No** [[#Original Xbox Compatibility]]  | [[#3. Kinect / NXE V2]]              | **Primary**         | **Primary**          | [[#Proto]] or [[#XbGuard]].     | False                | Maybe: [[#Online-Only Stealth Servers]]                  | TODO            |
-| **Yes** [[#Xbox Live Access]] + **No** [[#Original Xbox Compatibility]]  | [[#2. New Xbox Experience (NXE) V1]] | **Primary**         | **Primary**          | [[#Proto]] or [[#XbGuard]].     | False                | Maybe: [[#Online-Only Stealth Servers]]                  | TODO            |
-| **Yes** [[#Xbox Live Access]] + **No** [[#Original Xbox Compatibility]]  | [[#1. Blades]]                       | **Primary**         | **Primary**          | [[#Proto]] or [[#XbGuard]].     | False                | Maybe: [[#Online-Only Stealth Servers]]                  | TODO            |
+| **No** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility)  | [[#4. Metro]]                        | **Primary**         | **Primary**          | [Cipher](#cipher) or NULL.            | True                 | Maybe: [Online-Only Stealth Servers Positive Matches](#online-only-stealth-servers-positive-matches) | Confirmed true. |
+| **No** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility)  | Aurora                               | **Primary**         | [[#4. Metro]]        | [Cipher](#cipher)  or NULL.           | True                 | Maybe: [Online-Only Stealth Servers Positive Matches](#online-only-stealth-servers-positive-matches) | Confirmed true. |
+| **No** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility)  | [[#3. Kinect / NXE V2]]              | **Primary**         | **Primary**          | [Cipher](#cipher)                     | True                 | True: [Online-Only Stealth Servers Positive Matches](#online-only-stealth-servers-positive-matches)  | TODO            |
+| **No** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility)  | [[#2. New Xbox Experience (NXE) V1]] | **Primary**         | **Primary**          | [Cipher](#cipher)                     | True                 | True: [Online-Only Stealth Servers Positive Matches](#online-only-stealth-servers-positive-matches)  | TODO            |
+| **No** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility)  | [[#1. Blades]]                       | **Primary**         | **Primary**          | [Cipher](#cipher)                     | True                 | True: [Online-Only Stealth Servers Positive Matches](#online-only-stealth-servers-positive-matches)  | TODO            |
+| **Yes** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility) | [[#4. Metro]]                        | **Primary**         | **Primary**          | [Cipher](#cipher)                     | False                | True: [Online-Only Stealth Servers Positive Matches](#online-only-stealth-servers-positive-matches)  | Confirmed.      |
+| **Yes** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility) | Aurora                               | **Primary**         | [[#4. Metro]]        | [Cipher](#cipher)                     | False                | True: [Online-Only Stealth Servers Positive Matches](#online-only-stealth-servers-positive-matches)  | TODO            |
+| **Yes** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility) | [[#3. Kinect / NXE V2]]              | **Primary**         | **Primary**          | [Cipher](#cipher)                     | False                | True: [Online-Only Stealth Servers Positive Matches](#online-only-stealth-servers-positive-matches)  | TODO            |
+| **Yes** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility) | [[#2. New Xbox Experience (NXE) V1]] | **Primary**         | **Primary**          | [Cipher](#cipher)                     | False                | True: [Online-Only Stealth Servers Positive Matches](#online-only-stealth-servers-positive-matches)  | TODO            |
+| **Yes** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility) | [[#1. Blades]]                       | **Primary**         | **Primary**          | [Cipher](#cipher)                     | False                | True: [Online-Only Stealth Servers Positive Matches](#online-only-stealth-servers-positive-matches)  | TODO            |
+| **Yes** [Xbox Live Access](#xbox-live-access) + **No** [Original Xbox Compatibility](#original-xbox-compatibility)  | [[#4. Metro]]                        | **Primary**         | **Primary**          | [Proto](#proto) or [XbGuard](#xbguard).     | False                | Maybe: [[#Online-Only Stealth Servers]]                  | TODO            |
+| **Yes** [Xbox Live Access](#xbox-live-access) + **No** [Original Xbox Compatibility](#original-xbox-compatibility)  | Aurora                               | **Primary**         | [[#4. Metro]]        | [Proto](#proto) or [XbGuard](#xbguard).     | False                | Maybe: [[#Online-Only Stealth Servers]]                  | TODO            |
+| **Yes** [Xbox Live Access](#xbox-live-access) + **No** [Original Xbox Compatibility](#original-xbox-compatibility)  | [[#3. Kinect / NXE V2]]              | **Primary**         | **Primary**          | [Proto](#proto) or [XbGuard](#xbguard).     | False                | Maybe: [[#Online-Only Stealth Servers]]                  | TODO            |
+| **Yes** [Xbox Live Access](#xbox-live-access) + **No** [Original Xbox Compatibility](#original-xbox-compatibility)  | [[#2. New Xbox Experience (NXE) V1]] | **Primary**         | **Primary**          | [Proto](#proto) or [XbGuard](#xbguard).     | False                | Maybe: [[#Online-Only Stealth Servers]]                  | TODO            |
+| **Yes** [Xbox Live Access](#xbox-live-access) + **No** [Original Xbox Compatibility](#original-xbox-compatibility)  | [[#1. Blades]]                       | **Primary**         | **Primary**          | [Proto](#proto) or [XbGuard](#xbguard).     | False                | Maybe: [[#Online-Only Stealth Servers]]                  | TODO            |
 
 ## 3. Non-Permutations
 
@@ -101,7 +101,7 @@ Dumpfile =
 
 ### `[Plugins]`
 
-1. [[#Xbox 360 Neighborhood (xbdm.xex)]] or NULL.
+1. [Xbox 360 Neighborhood (xbdm.xex)](#xbox-360-neighborhood-xbdmxex) or NULL.
 2. [[#LAN Debug Tools]] or NULL.
 3. [[#Stealth Servers]] given use case:
 	-> [[#Legacy Dashboard Compatibility]]
@@ -519,7 +519,7 @@ The following conditions must be **true:**
 > 	- *JRPC2*
 > 	- *XDRPC*
 > 	- *XRPC*
-> - Used in conjunction with [[#Xbox 360 Neighborhood (xbdm.xex)]].
+> - Used in conjunction with [Xbox 360 Neighborhood (xbdm.xex)](#xbox-360-neighborhood-xbdmxex).
 
 > [!info] LINKS
 > - [Beginners Guide To XRPC and JRPC(2)](https://www.thetechgame.com/Archives/t=6912664/beginners-guide-to-xrpc-and-jrpc-2.html), [Internet Archive](https://web.archive.org/web/20251215173001/https://www.thetechgame.com/Archives/t=6912664/beginners-guide-to-xrpc-and-jrpc-2.html)
@@ -612,9 +612,9 @@ The following conditions must be **true:**
 
 | Stealth Server | Free/Paid Subscription                            | Supports Backwards Compatibility | Supports Cheats | Supports Retail Dashboards          | Supports Custom HUD                                                   |
 | -------------- | ------------------------------------------------- | -------------------------------- | --------------- | ----------------------------------- | --------------------------------------------------------------------- |
-| [[#Cipher]]    | Free with paid periodic or lifetime subscription. | Yes                              | Yes             | Build 9199 and earlier have issues. | Yes, [[#How to Disable a Stealth Server's Custom HUD\|configurable]]. |
-| [[#Proto]]     | Free.                                             | No                               | No              | Yes                                 | Yes, configurable via `proto.ini`.                                    |
-| [[#XbGuard]]   | Free with paid periodic or lifetime subscription. | No                               | Yes             | Yes                                 | Yes, [[#How to Disable a Stealth Server's Custom HUD\|configurable]]. |
+| [Cipher](#cipher)    | Free with paid periodic or lifetime subscription. | Yes                              | Yes             | Build 9199 and earlier have issues. | Yes, [[#How to Disable a Stealth Server's Custom HUD\|configurable]]. |
+| [Proto](#proto)     | Free.                                             | No                               | No              | Yes                                 | Yes, configurable via `proto.ini`.                                    |
+| [XbGuard](#xbguard)   | Free with paid periodic or lifetime subscription. | No                               | Yes             | Yes                                 | Yes, [[#How to Disable a Stealth Server's Custom HUD\|configurable]]. |
 
 > [!WARNING] ONLINE CHEATS WARNING
 > DO NOT CHEAT in online multiplayer.
@@ -672,7 +672,7 @@ The following conditions must be **true:**
 - [ ] Specify file paths for dashboards and plugins:
 	- [ ] Remove versioning and include a VERSION file.
 - [ ] Define recommendations
-	- [ ] Avoid using [[#Xbox 360 Neighborhood (xbdm.xex)]], to secure system, and not cheat.
+	- [ ] Avoid using [Xbox 360 Neighborhood (xbdm.xex)](#xbox-360-neighborhood-xbdmxex), to secure system, and not cheat.
 	- [ ] Disable FTP after initialization, to secure system.
 	- [ ] Do not cheat in online multiplayer.
 	- [ ] Use Aurora for offline use, homebrew, fastest presentation.
