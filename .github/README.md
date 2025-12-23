@@ -64,7 +64,7 @@ Thanks to the Phoenix team for Aurora and its Lua scripting support.
 Inspired by community discussions on [r/360hacks](#r360hacks).
 
 ## 9. Contact
-[Issues](https://github.com/portellam/issues)
+Open an [issue](https://github.com/portellam/Easy-Launch-INI-Switcher/issues) on the GitHub repository.
 
 ## 10. References
 ### Aurora Dashboard
@@ -84,6 +84,24 @@ Inspired by community discussions on [r/360hacks](#r360hacks).
 
 <sup>&nbsp;&nbsp;&nbsp;&nbsp;Archive:&nbsp;</sup>
 <sup></sup>
+
+### JTAG
+&nbsp;&nbsp;**JTAG | ConsoleMods Wiki**. ConsoleMods.org. Accessed 2025-12-23.
+
+<sup>&nbsp;&nbsp;&nbsp;&nbsp;Original:&nbsp;</sup>
+<sup>https://consolemods.org/wiki/Xbox_360:JTAG</sup>
+
+<sup>&nbsp;&nbsp;&nbsp;&nbsp;Archive:&nbsp;</sup>
+<sup>https://web.archive.org/web/20251223000000/https://consolemods.org/wiki/Xbox_360:JTAG</sup>
+
+### RGH
+&nbsp;&nbsp;**RGH | ConsoleMods Wiki**. ConsoleMods.org. Accessed 2025-12-23.
+
+<sup>&nbsp;&nbsp;&nbsp;&nbsp;Original:&nbsp;</sup>
+<sup>https://consolemods.org/wiki/Xbox_360:RGH</sup>
+
+<sup>&nbsp;&nbsp;&nbsp;&nbsp;Archive:&nbsp;</sup>
+<sup>https://web.archive.org/web/20251223000000/https://consolemods.org/wiki/Xbox_360:RGH</sup>
 
 ### r/360hacks
 &nbsp;&nbsp;**Hacks and Mods for the Xbox 360!**. ConsoleMods. Accessed 2025-12-23.
