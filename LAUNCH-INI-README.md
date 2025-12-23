@@ -1,25 +1,32 @@
 # Launch INI README
-Documentation regarding anything related to the `launch.ini` configuration file, for a modded Xbox 360. Includes information on **how to make a** `launch.ini`, and to describe the **best configurations** for intended use cases with the **greatest compatibility:** homebrew ([dashboards](#dashboards-dashboards), [plugins](#plugins)), and console features ([Backwards Compatibility](#original-xbox-compatibility), [Legacy Dashboards](#legacy-dashboard-compatibility)).
+Documentation regarding anything related to the `launch.ini` configuration file, for a modded Xbox 360. Includes [how to information](#1-how-to-make-a-launchini), questions, downloads, and more.
 
 ## Highlights
 
-- [How to Make a `Launch.ini`](#1-how-to-make-a-launchini)
+- [How to Make a `launch.ini`](#1-how-to-make-a-launchini)
 - For **config permutations,** please read [`launch.ini` Configuration File](#2-launchini-configuration-file).
-- [Optimal Plugin Order](#optimal-plugin-order)
-- For **questions, usage,** and **downloads,** please read [Definitions](#4-definitions).
+- For **questions** and **downloads,** please read [Definitions](#4-definitions).
+  - [Optimal Plugin Order](#optimal-plugin-order)
 
-## 1. How to Make a `Launch.ini`
+## 1. How to Make a `launch.ini`
 
-1. Given a `launch.ini`, specify a master file with the following settings: [Static Config](#2-static-config)
-2. Create permutations for different use cases. Please reference the following:
+1. Given a `launch.ini`, **specify** a master file with the following settings: [Static Config](#2-static-config)
+2. **Create** permutations for different use cases. Please reference the following:
 	1. [File Paths](#file-paths)
 	2. [Config Permutations: Custom Dashboards](#1-config-permutations-custom-dashboards)
 	3. [`[Plugins]`](#plugins)
-3. For questions, usage and references, please review [Definitions](#4-definitions).
+3. For **questions, downloads,** and **references,** please review [Definitions](#4-definitions).
 
 ## 2. `launch.ini` Configuration File
 
 ### 1. Config Permutations: Custom Dashboards
+Defines use cases with the **greatest compatibility** (including, but not limited to):
+- console features:
+  - [Backwards Compatibility](#original-xbox-compatibility)
+  - [Legacy Dashboards](#legacy-dashboard-compatibility)
+- homebrew:
+  - [dashboards](#dashboards-dashboards)
+  - [plugins](#plugins)
 
 | Use Case                                                                 | Primary Dashboard                            | Secondary Dashboard | Dashboard: ConfigApp | Plugin: Stealth Servers         | Block Xbox Live | Requires Internet Connection                             | Works?          |
 | ------------------------------------------------------------------------ | -------------------------------------------- | ------------------- | -------------------- | ------------------------------- | --------------- | -------------------------------------------------------- | --------------- |
