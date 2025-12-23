@@ -19,10 +19,10 @@ Documentation regarding anything related to the `launch.ini` configuration file,
   - [RGH](../REFERENCES.md/#rgh)
 - a storage device:
   - CD/DVD-ROM (not recommended)
-  - internal Xbox 360 storage device (typically a HDD).
+  - internal Xbox 360 storage device (typically a HDD)
   - USB (HDD or SSD recommended)
-- Aurora Dashboard installed
-- DashLaunch installed
+- Aurora Dashboard installed.
+- DashLaunch installed.
 
 ## 4. Installation
 1. Download the [latest release.](https://github.com/portellam/Easy-Launch-INI-Switcher/releases/latest)
