@@ -1,18 +1,25 @@
-# Xbox 360 Launch INI Permutations
-Permutations for subjective experiences on a modded Xbox 360 (configurations of the [launch.ini](#launchini)), and related documentation.
+# Launch INI README
+Documentation regarding anything related to the `launch.ini` configuration file, for a modded Xbox 360. Includes information on **how to make a** `launch.ini`, and to describe the **best configurations** for intended use cases with the **greatest compatibility:** homebrew ([dashboards](#dashboards-dashboards), [plugins](#plugins)), and console features ([Backwards Compatibility](#original-xbox-compatibility), [Legacy Dashboards](#legacy-dashboard-compatibility)).
 
-## 1. How to Reference This Document
+## Highlights
 
-1. Given a `launch.ini`, specify a master copy file with the following settings: [Non-Permutations](#3-non-permutations)
+- [How to Make a `Launch.ini`](#1-how-to-make-a-launchini)
+- For **config permutations,** please read [`launch.ini` Configuration File](#2-launchini-configuration-file).
+- [Optimal Plugin Order](#optimal-plugin-order)
+- For **questions, usage,** and **downloads,** please read [Definitions](#4-definitions).
+
+## 1. How to Make a `Launch.ini`
+
+1. Given a `launch.ini`, specify a master file with the following settings: [Static Config](#2-static-config)
 2. Create permutations for different use cases. Please reference the following:
 	1. [File Paths](#file-paths)
-	2. [Permutations](#2-permutations)
+	2. [Config Permutations: Custom Dashboards](#1-config-permutations-custom-dashboards)
 	3. [`[Plugins]`](#plugins)
-3. For questions, review [Definitions](#4-definitions).
+3. For questions, usage and references, please review [Definitions](#4-definitions).
 
-## 2. Permutations
+## 2. `launch.ini` Configuration File
 
-### Custom Dashboards
+### 1. Config Permutations: Custom Dashboards
 
 | Use Case                                                                 | Primary Dashboard                            | Secondary Dashboard | Dashboard: ConfigApp | Plugin: Stealth Servers         | Block Xbox Live | Requires Internet Connection                             | Works?          |
 | ------------------------------------------------------------------------ | -------------------------------------------- | ------------------- | -------------------- | ------------------------------- | --------------- | -------------------------------------------------------- | --------------- |
@@ -32,9 +39,9 @@ Permutations for subjective experiences on a modded Xbox 360 (configurations of 
 | **Yes** [Xbox Live Access](#xbox-live-access) + **No** [Original Xbox Compatibility](#original-xbox-compatibility)  | [New Xbox Experience (NXE) V1](#new-xbox-experience-nxe-v1) | **Primary**         | **Primary**          | [Proto](#proto) or [XbGuard](#xbguard) | False           | [Proto, no. XbGuard, yes.](#stealth-servers)                  | TODO            |
 | **Yes** [Xbox Live Access](#xbox-live-access) + **No** [Original Xbox Compatibility](#original-xbox-compatibility)  | [Blades](#1-blades)                       | **Primary**         | **Primary**          | [Proto](#proto) or [XbGuard](#xbguard) | False           | [Proto, no. XbGuard, yes.](#stealth-servers)                  | TODO            |
 
-## 3. Non-Permutations
+### 2. Static Config
 
-### Body (1/4)
+### Config Body (1/4)
 
 ```
 ; launch.xex V3.0 config file
@@ -82,7 +89,7 @@ LThumb =
 
 ### `Configapp`
 
-### Body (2/4)
+### Config Body (2/4)
 
 ```
 ; if set, this will be run as a title before any other option occurs, does not get circumvented by held buttons or default
@@ -104,12 +111,12 @@ Dumpfile =
 1. [Xbox 360 Neighborhood (xbdm.xex)](#xbox-360-neighborhood-xbdmxex) or NULL.
 2. [LAN Debug Tools](#lan-debug-tools) or NULL.
 3. [Stealth Servers](#stealth-servers) given use case:
-	-> [Legacy Dashboard Compatibility](#legacy-dashboard-compatibility)
-	-> [Original Xbox Compatibility Stealth Servers](#original-xbox-compatibility-stealth-servers)
+	- [Legacy Dashboard Compatibility](#legacy-dashboard-compatibility)
+	- [Original Xbox Compatibility Stealth Servers](#original-xbox-compatibility-stealth-servers)
 4. [CoronaKeysFix](#coronakeysfixed) always.
 5. [PluginUI](#pluginui) with stable build.
 
-### Body (3/4)
+### Config Body (3/4)
 
 ```
 ; these options are never used directly by dash launch but serve to give the configuration program
@@ -211,13 +218,13 @@ debugout = true
 
 ### `liveblock`
 
--> [Block Xbox Live](#block-xbox-live)
+- [Block Xbox Live](#block-xbox-live)
 
 ### `livestrong`
 
--> [Block Xbox Live](#block-xbox-live)
+- [Block Xbox Live](#block-xbox-live)
 
-### Body (4/4)
+### Config Body (4/4)
 
 ```
 ; when set to TRUE the X (guide) and power button on IR remotes will cause the xbox to boot to NXE instead of default item
@@ -346,32 +353,32 @@ autocont = false
 
 ### `launch.ini`
 
-> [!TIP]
+> [!NOTE]
 > - A configuration file (`launch.ini`) which **defines** boot options and behavior:
 >	- Default dashboards
 >	- Fan Speed
 >	- [Plugins](#plugins)
 >	- System behavior
 
-> [!TLDR] EDIT INSTRUCTIONS
-> -> On console, **open** *Dashlaunch.*
-> -> On PC, **open** `launch.ini` within a text editor.
+> [!TIP]
+> - On console, **open** *Dashlaunch.*
+> - On PC, **open** `launch.ini` within a text editor.
 
 ### Legacy Dashboard Compatibility
 
 1. **To enable,** the following conditions must be **true:**
-	-> Use a [stealth server](#stealth-servers).
+	- Use a [stealth server](#stealth-servers).
 
 ### Primary Dashboard
 
 > [!TIP]
-> 1. Set One (1) Dashboard -> `Default = Path\To\File.xex`
+> 1. Set One (1) Dashboard - `Default = Path\To\File.xex`
 > 2. Set Two (2) Dashboards:
->	-> Primary Dashboard
+>	- Primary Dashboard
 >		1. `Guide = Path\To\File.xex`
 >		2. `Power = Path\To\File.xex`
 >		3. `Start = Path\To\File.xex`
->	-> Secondary Dashboard: `Default = Path\To\File.xex`
+>	- Secondary Dashboard: `Default = Path\To\File.xex`
 
 ### Official Dashboard Revisions
 
@@ -381,26 +388,26 @@ autocont = false
 #### Blades
 
 > [!TIP]
-> - Builds 1888 -> 6717
-> - November 2005 -> November 2008
+> - Builds 1888 - 6717
+> - November 2005 - November 2008
 
 #### New Xbox Experience (NXE) V1
 
 > [!TIP]
-> - Builds ~6717 -> ~9199
-> - November 2008 -> April 2010
+> - Builds ~6717 - ~9199
+> - November 2008 - April 2010
 
 #### Kinect / NXE V2
 
 > [!TIP]
-> - Builds ~9199 -> ~12611
-> - April 2010 -> November 2010
+> - Builds ~9199 - ~12611
+> - April 2010 - November 2010
 
 #### Metro
 
 > [!TIP]
-> - Builds 12611 -> 17559 (Latest)
-> - November 2010 -> Present
+> - Builds 12611 - 17559 (Latest)
+> - November 2010 - Present
 
 ### Online-Only Stealth Servers
 
@@ -441,26 +448,26 @@ The following conditions must be **true:**
 #### Blades
 
 > [!TIP]
-> - Builds 1888 -> 6717
-> - November 2005 -> November 2008
+> - Builds 1888 - 6717
+> - November 2005 - November 2008
 
 #### New Xbox Experience (NXE) V1
 
 > [!TIP]
-> - Builds ~6717 -> ~9199
-> - November 2008 -> April 2010
+> - Builds ~6717 - ~9199
+> - November 2008 - April 2010
 
 #### Kinect / NXE V2
 
 > [!TIP]
-> - Builds ~9199 -> ~12611
-> - April 2010 -> November 2010
+> - Builds ~9199 - ~12611
+> - April 2010 - November 2010
 
 #### Metro
 
 > [!TIP]
-> - Builds 12611 -> 17559 (Latest)
-> - November 2010 -> Present
+> - Builds 12611 - 17559 (Latest)
+> - November 2010 - Present
 
 ### File Paths
 
@@ -551,16 +558,6 @@ The following conditions must be **true:**
 > [!NOTE]
 > - [Motherboard Information - ConsoleMods Wiki](https://consolemods.org/wiki/Xbox_360:Motherboard_Information#Corona), [InternetArchive](https://consolemods.org/wiki/Xbox_360:Motherboard_Information)
 
-##### Xbox Live Gold Spoofing
-
-> [!TIP]
-> - *Enables* free online multiplayer for a *limited* selection of games.
-> - Alternatives:
-> 	- [Stealth Network (SNet)](#stealth-network-snet)
-> 	- [XLink Kai](#xlink-kai)
-
-> [!NOTE]
-> - [GitHub - Gualdimar/GoldSpoof17559: JRPC tool and dashlaunch plugin for spoofing gold on 17559 dash](https://github.com/Gualdimar/GoldSpoof17559), [Internet Archive](https://web.archive.org/web/20250731075702/https://github.com/Gualdimar/GoldSpoof17559)
 
 ##### Halo Sunrise
 
@@ -580,6 +577,17 @@ The following conditions must be **true:**
 
 > [!NOTE]
 > - [GitHub - InvoxiPlayGames/UsbdSecPatch](https://github.com/InvoxiPlayGames/UsbdSecPatch) , [Internet Archive](https://web.archive.org/web/20250925080252/https://github.com/InvoxiPlayGames/UsbdSecPatch)
+
+##### Xbox Live Gold Spoofing
+
+> [!TIP]
+> - *Enables* free online multiplayer for a *limited* selection of games.
+> - Alternatives:
+> 	- [Stealth Network (SNet)](#stealth-network-snet)
+> 	- [XLink Kai](#xlink-kai)
+
+> [!NOTE]
+> - [GitHub - Gualdimar/GoldSpoof17559: JRPC tool and dashlaunch plugin for spoofing gold on 17559 dash](https://github.com/Gualdimar/GoldSpoof17559), [Internet Archive](https://web.archive.org/web/20250731075702/https://github.com/Gualdimar/GoldSpoof17559)
 
 #### PluginUI
 
@@ -703,3 +711,7 @@ The following conditions must be **true:**
 			- [ ] If line not found, append at top or bottom, with comments?
 		- [ ] Descriptive options
 - [ ] After completion, transform backlog into changelog. Have no backlog remain.
+
+##
+
+#### Click [here](#launch-ini-readme) to return to the top of this document.

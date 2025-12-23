@@ -69,3 +69,7 @@ Open an [issue](https://github.com/portellam/Easy-Launch-INI-Switcher/issues) on
 ## [10. References](../REFERENCES.md)
 
 ## [11. License](../LICENSE)
+
+##
+
+#### Click [here](#easy-launch-ini-switcher) to return to the top of this document.
