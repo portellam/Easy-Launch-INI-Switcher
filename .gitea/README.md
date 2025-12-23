@@ -9,10 +9,10 @@ An [Aurora Dashboard](../REFERENCES.md/#aurora-dashboard) utility script to togg
 ## 1. How It Works
 This is a Lua [utility script](../REFERENCES.md/#aurora-scripts) for the Aurora dashboard on modded Xbox 360 consoles. It allows easy switching between multiple `launch.ini` files (used by [DashLaunch](../REFERENCES.md/#dashlaunch) to configure boot options and plugins) without user input (via file manager or FTP). The script presents a menu to select and apply a predefined `launch.ini` configuration, copying it to the active `launch.ini` location.
 
-## [2. Documentation](../LAUNCH-INI-PERMUTATIONS.md)
-For questions, usage, downloads, please review the [documentation.](../LAUNCH-INI-PERMUTATIONS.md)
+## [2. Documentation](../LAUNCH-INI-README.md)
+For questions, usage, downloads, please review the [documentation.](../LAUNCH-INI-README.md)
 
-Includes information on **how to make a** `launch.ini`, and to describe the **best configurations** for intended use cases with the **greatest compatibility:** homebrew ([dashboards](../LAUNCH-INI-PERMUTATIONS.md#dashboards-dashboards), [plugins](../LAUNCH-INI-PERMUTATIONS.md#plugins)), and console features ([Backwards Compatibility](../LAUNCH-INI-PERMUTATIONS.md#original-xbox-compatibility), [Legacy Dashboards](../LAUNCH-INI-PERMUTATIONS.md#legacy-dashboard-compatibility)).
+Includes information on **how to make a** `launch.ini`, and to describe the **best configurations** for intended use cases with the **greatest compatibility:** homebrew ([dashboards](../LAUNCH-INI-README.md#dashboards-dashboards), [plugins](../LAUNCH-INI-README.md#plugins)), and console features ([Backwards Compatibility](../LAUNCH-INI-README.md#original-xbox-compatibility), [Legacy Dashboards](../LAUNCH-INI-README.md#legacy-dashboard-compatibility)).
 
 ## 3. Requirements
 - an Xbox 360 console modified via:
