@@ -54,9 +54,9 @@ Edit the script's configuration section (or related config file if provided) to 
 ; CD/DVD                Dvd:\
 ```
 
-## [6. Contributing](./CONTRIBUTING)
+## [6. How to Contribute](./CONTRIBUTING.md)
 
-## [7. Contributors](./CONTRIBUTORS)
+## [7. Contributors](./CONTRIBUTORS.md)
 
 ## 8. Credits
 Thanks to the Phoenix team for Aurora and its Lua scripting support.
