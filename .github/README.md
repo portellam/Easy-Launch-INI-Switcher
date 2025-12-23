@@ -4,19 +4,19 @@
 <br>
 
 # Easy Launch INI Switcher
-An [Aurora Dashboard](../REFERENCES.md/#aurora-dashboard) utility script to toggle modded [Xbox 360](../REFERENCES.md/xbox-360) launch configurations.
+An [Aurora Dashboard](../REFERENCES.md/#aurora-dashboard) utility script to toggle modded [Xbox 360](../REFERENCES.md/#xbox-360) launch configurations.
 
 ## 1. How It Works
-This is a Lua [utility script](../REFERENCES.md/aurora-scripts) for the Aurora dashboard on modded Xbox 360 consoles. It allows easy switching between multiple `launch.ini` files (used by [DashLaunch](../REFERENCES.md/dashlaunch) to configure boot options and plugins) without user input (via file manager or FTP). The script presents a menu to select and apply a predefined `launch.ini` configuration, copying it to the active `launch.ini` location.
+This is a Lua [utility script](../REFERENCES.md/#aurora-scripts) for the Aurora dashboard on modded Xbox 360 consoles. It allows easy switching between multiple `launch.ini` files (used by [DashLaunch](../REFERENCES.md/#dashlaunch) to configure boot options and plugins) without user input (via file manager or FTP). The script presents a menu to select and apply a predefined `launch.ini` configuration, copying it to the active `launch.ini` location.
 
 ## 2. Why?
-Given the various dashboards and plugins (patches, [stealth servers](../REFERENCES.md/stealth-servers), etc.) available, some of these may conflict: with either each other, or Xbox 360 system features, such as [Backwards Compatibility](../REFERENCES.md/backwards-compatibility). For more information, please read the related [documentation.](../LAUNCH-INI-PERMUTATIONS.md)
+Given the various dashboards and plugins (patches, [stealth servers](../REFERENCES.md/#stealth-servers), etc.) available, some of these may conflict: with either each other, or Xbox 360 system features, such as [Backwards Compatibility](../REFERENCES.md/#backwards-compatibility). For more information, please read the related [documentation.](../LAUNCH-INI-PERMUTATIONS.md)
 
 ## 3. Requirements
 - An Xbox 360 console modified via:
-  - [BadUpdate](../REFERENCES.md/badupdate)
-  - [JTAG](../REFERENCES.md/jtag)
-  - [RGH](../REFERENCES.md/rgh)
+  - [BadUpdate](../REFERENCES.md/#badupdate)
+  - [JTAG](../REFERENCES.md/#jtag)
+  - [RGH](../REFERENCES.md/#rgh)
 - a storage device:
   - CD/DVD-ROM (not recommended)
   - internal Xbox 360 storage device (typically a HDD).
@@ -40,7 +40,7 @@ Edit the script's configuration section (or related config file if provided) to 
 - Specify the path to your alternate `launch.ini` file.
   - Given an HDD, to support Backwards Compatibility and use an online-only stealth servers: `Hdd:\launch.ini.d\launch_ogxbox-compat_online-stealth-server.ini`
 - Add a display name for the new profile in the menu.
-- Set the target path for the active `launch.ini`, typically the root directory (see [Supported Device Paths](../REFERENCES.md/2-supported-device-paths)).
+- Set the target path for the active `launch.ini`, typically the root directory (see [Supported Device Paths](../REFERENCES.md/#2-supported-device-paths)).
 
 ### 2. Supported Device Paths
 ```
@@ -61,7 +61,7 @@ Edit the script's configuration section (or related config file if provided) to 
 ## 8. Credits
 Thanks to the Phoenix team for Aurora and its Lua scripting support.
 
-Inspired by community discussions on [r/360hacks](../REFERENCES.md/r360hacks).
+Inspired by community discussions on [r/360hacks](../REFERENCES.md/#r360hacks).
 
 ## 9. Contact
 Open an [issue](https://github.com/portellam/Easy-Launch-INI-Switcher/issues) on the GitHub repository.
