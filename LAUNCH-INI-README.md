@@ -681,9 +681,20 @@ The following conditions must be **true:**
 	1. [Block Xbox Live](#block-xbox-live) must be **set.**
 	2. [Stealth Servers](#stealth-servers) <u>may</u> be **unset.**
 
+### XLink Kai
+
+> [!TIP]
+> - Software which *enables* LAN multiplayer games to *connect* across the Internet.
+> - Supports most consoles from sixth (6th) generation onwards.
+> - Similar to a *Virtual Private Network* (VPN).
+
+> [!NOTE]
+> - [Global Network Gaming - Team XLink](https://www.teamxlink.co.uk/), [Internet Archive](https://web.archive.org/web/20251213125056/https://www.teamxlink.co.uk/)
+> - [Frequently Asked Questions - Team XLink Wiki](https://www.teamxlink.co.uk/wiki/Frequently_Asked_Questions), [Internet Archive](https://web.archive.org/web/20250825101114/https://www.teamxlink.co.uk/wiki/Frequently_Asked_Questions)
+
 ## 5. Backlog
 
-- [ ] Define permutations
+- [x] Define permutations
 - [ ] Define `.ini` command lines for permutations.
 - [ ] Specify file paths for dashboards and plugins:
 	- [ ] Remove versioning and include a VERSION file.
@@ -698,7 +709,7 @@ The following conditions must be **true:**
 - [ ] Create `launch.ini` permutations, fifteen (15) total.
 	- [ ] Place into archive files:
 		- [ ] Include README: `launch-ini-README.md`
-			- [ ] Explain use case.
+			- [x] Explain use case.
 			- [ ] Include a copy of this document.
 		- [ ] Default file name: `launch.ini`
 - [ ] Create a Aurora script to unpack known good archives.
