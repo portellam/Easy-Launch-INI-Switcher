@@ -1,5 +1,5 @@
 <a href="https://github.com/portellam/Easy-Launch-INI-Switcher/releases/latest">
-  <img align="left" width="100" height="100" src="../logo.svg" alt="Easy Launch INI Switcher"/>
+  <img align="left" width="100" height="100" src="../logo.png" alt="Easy Launch INI Switcher"/>
 </a>
 <br>
 
@@ -38,7 +38,7 @@ Given the various dashboards and plugins (patches, [stealth servers](../REFERENC
 ### 1. Configuration
 Edit the script's configuration section (or related config file if provided) to define `launch.ini` profiles:
 - Specify the path to your alternate `launch.ini` file.
-  - Given an HDD, to support Backwards Compatibility and use an online-only stealth servers: `Hdd:\launch.ini.d\launch_ogxbox-compat_online-stealth-server.ini`
+  - Given an HDD, to support Backwards Compatibility and use an online-only stealth server: `Hdd:\launch.ini.d\launch_ogxbox-compat_online-stealth-server.ini`
 - Add a display name for the new profile in the menu.
 - Set the target path for the active `launch.ini`, typically the root directory (see [Supported Device Paths](../REFERENCES.md/#2-supported-device-paths)).
 
