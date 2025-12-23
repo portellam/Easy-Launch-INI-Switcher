@@ -347,7 +347,6 @@ autocont = false
 ### `launch.ini`
 
 > [!TIP]
-> **ABOUT**
 > - A configuration file (`launch.ini`) which **defines** boot options and behavior:
 >	- Default dashboards
 >	- Fan Speed
@@ -366,7 +365,6 @@ autocont = false
 ### Primary Dashboard
 
 > [!TIP]
-> **ABOUT**
 > 1. Set One (1) Dashboard -> `Default = Path\To\File.xex`
 > 2. Set Two (2) Dashboards:
 >	-> Primary Dashboard
@@ -378,34 +376,29 @@ autocont = false
 ### Official Dashboard Revisions
 
 > [!NOTE]
-> **LINKS**
 > - [Xbox 360 Dashboard | Xbox Wiki | Fandom](https://xbox.fandom.com/wiki/Xbox_360_Dashboard), [Internet Archive](https://web.archive.org/web/20250824030722/https://xbox.fandom.com/wiki/Xbox_360_Dashboard)
 
 #### Blades
 
 > [!TIP]
-> **ABOUT**
 > - Builds 1888 -> 6717
 > - November 2005 -> November 2008
 
 #### New Xbox Experience (NXE) V1
 
 > [!TIP]
-> **ABOUT**
 > - Builds ~6717 -> ~9199
 > - November 2008 -> April 2010
 
 #### Kinect / NXE V2
 
 > [!TIP]
-> **ABOUT**
 > - Builds ~9199 -> ~12611
 > - April 2010 -> November 2010
 
 #### Metro
 
 > [!TIP]
-> **ABOUT**
 > - Builds 12611 -> 17559 (Latest)
 > - November 2010 -> Present
 
@@ -448,28 +441,24 @@ The following conditions must be **true:**
 #### Blades
 
 > [!TIP]
-> **ABOUT**
 > - Builds 1888 -> 6717
 > - November 2005 -> November 2008
 
 #### New Xbox Experience (NXE) V1
 
 > [!TIP]
-> **ABOUT**
 > - Builds ~6717 -> ~9199
 > - November 2008 -> April 2010
 
 #### Kinect / NXE V2
 
 > [!TIP]
-> **ABOUT**
 > - Builds ~9199 -> ~12611
 > - April 2010 -> November 2010
 
 #### Metro
 
 > [!TIP]
-> **ABOUT**
 > - Builds 12611 -> 17559 (Latest)
 > - November 2010 -> Present
 
@@ -504,7 +493,6 @@ The following conditions must be **true:**
 ### Plugins
 
 > [!NOTE]
-> **LINKS**
 > - [launch.ini](#launchini)
 
 #### Developer Tools
@@ -512,7 +500,6 @@ The following conditions must be **true:**
 ##### HvP2.xex
 
 > [!TIP]
-> **CITE**
 > [HvP2.xex - ConsoleMods Wiki](https://consolemods.org/wiki/File:HvP2.xex), [Internet Archive](https://web.archive.org/web/20250810155854/https://consolemods.org/wiki/File:HvP2.xex)
 > An Xbox 360 plugin by <u>Xx jAmes t xX</u> and <u>Chr0m3 x MoDz</u> that enables use of *development* builds on a RGH/JTAG.
 
@@ -521,7 +508,6 @@ The following conditions must be **true:**
 ##### FTPdll.xex
 
 > [!NOTE]
-> **LINKS**
 > - [FTPdll 0.3.zip](https://consolemods.org/wiki/images/2/25/Ftpdll_0.3.zip), [Internet Archive](https://web.archive.org/web/20250902210221/https://consolemods.org/wiki/images/2/25/Ftpdll_0.3.zip)
 
 ##### Xbox 360 Neighborhood (xbdm.xex)
@@ -529,7 +515,6 @@ The following conditions must be **true:**
 #### LAN Debug Tools
 
 > [!TIP]
-> **ABOUT**
 > - Tools which facilitate *debugging* and/or *cheat engines* for supported games, over a LAN.
 > 	- *JRPC*
 > 	- *JRPC2*
@@ -538,7 +523,6 @@ The following conditions must be **true:**
 > - Used in conjunction with [Xbox 360 Neighborhood (xbdm.xex)](#xbox-360-neighborhood-xbdmxex).
 
 > [!NOTE]
-> **LINKS**
 > - [Beginners Guide To XRPC and JRPC(2)](https://www.thetechgame.com/Archives/t=6912664/beginners-guide-to-xrpc-and-jrpc-2.html), [Internet Archive](https://web.archive.org/web/20251215173001/https://www.thetechgame.com/Archives/t=6912664/beginners-guide-to-xrpc-and-jrpc-2.html)
 > - [XCE Tool - ConsoleMods Wiki](https://consolemods.org/wiki/Xbox_360:XCE_Tool), [Internet Archive](https://web.archive.org/web/20250916071914/https://consolemods.org/wiki/Xbox_360:XCE_Tool)
 
@@ -547,101 +531,84 @@ The following conditions must be **true:**
 ##### AuroraCrashPatcher
 
 > [!TIP]
-> **ABOUT**
 > - A tool designed to *prevent* crashes in custom dashboards during the download of many assets, such as game box art.
 
 > [!NOTE]
-> **LINKS**
 > - [GitHub - Ste1io/AuroraCrashPatcher: Quick patch to prevent fatal crashing when downloading title assets (boxart, etc) through FSD or Aurora.](https://github.com/Ste1io/AuroraCrashPatcher), [Internet Archive](https://web.archive.org/web/20250219062541/https://github.com/Ste1io/AuroraCrashPatcher)
 
 ##### Cheats
 
 > [!TIP]
-> **ABOUT**
 > - Methods which *alter* game play, *in less than intended or unintended ways.*
 > - *Unlock* levels, characters, story progress, etc. with less effort.
 
 ##### CoronaKeysFix
 
 > [!TIP]
-> **CITE**
 > [GitHub - InvoxiPlayGames/CoronaKeysFixPlugin](https://github.com/InvoxiPlayGames/CoronaKeysFixPlugin), [Internet Archive](https://web.archive.org/web/20250919020528/https://github.com/InvoxiPlayGames/CoronaKeysFixPlugin)
 > An Xbox 360 DashLaunch plugin to fix the issues in *Rock Band* and *Dance Central* games on Corona motherboards.
 
 > [!NOTE]
-> **LINKS**
 > - [Motherboard Information - ConsoleMods Wiki](https://consolemods.org/wiki/Xbox_360:Motherboard_Information#Corona), [InternetArchive](https://consolemods.org/wiki/Xbox_360:Motherboard_Information)
 
 ##### Xbox Live Gold Spoofing
 
 > [!TIP]
-> **FEATURES**
 > - *Enables* free online multiplayer for a *limited* selection of games.
 > - Alternatives:
 > 	- [Stealth Network (SNet)](#stealth-network-snet)
 > 	- [XLink Kai](#xlink-kai)
 
 > [!NOTE]
-> **LINKS**
 > - [GitHub - Gualdimar/GoldSpoof17559: JRPC tool and dashlaunch plugin for spoofing gold on 17559 dash](https://github.com/Gualdimar/GoldSpoof17559), [Internet Archive](https://web.archive.org/web/20250731075702/https://github.com/Gualdimar/GoldSpoof17559)
 
 ##### Halo Sunrise
 
 > [!TIP]
-> **FEATURES**
 > - *Restores* online matchmaking for *Halo* series' games:
 > 	- *Halo 3*
 > 	- *Halo: Reach*
 
 > [!NOTE]
-> **LINKS**
 > - [GitHub - Byrom90/Halo_Sunrise_Plugin_2.0:](https://github.com/Byrom90/Halo_Sunrise_Plugin_2.0), [Internet Archive](https://web.archive.org/web/20250914113624/https://github.com/Byrom90/Halo_Sunrise_Plugin_2.0)
 
 ##### UsbdSecPatch
 
 > [!TIP]
-> **FEATURES**
 > - Patch to *allow* unsigned USB execution.
 > - Supports *XInput* controllers and game pads.
 
 > [!NOTE]
-> **LINKS**
 > - [GitHub - InvoxiPlayGames/UsbdSecPatch](https://github.com/InvoxiPlayGames/UsbdSecPatch) , [Internet Archive](https://web.archive.org/web/20250925080252/https://github.com/InvoxiPlayGames/UsbdSecPatch)
 
 #### PluginUI
 
 > [!TIP]
-> **FEATURES**
 > - *Custom* Guide Menu / Heads Up Display (HUD)
 > - *Extensible* with theme support.
 > 	- *Reproduction* of the [NXE](#new-xbox-experience-nxe-v1) HUD.
 > 	- *Beta version* of the NXE HUD.
 
 > [!NOTE]
-> **LINKS**
 > - [Discord](https://discord.gg/mnq9dbR6mN)
 
 #### Stealth Network (SNet)
 
 > [!TIP]
-> **FEATURES**
 > - *Custom* matchmaking handler.
 > - *Does not require* clients or users to have *Xbox Live Gold.*
 > - *Play online* by connecting to match hosts (who have *Xbox Live Gold*).
 > - *Supports all* online multiplayer games.
 
 > [!NOTE]
-> **LINKS**
 > - [Release - SNET Now available To Most Stealth Servers | Se7enSins Gaming Community](https://www.se7ensins.com/forums/threads/snet-now-available-to-most-stealth-servers-now-working-for-gta-online-1-27-latest-halo.1885487/), [Internet Archive](https://web.archive.org/web/20250704234149/https://www.se7ensins.com/forums/threads/snet-now-available-to-most-stealth-servers-now-working-for-gta-online-1-27-latest-halo.1885487/)
 
 #### Stealth Servers
 
 > [!TIP]
-> **FEATURES**
 > Services which *obfuscate* a console's modded state, use of homebrew, and play of unreleased games, from *Xbox Live's* detection methods.
 
 > [!WARNING]
-> **WARNING**
 > Failure to use or of a Stealth Server WILL RESULT in *Xbox Live* services BLACKLISTING your console's KV.
 
 | Stealth Server | Free/Paid Subscription                            | Supports Backwards Compatibility | Supports Cheats | Supports Retail Dashboards          | Supports Custom HUD                                                   |
@@ -651,20 +618,17 @@ The following conditions must be **true:**
 | [XbGuard](#xbguard)   | Free with paid periodic or lifetime subscription. | No                               | Yes             | Yes                                 | Yes, configurable.                                                    |
 
 > [!WARNING]
-> **ONLINE CHEATS WARNING**
 > DO NOT CHEAT in online multiplayer.
 
 ##### Cipher
 
 > [!TIP]
-> **FEATURES**
 > - *Paid,* with periodic and lifetime subscriptions.
 > - Custom matchmaking support, known as [Stealth Network (SNet)](#stealth-network-snet).
 > - *Customizable* user-interface.
 > - Load plugins as *modules.*
 
 > [!NOTE]
-> **LINKS**
 > - [Cipher - The Leading Stealth Solution](https://cipher.services/), [Internet Archive](https://web.archive.org/web/20250919130058/https://cipher.services/)
 > - [Features – Cipher](https://cipher.services/en/features), [Internet Archive](https://web.archive.org/web/20250831201037/https://cipher.services/en/features)
 > - [Support – Cipher](https://cipher.services/en/support), [Internet Archive](https://web.archive.org/web/20250825001153/https://cipher.services/en/support)
@@ -673,27 +637,23 @@ The following conditions must be **true:**
 ##### Proto
 
 > [!TIP]
-> **FEATURES**
 > - Free
 > - Offline
 > - Minimalist
 > - No Cheats
 
 > [!NOTE]
-> **LINKS**
 > - [Proto Stealth](https://freestealth.com/) , [Internet Archive](https://web.archive.org/web/20250917194014/http://www.freestealth.com/)
 
 ##### XbGuard
 
 > [!TIP]
-> **FEATURES**
 > - *Paid,* with periodic and lifetime subscriptions.
 > - Custom matchmaking support, known as [Stealth Network (SNet)](#stealth-network-snet).
 > - *Customizable* user-interface.
 > - Load plugins as *modules.*
 
 > [!NOTE]
-> **LINKS**
 > - [xbGuard | The Supreme Stealth Service](https://xbguard.live/) , [Internet Archive](https://web.archive.org/web/20250913174402/https://xbguard.live/)
 > - [Discord](https://discord.com/invite/YkpmBHK)
 
