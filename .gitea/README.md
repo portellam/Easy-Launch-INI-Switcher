@@ -25,7 +25,7 @@ Given the various dashboards and plugins (patches, [stealth servers](../REFERENC
 - DashLaunch installed
 
 ## 4. Installation
-1. Download the [latest release.](../../releases/latest)
+1. Download the [latest release.](../../../../releases/latest)
 2. Extract the script file (typically a `.lua` file) and any supporting files.
 3. Copy the script to the Aurora scripts directory: typically `Hdd:\Aurora\User\Scripts\Utility\`.
 4. Restart Aurora.
