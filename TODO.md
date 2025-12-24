@@ -5,36 +5,37 @@
 - Least user input.
 
 ## Backlog
-- [ ] CONTRIBUTION
-- [ ] CONTRIBUTORS
+- [x] CONTRIBUTION
+- [x] CONTRIBUTORS
 
 - [ ] README
-  - [ ] Usage
-  - [ ] Why?
+  - [x] Usage
+  - [x] Why?
   - [ ] Changelog
-  - [ ] Download
-  - [ ] Contact
-  - [ ] Contributors
-  - [ ] License
-    - [ ] Citations
-      - [ ] Aurora
-      - [ ] backwards compatibility
-      - [ ] consolemods.org
-      - [ ] launch.ini
-      - [ ] official dashboard history
-      - [ ] stealth servers
-      - [ ] Xbox 360 mods
+  - [x] Download
+  - [x] Contact
+  - [x] Contributors
+  - [x] License
+  - [x] Citations
+    - [x] Aurora
+    - [x] backwards compatibility
+    - [x] consolemods.org
+    - [x] launch.ini
+    - [x] official dashboard history
+    - [x] stealth servers
+    - [x] Xbox 360 mods
 
 - [ ] script
   - [ ] Backup existing `launch.ini`.
   - [ ] Determine method of tracking information.
     - [ ] Database of expected paths and executables.
-    - [ ] Pre configured `launch.ini`.
+    - [ ] Pre configured `launch.ini`. Use as reference copy.
+      - [ ] Think of `generate-evdev`, where the file is changed at the matching lines. 
   - [ ] Manage configurations.
   - [ ] Safe failures; if operation fails, undo changes.
   - [ ] Validation
 
-- [ ] sponsorship
+- [x] sponsorship
 
 ## Changelog
 - Initalized repository.
