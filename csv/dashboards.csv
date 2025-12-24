@@ -1,0 +1,6 @@
+Name,Is Official,Is Legacy,Version: Minimum
+Aurora,FALSE,NULL,NULL
+Blades,TRUE,TRUE,1888
+Kinect,TRUE,TRUE,12611
+New Xbox Experience,TRUE,TRUE,7357
+Metro,TRUE,FALSE,14699
