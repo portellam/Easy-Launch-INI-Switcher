@@ -3,24 +3,24 @@ Documentation regarding anything related to the `launch.ini` configuration file,
 
 ## Highlights
 
-- [How to Make a `launch.ini`](#1-how-to-make-a-launchini)
-- For **config permutations,** please read [`launch.ini` Configuration File](#2-launchini-configuration-file).
-- For **questions** and **downloads,** please read [Definitions](#4-definitions).
+- [How to Make a launch.ini](#1-how-to-make-a-launchini)
+- For *config permutations,* please read [launch.ini Configuration File](#2-launchini-configuration-file).
+- For *questions* and *downloads,* please read [Definitions](#4-definitions).
   - [Optimal Plugin Order](#optimal-plugin-order)
 
-## 1. How to Make a `launch.ini`
+## 1. How to Make a launch.ini
 
-1. Given a `launch.ini`, **specify** a master file with the following settings: [Static Config](#2-static-config)
-2. **Create** permutations for different use cases. Please reference the following:
+1. Given a `launch.ini`, *specify* a master file with the following settings: [Static Config](#2-static-config)
+2. *Create* permutations for different use cases. Please reference the following:
 	1. [File Paths](#file-paths)
 	2. [Config Permutations: Custom Dashboards](#1-config-permutations-custom-dashboards)
 	3. [`[Plugins]`](#plugins)
-3. For **questions, downloads,** and **references,** please review [Definitions](#4-definitions).
+3. For *questions, downloads,* and *references,* please review [Definitions](#4-definitions).
 
-## 2. `launch.ini` Configuration File
+## 2. launch.ini Configuration File
 
 ### 1. Config Permutations: Custom Dashboards
-Defines use cases with the **greatest compatibility** (including, but not limited to):
+Defines use cases with the *greatest compatibility* (including, but not limited to):
 - console features:
   - [Backwards Compatibility](#original-xbox-compatibility)
   - [Legacy Dashboards](#legacy-dashboard-compatibility)
@@ -30,21 +30,21 @@ Defines use cases with the **greatest compatibility** (including, but not limite
 
 | Use Case                                                                 | Primary Dashboard                            | Secondary Dashboard | Dashboard: ConfigApp | Plugin: Stealth Servers         | Block Xbox Live | Requires Internet Connection                             | Works?          |
 | ------------------------------------------------------------------------ | -------------------------------------------- | ------------------- | -------------------- | ------------------------------- | --------------- | -------------------------------------------------------- | --------------- |
-| **No** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility)  | [Metro](#metro)                         | **Primary**         | **Primary**          | [Cipher](#cipher) or NULL       | True            | [Cipher, yes.](#stealth-servers) | Confirmed true. |
-| **No** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility)  | Aurora                                       | **Primary**         | [Metro](#metro)         | [Cipher](#cipher) or NULL       | True            | [Cipher, yes.](#stealth-servers) | Confirmed true. |
-| **No** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility)  | [Kinect / NXE V2](#kinect--nxe-v2)       | **Primary**         | **Primary**          | [Cipher](#cipher)               | True            | [Cipher, yes.](#stealth-servers)  | TODO            |
-| **No** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility)  | [New Xbox Experience (NXE) V1](#new-xbox-experience-nxe-v1) | **Primary**         | **Primary**          | [Cipher](#cipher)               | True            | [Cipher, yes.](#stealth-servers)  | TODO            |
-| **No** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility)  | [Blades](#1-blades)                       | **Primary**         | **Primary**          | [Cipher](#cipher)               | True            | [Cipher, yes.](#stealth-servers)  | TODO            |
-| **Yes** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility) | [Metro](#metro)                         | **Primary**         | **Primary**          | [Cipher](#cipher)               | False           | [Cipher, yes.](#stealth-servers)  | Confirmed.      |
-| **Yes** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility) | Aurora                                       | **Primary**         | [Metro](#metro)         | [Cipher](#cipher)               | False           | [Cipher, yes.](#stealth-servers)  | TODO            |
-| **Yes** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility) | [Kinect / NXE V2](#kinect--nxe-v2)       | **Primary**         | **Primary**          | [Cipher](#cipher)               | False           | [Cipher, yes.](#stealth-servers)  | TODO            |
-| **Yes** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility) | [New Xbox Experience (NXE) V1](#new-xbox-experience-nxe-v1) | **Primary**         | **Primary**          | [Cipher](#cipher)               | False           | [Cipher, yes.](#stealth-servers)  | TODO            |
-| **Yes** [Xbox Live Access](#xbox-live-access) + **Yes** [Original Xbox Compatibility](#original-xbox-compatibility) | [Blades](#1-blades)                       | **Primary**         | **Primary**          | [Cipher](#cipher)               | False           | [Cipher, yes.](#stealth-servers)  | TODO            |
-| **Yes** [Xbox Live Access](#xbox-live-access) + **No** [Original Xbox Compatibility](#original-xbox-compatibility)  | [Metro](#metro)                         | **Primary**         | **Primary**          | [Proto](#proto) or [XbGuard](#xbguard) | False           | [Proto, no. XbGuard, yes.](#stealth-servers)                  | TODO            |
-| **Yes** [Xbox Live Access](#xbox-live-access) + **No** [Original Xbox Compatibility](#original-xbox-compatibility)  | Aurora                                       | **Primary**         | [Metro](#metro)         | [Proto](#proto) or [XbGuard](#xbguard) | False           | [Proto, no. XbGuard, yes.](#stealth-servers)                  | TODO            |
-| **Yes** [Xbox Live Access](#xbox-live-access) + **No** [Original Xbox Compatibility](#original-xbox-compatibility)  | [Kinect / NXE V2](#kinect--nxe-v2)       | **Primary**         | **Primary**          | [Proto](#proto) or [XbGuard](#xbguard) | False           | [Proto, no. XbGuard, yes.](#stealth-servers)                  | TODO            |
-| **Yes** [Xbox Live Access](#xbox-live-access) + **No** [Original Xbox Compatibility](#original-xbox-compatibility)  | [New Xbox Experience (NXE) V1](#new-xbox-experience-nxe-v1) | **Primary**         | **Primary**          | [Proto](#proto) or [XbGuard](#xbguard) | False           | [Proto, no. XbGuard, yes.](#stealth-servers)                  | TODO            |
-| **Yes** [Xbox Live Access](#xbox-live-access) + **No** [Original Xbox Compatibility](#original-xbox-compatibility)  | [Blades](#1-blades)                       | **Primary**         | **Primary**          | [Proto](#proto) or [XbGuard](#xbguard) | False           | [Proto, no. XbGuard, yes.](#stealth-servers)                  | TODO            |
+| *No* [Xbox Live Access](#xbox-live-access) + *Yes* [Original Xbox Compatibility](#original-xbox-compatibility)  | [Metro](#metro)                         | *Primary*         | *Primary*          | [Cipher](#cipher) or NULL       | True            | [Cipher, yes.](#stealth-servers) | Confirmed true. |
+| *No* [Xbox Live Access](#xbox-live-access) + *Yes* [Original Xbox Compatibility](#original-xbox-compatibility)  | Aurora                                       | *Primary*         | [Metro](#metro)         | [Cipher](#cipher) or NULL       | True            | [Cipher, yes.](#stealth-servers) | Confirmed true. |
+| *No* [Xbox Live Access](#xbox-live-access) + *Yes* [Original Xbox Compatibility](#original-xbox-compatibility)  | [Kinect / NXE V2](#kinect--nxe-v2)       | *Primary*         | *Primary*          | [Cipher](#cipher)               | True            | [Cipher, yes.](#stealth-servers)  | TODO            |
+| *No* [Xbox Live Access](#xbox-live-access) + *Yes* [Original Xbox Compatibility](#original-xbox-compatibility)  | [New Xbox Experience (NXE) V1](#new-xbox-experience-nxe-v1) | *Primary*         | *Primary*          | [Cipher](#cipher)               | True            | [Cipher, yes.](#stealth-servers)  | TODO            |
+| *No* [Xbox Live Access](#xbox-live-access) + *Yes* [Original Xbox Compatibility](#original-xbox-compatibility)  | [Blades](#1-blades)                       | *Primary*         | *Primary*          | [Cipher](#cipher)               | True            | [Cipher, yes.](#stealth-servers)  | TODO            |
+| *Yes* [Xbox Live Access](#xbox-live-access) + *Yes* [Original Xbox Compatibility](#original-xbox-compatibility) | [Metro](#metro)                         | *Primary*         | *Primary*          | [Cipher](#cipher)               | False           | [Cipher, yes.](#stealth-servers)  | Confirmed.      |
+| *Yes* [Xbox Live Access](#xbox-live-access) + *Yes* [Original Xbox Compatibility](#original-xbox-compatibility) | Aurora                                       | *Primary*         | [Metro](#metro)         | [Cipher](#cipher)               | False           | [Cipher, yes.](#stealth-servers)  | TODO            |
+| *Yes* [Xbox Live Access](#xbox-live-access) + *Yes* [Original Xbox Compatibility](#original-xbox-compatibility) | [Kinect / NXE V2](#kinect--nxe-v2)       | *Primary*         | *Primary*          | [Cipher](#cipher)               | False           | [Cipher, yes.](#stealth-servers)  | TODO            |
+| *Yes* [Xbox Live Access](#xbox-live-access) + *Yes* [Original Xbox Compatibility](#original-xbox-compatibility) | [New Xbox Experience (NXE) V1](#new-xbox-experience-nxe-v1) | *Primary*         | *Primary*          | [Cipher](#cipher)               | False           | [Cipher, yes.](#stealth-servers)  | TODO            |
+| *Yes* [Xbox Live Access](#xbox-live-access) + *Yes* [Original Xbox Compatibility](#original-xbox-compatibility) | [Blades](#1-blades)                       | *Primary*         | *Primary*          | [Cipher](#cipher)               | False           | [Cipher, yes.](#stealth-servers)  | TODO            |
+| *Yes* [Xbox Live Access](#xbox-live-access) + *No* [Original Xbox Compatibility](#original-xbox-compatibility)  | [Metro](#metro)                         | *Primary*         | *Primary*          | [Proto](#proto) or [XbGuard](#xbguard) | False           | [Proto, no. XbGuard, yes.](#stealth-servers)                  | TODO            |
+| *Yes* [Xbox Live Access](#xbox-live-access) + *No* [Original Xbox Compatibility](#original-xbox-compatibility)  | Aurora                                       | *Primary*         | [Metro](#metro)         | [Proto](#proto) or [XbGuard](#xbguard) | False           | [Proto, no. XbGuard, yes.](#stealth-servers)                  | TODO            |
+| *Yes* [Xbox Live Access](#xbox-live-access) + *No* [Original Xbox Compatibility](#original-xbox-compatibility)  | [Kinect / NXE V2](#kinect--nxe-v2)       | *Primary*         | *Primary*          | [Proto](#proto) or [XbGuard](#xbguard) | False           | [Proto, no. XbGuard, yes.](#stealth-servers)                  | TODO            |
+| *Yes* [Xbox Live Access](#xbox-live-access) + *No* [Original Xbox Compatibility](#original-xbox-compatibility)  | [New Xbox Experience (NXE) V1](#new-xbox-experience-nxe-v1) | *Primary*         | *Primary*          | [Proto](#proto) or [XbGuard](#xbguard) | False           | [Proto, no. XbGuard, yes.](#stealth-servers)                  | TODO            |
+| *Yes* [Xbox Live Access](#xbox-live-access) + *No* [Original Xbox Compatibility](#original-xbox-compatibility)  | [Blades](#1-blades)                       | *Primary*         | *Primary*          | [Proto](#proto) or [XbGuard](#xbguard) | False           | [Proto, no. XbGuard, yes.](#stealth-servers)                  | TODO            |
 
 ### 2. Static Config
 
@@ -358,28 +358,29 @@ autocont = false
 - `liveblock = true`
 - `livestrong = true`
 
-### `launch.ini`
+### launch.ini
 
 > [!NOTE]
-> - A configuration file (`launch.ini`) which **defines** boot options and behavior:
+> - A configuration file (`launch.ini`) which *defines* boot options and behavior:
 >	- Default dashboards
 >	- Fan Speed
 >	- [Plugins](#plugins)
 >	- System behavior
 
 > [!TIP]
-> - On console, **open** *Dashlaunch.*
-> - On PC, **open** `launch.ini` within a text editor.
+> - On console, *open* *Dashlaunch.*
+> - On PC, *open* `launch.ini` within a text editor.
 
 ### Legacy Dashboard Compatibility
 
-1. **To enable,** the following conditions must be **true:**
-	- Use a [stealth server](#stealth-servers).
+1. *To enable,* the following conditions must be *true:*
+	- Use any [stealth server](#stealth-servers).
 
 ### Primary Dashboard
 
 > [!TIP]
-> 1. Set One (1) Dashboard - `Default = Path\To\File.xex`
+> 1. Set One (1) Dashboard
+> - `Default = Path\To\File.xex`
 > 2. Set Two (2) Dashboards:
 >	- Primary Dashboard
 >		1. `Guide = Path\To\File.xex`
@@ -390,7 +391,7 @@ autocont = false
 ### Official Dashboard Revisions
 
 > [!NOTE]
-> - [Xbox 360 Dashboard | Xbox Wiki | Fandom](https://xbox.fandom.com/wiki/Xbox_360_Dashboard), [Internet Archive](https://web.archive.org/web/20250824030722/https://xbox.fandom.com/wiki/Xbox_360_Dashboard)
+> - [Xbox 360 Dashboard | Xbox Wiki | Fandom](https://xbox.fandom.com/wiki/Xbox_360_Dashboard),&nbsp;[Internet Archive](https://web.archive.org/web/20250824030722/https://xbox.fandom.com/wiki/Xbox_360_Dashboard)
 
 #### Blades
 
@@ -418,6 +419,9 @@ autocont = false
 
 ### Online-Only Stealth Servers
 
+> [!NOTE]
+> See [Stealth Servers > Requires Internet Connection](#stealth-servers).
+
 ### Optimal Plugin Order
 
 #### 1. [LAN Servers](#lan-servers)
@@ -432,16 +436,16 @@ autocont = false
 
 ### Original Xbox Compatibility
 
-The following conditions must be **true:**
+The following conditions must be *true:*
 
 #### Original Xbox Compatibility: Files Installed.
 
 #### Original Xbox Compatibility: Stealth Servers:
 
-- a compatible **stealth server** must be set and running.
-	- **Cipher:** requires Internet availability.
-- a non-compatible **stealth server** must be avoided:
-	- anything **not Cipher;** Proto, XbGuard, etc.
+- a compatible *stealth server* must be set and running.
+	- *Cipher:* requires Internet availability.
+- a non-compatible *stealth server* must be avoided:
+	- anything *not Cipher;* Proto, XbGuard, etc.
 
 #### Online-Only Stealth Servers: Positive Matches
 
@@ -514,7 +518,7 @@ The following conditions must be **true:**
 ##### HvP2.xex
 
 > [!TIP]
-> [HvP2.xex - ConsoleMods Wiki](https://consolemods.org/wiki/File:HvP2.xex), [Internet Archive](https://web.archive.org/web/20250810155854/https://consolemods.org/wiki/File:HvP2.xex)
+> [HvP2.xex - ConsoleMods Wiki](https://consolemods.org/wiki/File:HvP2.xex),&nbsp;[Internet Archive](https://web.archive.org/web/20250810155854/https://consolemods.org/wiki/File:HvP2.xex)
 > An Xbox 360 plugin by <u>Xx jAmes t xX</u> and <u>Chr0m3 x MoDz</u> that enables use of *development* builds on a RGH/JTAG.
 
 #### LAN Servers
@@ -522,7 +526,7 @@ The following conditions must be **true:**
 ##### FTPdll.xex
 
 > [!NOTE]
-> - [FTPdll 0.3.zip](https://consolemods.org/wiki/images/2/25/Ftpdll_0.3.zip), [Internet Archive](https://web.archive.org/web/20250902210221/https://consolemods.org/wiki/images/2/25/Ftpdll_0.3.zip)
+> - [FTPdll 0.3.zip](https://consolemods.org/wiki/images/2/25/Ftpdll_0.3.zip),&nbsp;[Internet Archive](https://web.archive.org/web/20250902210221/https://consolemods.org/wiki/images/2/25/Ftpdll_0.3.zip)
 
 ##### Xbox 360 Neighborhood (xbdm.xex)
 
@@ -537,8 +541,8 @@ The following conditions must be **true:**
 > - Used in conjunction with [Xbox 360 Neighborhood (xbdm.xex)](#xbox-360-neighborhood-xbdmxex).
 
 > [!NOTE]
-> - [Beginners Guide To XRPC and JRPC(2)](https://www.thetechgame.com/Archives/t=6912664/beginners-guide-to-xrpc-and-jrpc-2.html), [Internet Archive](https://web.archive.org/web/20251215173001/https://www.thetechgame.com/Archives/t=6912664/beginners-guide-to-xrpc-and-jrpc-2.html)
-> - [XCE Tool - ConsoleMods Wiki](https://consolemods.org/wiki/Xbox_360:XCE_Tool), [Internet Archive](https://web.archive.org/web/20250916071914/https://consolemods.org/wiki/Xbox_360:XCE_Tool)
+> - [Beginners Guide To XRPC and JRPC(2)](https://www.thetechgame.com/Archives/t=6912664/beginners-guide-to-xrpc-and-jrpc-2.html),&nbsp;[Internet Archive](https://web.archive.org/web/20251215173001/https://www.thetechgame.com/Archives/t=6912664/beginners-guide-to-xrpc-and-jrpc-2.html)
+> - [XCE Tool - ConsoleMods Wiki](https://consolemods.org/wiki/Xbox_360:XCE_Tool),&nbsp;[Internet Archive](https://web.archive.org/web/20250916071914/https://consolemods.org/wiki/Xbox_360:XCE_Tool)
 
 #### Patches
 
@@ -548,7 +552,7 @@ The following conditions must be **true:**
 > - A tool designed to *prevent* crashes in custom dashboards during the download of many assets, such as game box art.
 
 > [!NOTE]
-> - [GitHub - Ste1io/AuroraCrashPatcher: Quick patch to prevent fatal crashing when downloading title assets (boxart, etc) through FSD or Aurora.](https://github.com/Ste1io/AuroraCrashPatcher), [Internet Archive](https://web.archive.org/web/20250219062541/https://github.com/Ste1io/AuroraCrashPatcher)
+> - [GitHub - Ste1io/AuroraCrashPatcher: Quick patch to prevent fatal crashing when downloading title assets (boxart, etc) through FSD or Aurora.](https://github.com/Ste1io/AuroraCrashPatcher),&nbsp;[Internet Archive](https://web.archive.org/web/20250219062541/https://github.com/Ste1io/AuroraCrashPatcher)
 
 ##### Cheats
 
@@ -559,7 +563,7 @@ The following conditions must be **true:**
 ##### CoronaKeysFix
 
 > [!TIP]
-> [GitHub - InvoxiPlayGames/CoronaKeysFixPlugin](https://github.com/InvoxiPlayGames/CoronaKeysFixPlugin), [Internet Archive](https://web.archive.org/web/20250919020528/https://github.com/InvoxiPlayGames/CoronaKeysFixPlugin)
+> [GitHub - InvoxiPlayGames/CoronaKeysFixPlugin](https://github.com/InvoxiPlayGames/CoronaKeysFixPlugin),&nbsp;[Internet Archive](https://web.archive.org/web/20250919020528/https://github.com/InvoxiPlayGames/CoronaKeysFixPlugin)
 > An Xbox 360 DashLaunch plugin to fix the issues in *Rock Band* and *Dance Central* games on Corona motherboards.
 
 > [!NOTE]
@@ -574,7 +578,7 @@ The following conditions must be **true:**
 > 	- *Halo: Reach*
 
 > [!NOTE]
-> - [GitHub - Byrom90/Halo_Sunrise_Plugin_2.0:](https://github.com/Byrom90/Halo_Sunrise_Plugin_2.0), [Internet Archive](https://web.archive.org/web/20250914113624/https://github.com/Byrom90/Halo_Sunrise_Plugin_2.0)
+> - [GitHub - Byrom90/Halo_Sunrise_Plugin_2.0:](https://github.com/Byrom90/Halo_Sunrise_Plugin_2.0),&nbsp;[Internet Archive](https://web.archive.org/web/20250914113624/https://github.com/Byrom90/Halo_Sunrise_Plugin_2.0)
 
 ##### UsbdSecPatch
 
@@ -583,7 +587,7 @@ The following conditions must be **true:**
 > - Supports *XInput* controllers and game pads.
 
 > [!NOTE]
-> - [GitHub - InvoxiPlayGames/UsbdSecPatch](https://github.com/InvoxiPlayGames/UsbdSecPatch) , [Internet Archive](https://web.archive.org/web/20250925080252/https://github.com/InvoxiPlayGames/UsbdSecPatch)
+> - [GitHub - InvoxiPlayGames/UsbdSecPatch](https://github.com/InvoxiPlayGames/UsbdSecPatch) ,&nbsp;[Internet Archive](https://web.archive.org/web/20250925080252/https://github.com/InvoxiPlayGames/UsbdSecPatch)
 
 ##### Xbox Live Gold Spoofing
 
@@ -594,7 +598,7 @@ The following conditions must be **true:**
 > 	- [XLink Kai](#xlink-kai)
 
 > [!NOTE]
-> - [GitHub - Gualdimar/GoldSpoof17559: JRPC tool and dashlaunch plugin for spoofing gold on 17559 dash](https://github.com/Gualdimar/GoldSpoof17559), [Internet Archive](https://web.archive.org/web/20250731075702/https://github.com/Gualdimar/GoldSpoof17559)
+> - [GitHub - Gualdimar/GoldSpoof17559: JRPC tool and dashlaunch plugin for spoofing gold on 17559 dash](https://github.com/Gualdimar/GoldSpoof17559),&nbsp;[Internet Archive](https://web.archive.org/web/20250731075702/https://github.com/Gualdimar/GoldSpoof17559)
 
 #### PluginUI
 
@@ -616,7 +620,7 @@ The following conditions must be **true:**
 > - *Supports all* online multiplayer games.
 
 > [!NOTE]
-> - [Release - SNET Now available To Most Stealth Servers | Se7enSins Gaming Community](https://www.se7ensins.com/forums/threads/snet-now-available-to-most-stealth-servers-now-working-for-gta-online-1-27-latest-halo.1885487/), [Internet Archive](https://web.archive.org/web/20250704234149/https://www.se7ensins.com/forums/threads/snet-now-available-to-most-stealth-servers-now-working-for-gta-online-1-27-latest-halo.1885487/)
+> - [Release - SNET Now available To Most Stealth Servers | Se7enSins Gaming Community](https://www.se7ensins.com/forums/threads/snet-now-available-to-most-stealth-servers-now-working-for-gta-online-1-27-latest-halo.1885487/),&nbsp;[Internet Archive](https://web.archive.org/web/20250704234149/https://www.se7ensins.com/forums/threads/snet-now-available-to-most-stealth-servers-now-working-for-gta-online-1-27-latest-halo.1885487/)
 
 #### Stealth Servers
 
@@ -629,8 +633,8 @@ The following conditions must be **true:**
 | Stealth Server | Free/Paid Subscription                            | Requires Internet Connection | Supports Backwards Compatibility | Supports Cheats | Supports Retail Dashboards          | Supports Custom HUD                                                   |
 | -------------- | ------------------------------------------------- | ---------------------------- | -------------------------------- | --------------- | ----------------------------------- | --------------------------------------------------------------------- |
 | [Cipher](#cipher)    | Free with paid periodic or lifetime subscription. | Yes                          | Yes                              | Yes             | Build 9199 and earlier have issues. | Yes, configurable.                                                    |
-| [Proto](#proto)     | Free.                                             | Yes                          | No                               | No              | Yes                                 | Yes, configurable via `proto.ini`.                                    |
-| [XbGuard](#xbguard)   | Free with paid periodic or lifetime subscription. | No                           | No                               | Yes             | Yes                                 | Yes, configurable.                                                    |
+| [Proto](#proto)     | Free.                                             | No                           | No                               | No              | Yes                                 | Yes, configurable via `proto.ini`.                                    |
+| [XbGuard](#xbguard)   | Free with paid periodic or lifetime subscription. | Yes                          | No                               | Yes             | Yes                                 | Yes, configurable.                                                    |
 
 > [!WARNING]
 > DO NOT CHEAT in online multiplayer.
@@ -644,9 +648,9 @@ The following conditions must be **true:**
 > - Load plugins as *modules.*
 
 > [!NOTE]
-> - [Cipher - The Leading Stealth Solution](https://cipher.services/), [Internet Archive](https://web.archive.org/web/20250919130058/https://cipher.services/)
-> - [Features – Cipher](https://cipher.services/en/features), [Internet Archive](https://web.archive.org/web/20250831201037/https://cipher.services/en/features)
-> - [Support – Cipher](https://cipher.services/en/support), [Internet Archive](https://web.archive.org/web/20250825001153/https://cipher.services/en/support)
+> - [Cipher - The Leading Stealth Solution](https://cipher.services/),&nbsp;[Internet Archive](https://web.archive.org/web/20250919130058/https://cipher.services/)
+> - [Features – Cipher](https://cipher.services/en/features),&nbsp;[Internet Archive](https://web.archive.org/web/20250831201037/https://cipher.services/en/features)
+> - [Support – Cipher](https://cipher.services/en/support),&nbsp;[Internet Archive](https://web.archive.org/web/20250825001153/https://cipher.services/en/support)
 > - [Discord](https://cipher.services/en/discord)
 
 ##### Proto
@@ -658,7 +662,7 @@ The following conditions must be **true:**
 > - No Cheats
 
 > [!NOTE]
-> - [Proto Stealth](https://freestealth.com/) , [Internet Archive](https://web.archive.org/web/20250917194014/http://www.freestealth.com/)
+> - [Proto Stealth](https://freestealth.com/) ,&nbsp;[Internet Archive](https://web.archive.org/web/20250917194014/http://www.freestealth.com/)
 
 ##### XbGuard
 
@@ -669,17 +673,17 @@ The following conditions must be **true:**
 > - Load plugins as *modules.*
 
 > [!NOTE]
-> - [xbGuard | The Supreme Stealth Service](https://xbguard.live/) , [Internet Archive](https://web.archive.org/web/20250913174402/https://xbguard.live/)
+> - [xbGuard | The Supreme Stealth Service](https://xbguard.live/) ,&nbsp;[Internet Archive](https://web.archive.org/web/20250913174402/https://xbguard.live/)
 > - [Discord](https://discord.com/invite/YkpmBHK)
 
 ### Xbox Live Access
 
-1. **To enable,** the following conditions must be **true:**
-	1. [Block Xbox Live](#block-xbox-live) must be **unset.**
-	2. [Stealth Servers](#stealth-servers) must be **set.**
-2. **To disable,** the following conditions must be **false:**
-	1. [Block Xbox Live](#block-xbox-live) must be **set.**
-	2. [Stealth Servers](#stealth-servers) <u>may</u> be **unset.**
+1. *To enable,* the following conditions must be *true:*
+	1. [Block Xbox Live](#block-xbox-live) must be *unset.*
+	2. [Stealth Servers](#stealth-servers) must be *set.*
+2. *To disable,* the following conditions must be *false:*
+	1. [Block Xbox Live](#block-xbox-live) must be *set.*
+	2. [Stealth Servers](#stealth-servers) <u>may</u> be *unset.*
 
 ### XLink Kai
 
@@ -689,8 +693,8 @@ The following conditions must be **true:**
 > - Similar to a *Virtual Private Network* (VPN).
 
 > [!NOTE]
-> - [Global Network Gaming - Team XLink](https://www.teamxlink.co.uk/), [Internet Archive](https://web.archive.org/web/20251213125056/https://www.teamxlink.co.uk/)
-> - [Frequently Asked Questions - Team XLink Wiki](https://www.teamxlink.co.uk/wiki/Frequently_Asked_Questions), [Internet Archive](https://web.archive.org/web/20250825101114/https://www.teamxlink.co.uk/wiki/Frequently_Asked_Questions)
+> - [Global Network Gaming - Team XLink](https://www.teamxlink.co.uk/),&nbsp;[Internet Archive](https://web.archive.org/web/20251213125056/https://www.teamxlink.co.uk/)
+> - [Frequently Asked Questions - Team XLink Wiki](https://www.teamxlink.co.uk/wiki/Frequently_Asked_Questions),&nbsp;[Internet Archive](https://web.archive.org/web/20250825101114/https://www.teamxlink.co.uk/wiki/Frequently_Asked_Questions)
 
 ## 5. Backlog
 
