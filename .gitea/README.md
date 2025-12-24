@@ -21,7 +21,7 @@ This is a Lua [utility script](../REFERENCES.md/#aurora-scripts) for the Aurora 
 The `launch.ini` file is used by [DashLaunch](../REFERENCES.md/#dashlaunch) to configure boot options and plugins.
 
 ## [2. Documentation](../LAUNCH-INI-README.md)
-Documentation regarding anything related to the `launch.ini` configuration file, for a modded Xbox 360. Includes [how to information](../LAUNCH-INI-README.md#1-how-to-make-a-launchini), questions, downloads, and more.
+Includes [how to information](../LAUNCH-INI-README.md#1-how-to-make-a-launchini), *questions, downloads,* and *more.*
 
 ## 3. Requirements
 - an Xbox 360 console modified via:
@@ -82,7 +82,5 @@ Open an [issue](https://gitea.com/portellam/Easy-Launch-INI-Switcher/issues) on 
 ## [11. References](../REFERENCES.md)
 
 ## [12. License](../LICENSE)
-
-##
 
 #### Click [here](#easy-launch-ini-switcher) to return to the top of this document.
