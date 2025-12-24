@@ -564,6 +564,7 @@ The following conditions must be *true:*
 
 > [!TIP]
 > [GitHub - InvoxiPlayGames/CoronaKeysFixPlugin](https://github.com/InvoxiPlayGames/CoronaKeysFixPlugin),&nbsp;[Internet Archive](https://web.archive.org/web/20250919020528/https://github.com/InvoxiPlayGames/CoronaKeysFixPlugin)
+>
 > An Xbox 360 DashLaunch plugin to fix the issues in *Rock Band* and *Dance Central* games on Corona motherboards.
 
 > [!NOTE]
@@ -578,7 +579,7 @@ The following conditions must be *true:*
 > 	- *Halo: Reach*
 
 > [!NOTE]
-> - [GitHub - Byrom90/Halo_Sunrise_Plugin_2.0:](https://github.com/Byrom90/Halo_Sunrise_Plugin_2.0),&nbsp;[Internet Archive](https://web.archive.org/web/20250914113624/https://github.com/Byrom90/Halo_Sunrise_Plugin_2.0)
+> - [GitHub - Byrom90/Halo_Sunrise_Plugin_2.0](https://github.com/Byrom90/Halo_Sunrise_Plugin_2.0),&nbsp;[Internet Archive](https://web.archive.org/web/20250914113624/https://github.com/Byrom90/Halo_Sunrise_Plugin_2.0)
 
 ##### UsbdSecPatch
 
@@ -678,12 +679,12 @@ The following conditions must be *true:*
 
 ### Xbox Live Access
 
-1. *To enable,* the following conditions must be *true:*
+1. To enable, the following conditions must be *true:*
 	1. [Block Xbox Live](#block-xbox-live) must be *unset.*
 	2. [Stealth Servers](#stealth-servers) must be *set.*
-2. *To disable,* the following conditions must be *false:*
+2. To disable, the following conditions must be *false:*
 	1. [Block Xbox Live](#block-xbox-live) must be *set.*
-	2. [Stealth Servers](#stealth-servers) <u>may</u> be *unset.*
+	2. [Stealth Servers](#stealth-servers) **may** be *unset.*
 
 ### XLink Kai
 
