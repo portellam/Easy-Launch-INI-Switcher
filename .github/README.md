@@ -11,9 +11,9 @@ An [Aurora Dashboard](../REFERENCES.md/#aurora-dashboard) utility script to togg
 Download [here.](https://github.com/portellam/Easy-Launch-INI-Switcher/releases/latest)
 
 **View on:** &nbsp;
-[<a href="https://github.com/portellam/Easy-Launch-INI-Switcher"><img title="GitHub" align="left" height="40" src="../images/github.com.png"/></a>][3]
-[<a href="https://codeberg.org/portellam/Easy-Launch-INI-Switcher"><img title="Codeberg" align="left" height="40" src="../images/codeberg.org.png"/></a>][1]
-[<a href="https://gitea.com/portellam/Easy-Launch-INI-Switcher"><img title="Gitea" align="left" height="40" src="../images/gitea.com.png"/></a>][2]
+<a href="https://github.com/portellam/Easy-Launch-INI-Switcher"><img title="GitHub" align="left" height="40" src="../images/github.com.png"/></a>
+<a href="https://codeberg.org/portellam/Easy-Launch-INI-Switcher"><img title="Codeberg" align="left" height="40" src="../images/codeberg.org.png"/></a>
+<a href="https://gitea.com/portellam/Easy-Launch-INI-Switcher"><img title="Gitea" align="left" height="40" src="../images/gitea.com.png"/></a>
 </br>
 </br>
 
