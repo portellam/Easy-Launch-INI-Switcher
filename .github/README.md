@@ -60,7 +60,7 @@ Edit the script's configuration section (or related config file if provided) to 
 ; memory unit           Mu:\
 ; USB memory unit       UsbMu:\
 ; big block NAND mu     FlashMu:\
-; internal slim 4G mu	IntMu:\
+; internal slim 4G mu   IntMu:\
 ; internal corona 4g mu MmcMu:\
 ```
 
