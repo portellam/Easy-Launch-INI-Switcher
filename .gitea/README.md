@@ -1,10 +1,20 @@
-<a href="https://gitea.com/portellam/Easy-Launch-INI-Switcher/releases/latest">
+<a href="../../../../releases/latest">
   <img align="left" width="100" height="100" src="../logo.png" alt="Easy Launch INI Switcher"/>
 </a>
 <br>
+v1.0.0
+
+**View on:** &nbsp;
+[<a href="https://github.com/portellam/Easy-Launch-INI-Switcher"><img title="GitHub" align="left" height="40" src="./images/github.com.png"/></a>][3]
+[<a href="https://codeberg.org/portellam/Easy-Launch-INI-Switcher"><img title="Codeberg" align="left" height="40" src="./images/codeberg.org.png"/></a>][1]
+[<a href="https://gitea.com/portellam/Easy-Launch-INI-Switcher"><img title="Gitea" align="left" height="40" src="./images/gitea.com.png"/></a>][2]
+</br>
+</br>
 
 # Easy Launch INI Switcher
 An [Aurora Dashboard](../REFERENCES.md/#aurora-dashboard) utility script to toggle modded [Xbox 360](../REFERENCES.md/#xbox-360) launch configurations.
+
+Download [here.](../../../../releases/latest)
 
 ## 1. How It Works
 This is a Lua [utility script](../REFERENCES.md/#aurora-scripts) for the Aurora dashboard on modded Xbox 360 consoles. It allows easy switching between multiple `launch.ini` files (used by [DashLaunch](../REFERENCES.md/#dashlaunch) to configure boot options and plugins) without user input (via file manager or FTP). The script presents a menu to select and apply a predefined `launch.ini` configuration, copying it to the active `launch.ini` location.
@@ -38,7 +48,7 @@ Documentation regarding anything related to the `launch.ini` configuration file,
 ### 1. Configuration
 Edit the script's configuration section (or related config file if provided) to define `launch.ini` profiles:
 - Specify the path to your alternate `launch.ini` file.
-  - Given an HDD, to support Backwards Compatibility and use an online-only stealth server: `Hdd:\launch.ini.d\launch_ogxbox-compat_online-stealth-server.ini`
+  - Given an HDD, to support Backwards Compatibility and use an [online-only stealth server:](../LAUNCH-INI-README.md/#online-only-stealth-servers) `Hdd:\launch.ini.d\launch_ogxbox-compat_online-stealth-server.ini`
 - Add a display name for the new profile in the menu.
 - Set the target path for the active `launch.ini`, typically the root directory (see [Supported Device Paths](../REFERENCES.md/#2-supported-device-paths)).
 
@@ -49,9 +59,8 @@ Edit the script's configuration section (or related config file if provided) to 
 ; memory unit           Mu:\
 ; USB memory unit       UsbMu:\
 ; big block NAND mu     FlashMu:\
-; internal slim 4G mu	  IntMu:\
+; internal slim 4G mu	IntMu:\
 ; internal corona 4g mu MmcMu:\
-; CD/DVD                Dvd:\
 ```
 
 ## [6. How to Contribute](./CONTRIBUTING.md)
