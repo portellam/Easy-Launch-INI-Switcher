@@ -26,6 +26,11 @@
     - [x] Xbox 360 mods
 
 - [ ] script
+  - [ ] Filters to set what options to use.
+    - [ ] Allow for overrides.
+    - [ ] Returns list of valid choices.
+    - [ ] Conflicts will remove a choice from the list.
+  - [ ] Name, description
   - [ ] Backup existing `launch.ini`.
   - [ ] Determine method of tracking information.
     - [ ] Database of expected paths and executables.
