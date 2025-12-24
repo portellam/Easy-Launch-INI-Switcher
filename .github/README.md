@@ -3,10 +3,12 @@
 </a>
 </br>
 
-# Easy Launch INI Switcher
+<h1>
+Easy Launch INI Switcher
 <a href="https://github.com/portellam/Easy-Launch-INI-Switcher"><img title="GitHub" align="right" height="35" src="../images/github.com.png"/></a>
 <a href="https://codeberg.org/portellam/Easy-Launch-INI-Switcher"><img title="Codeberg" align="right" height="35" src="../images/codeberg.org.png"/></a>
 <a href="https://gitea.com/portellam/Easy-Launch-INI-Switcher"><img title="Gitea" align="right" height="35" src="../images/gitea.com.png"/></a>
+</h1>
 
 An [Aurora Dashboard](../REFERENCES.md/#aurora-dashboard) utility script to toggle modded [Xbox 360](../REFERENCES.md/#xbox-360) launch configurations.
 </br>
