@@ -5,7 +5,17 @@ scriptDescription = "Switch between multiple launch.ini configurations"
 scriptIcon = "icon.png"
 scriptPermissions = {}
 
-local dashboard_paths = {
+local dashboard_dir_paths = [
+  "app",
+  "application",
+  "applications",
+  "dash",
+  "dashboard",
+  "dashboards",
+  "homebrew"
+]
+
+local dashboard_xex_paths = {
   aurora = {
     executable = "Aurora.xex",
     folder_substrings = [ "Aurora" ]
@@ -42,7 +52,95 @@ local dashboard_paths = {
       "microsoft",
       "retail"
     ]
+  }
+}
+
+local plugin_dir_paths = [
+  "app",
+  "application",
+  "applications",
+  "homebrew",
+  "plugin",
+  "plugins"
+]
+
+local plugin_type_paths = {
+  developer_tools = [
+    "dev",
+    "dev-tool",
+    "dev-tools",
+    "developer",
+    "developer-tool",
+    "developer-tools",
+    "tool",
+    "tools"
+  ],
+  lan_servers = [
+    "lan",
+    "local-net",
+    "local-area-network",
+    "lan-server",
+    "lan-servers",
+    "local-server",
+    "local-servers",
+    "local-net-server",
+    "local-net-servers",
+    "local-network-server",
+    "local-network-servers",
+    "local-network-server",
+    "local-network-servers",
+    "server",
+    "servers"
+  ],
+  lan_debug_tools = [
+    "debug",
+    "debugging",
+    "debug-tools",
+    "debugging-tools"
+  ],
+  patches = [
+    "patch",
+    "patches"
+  ],
+  hud = [
+    "hud",
+    "heads-up-display",
+    "guide",
+    "guide-menu",
+    "ui",
+    "user-interface"
+  ],
+  stealth_servers = [
+    "server",
+    "servers",
+    "stealth-server",
+    "stealth-servers"
+  ]
+}
+
+local stealth_server_xex_paths = {
+  cipher = {
+    executable = "cipher.xex",
+    folder_substrings = [
+      "cipher",
+      "cipher-badavatar",
+      "cipher-badupdate",
+      "cipher-hdd",
+      "cipher-usb",
+    ]
   },
+  proto = {
+    executable = "proto.xex",
+    folder_substrings = [ "proto" ]
+  },
+  xbguard = {
+    executable = "xbguard.xex",
+    folder_substrings = [
+      "xbguard",
+      "xbguard/hdd",
+      "xbguard/usb"
+    ]
+  }
 }
 
 local retail_dashboards = {
@@ -58,7 +156,7 @@ local retail_dashboards = {
   },
   kinect = {
     short_name = "Kinect",
-    long_name = short_name,
+    long_name = short_name .. " (NXE v2)",
     minimum_revision = 12611,
   },
   metro = {
@@ -68,56 +166,70 @@ local retail_dashboards = {
   }
 }
 
-local function validate_dashboard_path(dashboard_name, path, revision)
-    local dashboard_info = dashboard_paths[dashboard_name]
-    if not dashboard_info then
-        return false, "Dashboard not found"
-    end
-
-    -- Check the minimum revision for retail dashboards
-    local retail_info = retail_dashboards[dashboard_name]
-    if retail_info then
-        if revision < retail_info.minimum_revision then
-            return false, "Minimum revision not met"
-        end
-    end
-
-    -- Check folder substrings
-    local is_standard_executable = dashboard_info.executable == "dash.xex" or dashboard_info.executable == "default.xex"
-    if is_standard_executable and path:find(dashboard_info.executable) then
-        return true, "Valid path"
-    end
-
-    for _, substring in ipairs(dashboard_info.folder_substrings) do
-        if path:find(substring) then
-            return true, "Valid path"
-        end
-    end
-
-    return false, "Invalid path"
-end
-
--- Example usage
-local is_valid, message = validate_dashboard_path("blades", "/path/to/microsoft/blades/", 1900)
-print(message)  -- Output: Valid path
-
 local stealth_servers = {
-  Cipher = {
+  cipher = {
     backwards_compatible = true,
+    executable = "Cipher.xex",
     internet_required = true,
     legacy_dashboard_compatible = true
   },
-  Proto = {
+  proto = {
     backwards_compatible = false,
+    executable = "Proto.xex",
     internet_required = false,
     legacy_dashboard_compatible = true
   },
-  XbGuard = {
+  xbguard = {
     backwards_compatible = false,
+    executable = "XbGuard.xex",
     internet_required = true,
     legacy_dashboard_compatible = true
   }
 }
+
+local function validate_dashboard_path(
+  dashboard_name,
+  path,
+  revision
+)
+  local dashboard_info = dashboard_xex_paths[dashboard_name]
+  if not dashboard_info then
+    return false, "Dashboard not found"
+  end
+
+  local retail_info = retail_dashboards[dashboard_name]
+  if retail_info then
+    if revision < retail_info.minimum_revision then
+      return false, "Minimum revision not met"
+    end
+  end
+
+  local folder_name = path:match(".*/(.-)/") or path
+  for _, valid_dir in ipairs(dashboard_dir_paths) do
+    if folder_name:find(valid_dir) then
+      break
+    end
+  end
+
+  if dashboard_info.executable == "dash.xex" or dashboard_info.executable == "default.xex" then
+    if not path:find(dashboard_info.executable) and not path:find(folder_name) then
+      return false, "Executable not found in path"
+    end
+  else
+    for _, substring in ipairs(dashboard_info.folder_substrings) do
+      if path:find(substring) then
+      return true, "Valid path"
+      end
+    end
+  end
+
+  return false, "Invalid path"
+end
+
+local is_valid, message = validate_dashboard_path("blades", "/path/to/microsoft/blades/", 1900)
+print(message)
+
+---
 
 local filters = {
   backwards_compatible_preferred = true,
