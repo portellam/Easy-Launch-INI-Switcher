@@ -5,6 +5,29 @@ scriptDescription = "Switch between multiple launch.ini configurations"
 scriptIcon = "icon.png"
 scriptPermissions = {}
 
+local root_dir_paths = [
+  -- Internal storage drive (typically HDD)
+  "Hdd:\",    
+
+  -- Memory Unit (MU)
+  "Mu:\",
+
+  -- Big Block NAND MU
+  "FlashMu:\",  --sneed
+
+  -- Internal Slim 4GB MU
+  "IntMu:\",
+
+  -- Internal Corona Slim 4G MU
+  "MmcMu:\"
+
+  -- USB drive
+  "Usb:\",
+
+  -- USB MU
+  "UsbMu:\",
+]
+
 local dashboard_dir_paths = [
   "app",
   "application",
