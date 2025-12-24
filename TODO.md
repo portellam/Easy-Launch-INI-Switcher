@@ -26,6 +26,14 @@
     - [x] Xbox 360 mods
 
 - [ ] script
+  - [ ] Do one (1) of the following, validate for `.xex` paths:
+    - [ ] Do the heavy lifting; search for common and specific paths.
+    - [ ] Specify in `.ini`; parse config file for exact paths, defined by user.
+    - [ ] Parse for matches, and save paths to `.ini`.
+  - [ ] Only generate a launch.ini for the following:
+    - [ ] dashboards
+    - [ ] stealth servers
+    - [ ] Use master `launch.ini` for other plugins and settings.
   - [ ] Filters to set what options to use.
     - [ ] Allow for overrides.
     - [ ] Returns list of valid choices.
