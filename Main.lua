@@ -1,425 +1,569 @@
 scriptTitle = "Easy Launch.ini Switcher"
 scriptAuthor = "Alex Portell"
-scriptVersion = 1.0
+scriptVersion = 1
 scriptDescription = "Switch between multiple launch.ini configurations"
 scriptIcon = "icon.png"
 scriptPermissions = {}
 
-local root_dir_paths = [
-  -- Internal storage drive (typically HDD)
-  "Hdd:\",    
+local csv = require("csv")
 
-  -- Memory Unit (MU)
-  "Mu:\",
+local CSV_DASHBOARDS      = "csv/dashboards.csv"
+local CSV_DIRECTORY_PATHS = "csv/directory-paths.csv"
+local CSV_MOUNT_PATHS     = "csv/mount-paths.csv"
+local CSV_PERMUTATIONS    = "csv/permutations.csv"
+local CSV_PLUGINS         = "csv/plugins.csv"
+local CSV_PLUGIN_PATHS    = "csv/plugin-paths.csv"
+local CSV_STEALTH_SERVERS = "csv/stealth-servers.csv"
 
-  -- Big Block NAND MU
-  "FlashMu:\",  --sneed
+----------------------------------------------------------------------
+-- generic helpers
+----------------------------------------------------------------------
 
-  -- Internal Slim 4GB MU
-  "IntMu:\",
+local function trim(str)
+   if not str then
+      return ""
+   end
 
-  -- Internal Corona Slim 4G MU
-  "MmcMu:\"
+   return str:match("^%s*(.-)%s*$") or ""
+end
 
-  -- USB drive
-  "Usb:\",
+local function split_line(line, sep)
+   local parts = {}
 
-  -- USB MU
-  "UsbMu:\",
-]
+   if not line or line == "" then
+      return parts
+   end
 
-local dashboard_dir_paths = [
-  "app",
-  "application",
-  "applications",
-  "dash",
-  "dashboard",
-  "dashboards",
-  "homebrew"
-]
+   sep = sep or ","
 
-local dashboard_xex_paths = {
-  aurora = {
-    executable = "Aurora.xex",
-    folder_substrings = [ "Aurora" ]
-  },
-  blades = {
-    executable = "dash.xex",
-    folder_substrings = [
-      "blades",
-      "microsoft",
-      "retail"
-    ]
-  },
-  kinect = {
-    executable = "dash.xex",
-    folder_substrings = [
-      "kinect",
-      "microsoft",
-      "retail"
-    ]
-  },
-  metro = {
-    executable = "dash.xex",
-    folder_substrings = [
-      "metro",
-      "microsoft",
-      "retail"
-    ]
-  },
-  nxe = {
-    executable = "dash.xex",
-    folder_substrings = [
-      "nxe",
-      "new xbox experience",
-      "microsoft",
-      "retail"
-    ]
-  }
-}
+   local pattern = "([^" .. sep .. "]*)(" .. sep .. "?)"
+   local start = 1
 
-local plugin_dir_paths = [
-  "app",
-  "application",
-  "applications",
-  "homebrew",
-  "plugin",
-  "plugins"
-]
+   while true do
+      local field, delimiter, finish = line:match(pattern, start)
 
-local plugin_type_paths = {
-  developer_tools = [
-    "dev",
-    "dev-tool",
-    "dev-tools",
-    "developer",
-    "developer-tool",
-    "developer-tools",
-    "tool",
-    "tools"
-  ],
-  lan_servers = [
-    "lan",
-    "local-net",
-    "local-area-network",
-    "lan-server",
-    "lan-servers",
-    "local-server",
-    "local-servers",
-    "local-net-server",
-    "local-net-servers",
-    "local-network-server",
-    "local-network-servers",
-    "local-network-server",
-    "local-network-servers",
-    "server",
-    "servers"
-  ],
-  lan_debug_tools = [
-    "debug",
-    "debugging",
-    "debug-tools",
-    "debugging-tools"
-  ],
-  patches = [
-    "patch",
-    "patches"
-  ],
-  hud = [
-    "hud",
-    "heads-up-display",
-    "guide",
-    "guide-menu",
-    "ui",
-    "user-interface"
-  ],
-  stealth_servers = [
-    "server",
-    "servers",
-    "stealth-server",
-    "stealth-servers"
-  ]
-}
-
-local stealth_server_xex_paths = {
-  cipher = {
-    executable = "cipher.xex",
-    folder_substrings = [
-      "cipher",
-      "cipher-badavatar",
-      "cipher-badupdate",
-      "cipher-hdd",
-      "cipher-usb",
-    ]
-  },
-  proto = {
-    executable = "proto.xex",
-    folder_substrings = [ "proto" ]
-  },
-  xbguard = {
-    executable = "xbguard.xex",
-    folder_substrings = [
-      "xbguard",
-      "xbguard/hdd",
-      "xbguard/usb"
-    ]
-  }
-}
-
-local retail_dashboards = {
-  blades = {
-    short_name = "Blades",
-    long_name = short_name,
-    minimum_revision = 1888,
-  },
-  nxe = {
-    short_name = "NXE",
-    long_name = "New Xbox Experience (NXE)",
-    minimum_revision = 7357,
-  },
-  kinect = {
-    short_name = "Kinect",
-    long_name = short_name .. " (NXE v2)",
-    minimum_revision = 12611,
-  },
-  metro = {
-    short_name = "Metro",
-    long_name = short_name,
-    minimum_revision = 14699,
-  }
-}
-
-local stealth_servers = {
-  cipher = {
-    backwards_compatible = true,
-    executable = "Cipher.xex",
-    internet_required = true,
-    legacy_dashboard_compatible = true
-  },
-  proto = {
-    backwards_compatible = false,
-    executable = "Proto.xex",
-    internet_required = false,
-    legacy_dashboard_compatible = true
-  },
-  xbguard = {
-    backwards_compatible = false,
-    executable = "XbGuard.xex",
-    internet_required = true,
-    legacy_dashboard_compatible = true
-  }
-}
-
-local function validate_dashboard_path(
-  dashboard_name,
-  path,
-  revision
-)
-  local dashboard_info = dashboard_xex_paths[dashboard_name]
-  if not dashboard_info then
-    return false, "Dashboard not found"
-  end
-
-  local retail_info = retail_dashboards[dashboard_name]
-  if retail_info then
-    if revision < retail_info.minimum_revision then
-      return false, "Minimum revision not met"
-    end
-  end
-
-  local folder_name = path:match(".*/(.-)/") or path
-  for _, valid_dir in ipairs(dashboard_dir_paths) do
-    if folder_name:find(valid_dir) then
-      break
-    end
-  end
-
-  if dashboard_info.executable == "dash.xex" or dashboard_info.executable == "default.xex" then
-    if not path:find(dashboard_info.executable) and not path:find(folder_name) then
-      return false, "Executable not found in path"
-    end
-  else
-    for _, substring in ipairs(dashboard_info.folder_substrings) do
-      if path:find(substring) then
-      return true, "Valid path"
+      if not field then
+         break
       end
-    end
-  end
 
-  return false, "Invalid path"
+      parts[#parts + 1] = trim(field)
+
+      if delimiter == "" then
+         break
+      end
+
+      start = finish + 1
+   end
+
+   return parts
 end
 
-local is_valid, message = validate_dashboard_path("blades", "/path/to/microsoft/blades/", 1900)
-print(message)
+local function read_all_lines(path)
+   local f = io.open(path, "r")
 
----
+   if not f then
+      return {}
+   end
 
-local filters = {
-  backwards_compatible_preferred = true,
-  xbox_live_blocked_preferred = true
-}
+   local lines = {}
+   for line in f:lines() do
+      lines[#lines + 1] = line
+   end
 
-local function generate_permutations()
-  local permutations = {}
-
-  local live_access = not filters.xbox_live_blocked_preferred
-  local block_live = filters.xbox_live_blocked_preferred
-  local backwards_compat = filters.backwards_compatible_preferred
-
-  local possible_stealth = {}
-
-  for name, props in pairs(stealth_servers) do
-    if props.backwards_compatible == backwards_compat then
-      table.insert(possible_stealth, name)
-    end
-  end
-  if backwards_compat and block_live then
-    table.insert(possible_stealth, "NULL")
-  end
-
-  for _, dashboard in ipairs(dashboards) do
-    local config_app = (dashboard == "Aurora") and "Metro" or "*Primary*"
-    local secondary_dashboard = "*Primary*"
-    local is_legacy = (dashboard ~= "Metro" and dashboard ~= "Aurora")
-    local works = is_legacy and "TODO" or "Confirmed true."
-
-    for _, stealth in ipairs(possible_stealth) do
-      if live_access and stealth == "NULL" then goto continue end
-
-      local internet_required = (stealth == "NULL") and false or stealth_servers[stealth].internet_required
-
-      table.insert(permutations, {
-        live_access = live_access,
-        backwards_compat = backwards_compat,
-        primary_dashboard = dashboard,
-        secondary_dashboard = secondary_dashboard,
-        config_app = config_app,
-        stealth_plugin = stealth,
-        block_live = block_live,
-        internet_required = internet_required,
-        works = works
-      })
-      ::continue::
-    end
-  end
-
-  return permutations
+   f:close()
+   return lines
 end
 
-
-
-local function set_profile_name(
-  primary_dashboard_name,
-  secondary_dashboard_name,
-  legacy_dashboard_compatible,
-  original_xbox_compatible,
-  stealth_server_name,
-  online_required,
-  xbox_live_blocked
-)
-  legacy_dashboard_compatible_str="No Old Dash"
-
-  if (legacy_dashboard_compatible)
-    legacy_dashboard_compatible_str="Yes Old Dash"
-
-  online_required_str="Online Optional"
-
-  if (online_required)
-    online_required_str="Online Only"
-
-  original_xbox_compatible_str="No Back Compat"
-
-  if (original_xbox_compatible)
-    original_xbox_compatible_str="Yes Back Compat"
-
-  original_xbox_compatible_str="No Back Compat"
-
-  if (original_xbox_compatible)
-    original_xbox_compatible_str="Yes Back Compat"
-
-  name = primary_dashboard_name .. " + " .. legacy_dashboard_compatible_str ..
-    " + " .. original_xbox_compatible_str .. " + " .. 
-
-
-local profiles = {
-  {
-    stealth_server = "proto"
-    name = "New Xbox Experience (NXE)" + capitalize_string("proto")
-
-  }
-
-   {
-      name = "Aurora (Default)",
-      path = "Hdd:\\launch.ini",
-      description = "Standard Aurora dashboard with default settings"
-   },
-   {
-      name = "NXE (Freestyle)",
-      path = "Hdd:\\launch_nxe.ini",
-      description = "Launch to NXE dashboard"
-   },
-   {
-      name = "Stealth (Proto)",
-      path = "Hdd:\\launch_stealth.ini",
-      description = "Stealth server enabled for online"
-   },
-   {
-      name = "Original Xbox Compat",
-      path = "Hdd:\\launch_compat.ini",
-      description = "Optimized for original Xbox emulation"
+local function read_csv(path)
+   local lines = read_all_lines(path)
+   local result = {
+      header = {},
+      rows = {},
    }
-}
 
-local function capitalize_string(str)
-  str = string.upper(string.sub(str, 1, 1)) .. string.sub(str, 2)
-  return str
+   if #lines == 0 then
+      return result
+   end
+
+   local header = split_line(lines[1])
+   result.header = header
+
+   for i = 2, #lines do
+      local line = lines[i]
+      local cols = split_line(line)
+      local row = {}
+
+      for idx, name in ipairs(header) do
+         row[name] = cols[idx] or ""
+      end
+
+      result.rows[#result.rows + 1] = row
+   end
+
+   return result
+end
+
+local function index_rows(rows, col_name)
+   local index = {}
+
+   for _, row in ipairs(rows) do
+      local key = row[col_name]
+
+      if key and key ~= "" then
+         index[key] = row
+      end
+   end
+
+   return index
+end
+
+local function to_bool(str)
+   if not str then
+      return false
+   end
+
+   local s = str:lower()
+   if s == "true" or s == "yes" or s == "1" then
+      return true
+   end
+
+   return false
+end
+
+----------------------------------------------------------------------
+-- database loaders
+----------------------------------------------------------------------
+
+local function load_dashboards()
+   local csv = read_csv(CSV_DASHBOARDS)
+   local rows = csv.rows
+   local items = {}
+
+   for _, row in ipairs(rows) do
+      local name = row.Name or row.Dashboard or row["Dashboard Name"]
+
+      if name and name ~= "" then
+         items[#items + 1] = {
+            id = name,
+            name = name,
+            official = to_bool(row.Official or row["Is Official"]),
+            legacy = to_bool(row.Legacy or row["Is Legacy"]),
+            original_xbox = to_bool(row["Original Xbox"]),
+         }
+      end
+   end
+
+   return items
+end
+
+local function load_mount_paths()
+   local csv = read_csv(CSV_MOUNT_PATHS)
+   local rows = csv.rows
+   local items = {}
+
+   for _, row in ipairs(rows) do
+      local label = row.Label or row.Name or row.Mount
+
+      if label and label ~= "" then
+         items[#items + 1] = {
+            label = label,
+            path = row.Path or row["Mount Path"] or "",
+         }
+      end
+   end
+
+   return items
+end
+
+local function load_directory_paths()
+   local csv = read_csv(CSV_DIRECTORY_PATHS)
+   local rows = csv.rows
+   local items = {}
+
+   for _, row in ipairs(rows) do
+      items[#items + 1] = row
+   end
+
+   return items
+end
+
+local function load_plugins()
+   local csv = read_csv(CSV_PLUGINS)
+   local rows = csv.rows
+   local items = {}
+
+   for _, row in ipairs(rows) do
+      local name = row.Name or row.Plugin
+
+      if name and name ~= "" then
+         items[#items + 1] = {
+            id = name,
+            name = name,
+            type = row.Type or row.Role or "",
+         }
+      end
+   end
+
+   return items
+end
+
+local function load_plugin_paths()
+   local csv = read_csv(CSV_PLUGIN_PATHS)
+   local rows = csv.rows
+   local items = {}
+
+   for _, row in ipairs(rows) do
+      local plugin = row.Plugin or row.Name
+
+      if plugin and plugin ~= "" then
+         items[#items + 1] = {
+            plugin = plugin,
+            keyword = row.Keyword or row["Directory Keyword"] or "",
+         }
+      end
+   end
+
+   return items
+end
+
+local function load_stealth_servers()
+   local csv = read_csv(CSV_STEALTH_SERVERS)
+   local rows = csv.rows
+   local items = {}
+
+   for _, row in ipairs(rows) do
+      local name = row.Name or row.Server
+
+      if name and name ~= "" then
+         items[#items + 1] = {
+            id = name,
+            name = name,
+            freeware = to_bool(row.Freeware),
+            shareware = to_bool(row.Shareware),
+            paid = to_bool(row.Paid),
+            backcompat = to_bool(row["Back Compat"]),
+            cheats = to_bool(row.Cheats),
+            network = to_bool(row["Stealth Network"]),
+         }
+      end
+   end
+
+   return items
+end
+
+local function load_permutation_matrix()
+   local csv = read_csv(CSV_PERMUTATIONS)
+   local rows = csv.rows
+   local items = {}
+
+   for _, row in ipairs(rows) do
+      local primary = row["Dashboard: Primary"] or row["Primary"]
+      local secondary = row["Dashboard: Secondary"] or row["Secondary"]
+      local config = row["Dashboard: ConfigApp"] or row["ConfigApp"]
+      local use_stealth = row["Plugin: Use Stealth Server"] or row["Use Stealth"]
+      local block_live = row["Xbox Live: Is Blocked"] or row["Block Live"]
+
+      items[#items + 1] = {
+         primary_type = primary or "",
+         secondary_type = secondary or "",
+         config_type = config or "",
+         use_stealth = to_bool(use_stealth),
+         block_live = to_bool(block_live),
+      }
+   end
+
+   return items
+end
+
+----------------------------------------------------------------------
+-- permutation builders
+----------------------------------------------------------------------
+
+local function dashboards_by_flag(dashboards, flag_name, flag_value)
+   local result = {}
+
+   for _, d in ipairs(dashboards) do
+      local value = d[flag_name]
+
+      if value == flag_value then
+         result[#result + 1] = d
+      end
+   end
+
+   return result
+end
+
+local function dashboards_all(dashboards)
+   local result = {}
+
+   for _, d in ipairs(dashboards) do
+      result[#result + 1] = d
+   end
+
+   return result
+end
+
+local function select_dashboards_by_type(dashboards, type_name)
+   if type_name == "" then
+      return dashboards_all(dashboards)
+   end
+
+   if type_name == "Aurora" then
+      return {
+         {
+            id = "Aurora",
+            name = "Aurora",
+            official = false,
+            legacy = false,
+            original_xbox = false,
+         },
+      }
+   end
+
+   if type_name == "Official" then
+      return dashboards_by_flag(dashboards, "official", true)
+   end
+
+   if type_name == "Legacy" then
+      return dashboards_by_flag(dashboards, "legacy", true)
+   end
+
+   if type_name == "Original Xbox" then
+      return dashboards_by_flag(dashboards, "original_xbox", true)
+   end
+
+   return dashboards_all(dashboards)
+end
+
+local function select_stealth_servers(servers, use_stealth)
+   local result = {}
+
+   if not use_stealth then
+      result[#result + 1] = {
+         id = "NULL",
+         name = "No Stealth Server",
+      }
+
+      return result
+   end
+
+   for _, server in ipairs(servers) do
+      result[#result + 1] = server
+   end
+
+   return result
+end
+
+local function resolve_mount_root(mount_paths)
+   for _, m in ipairs(mount_paths) do
+      local path = m.path:lower()
+
+      if path:find("hdd:", 1, true) then
+         return m.path
+      end
+   end
+
+   return "Hdd:\\"
+end
+
+local function build_plugin_lookup(plugin_paths)
+   local map = {}
+
+   for _, p in ipairs(plugin_paths) do
+      if not map[p.plugin] then
+         map[p.plugin] = {}
+      end
+
+      map[p.plugin][#map[p.plugin] + 1] = p.keyword
+   end
+
+   return map
+end
+
+local function format_profile_name(primary, secondary, config, stealth, block_live)
+   local parts = {}
+
+   parts[#parts + 1] = primary.name
+
+   if secondary.id ~= primary.id then
+      parts[#parts + 1] = "Sec:" .. secondary.name
+   end
+
+   if config.id ~= primary.id then
+      parts[#parts + 1] = "Cfg:" .. config.name
+   end
+
+   if stealth.id ~= "NULL" then
+      parts[#parts + 1] = "St:" .. stealth.name
+   else
+      parts[#parts + 1] = "No Stealth"
+   end
+
+   if block_live then
+      parts[#parts + 1] = "Live Block"
+   else
+      parts[#parts + 1] = "Live OK"
+   end
+
+   return table.concat(parts, " | ")
+end
+
+local function build_profile_id(index)
+   return "P" .. tostring(index)
+end
+
+local function build_launch_ini_path(root, id)
+   return root .. "launch_" .. id .. ".ini"
+end
+
+local function build_permutations(db)
+   local dashboards = db.dashboards
+   local stealth_servers = db.stealth_servers
+   local matrix = db.permutation_matrix
+   local mount_paths = db.mount_paths
+
+   local root = resolve_mount_root(mount_paths)
+   local permutations = {}
+   local idx = 0
+
+   for _, rule in ipairs(matrix) do
+      local primaries = select_dashboards_by_type(dashboards, rule.primary_type)
+      local secondaries = select_dashboards_by_type(dashboards, rule.secondary_type)
+      local configs = select_dashboards_by_type(dashboards, rule.config_type)
+      local stealths = select_stealth_servers(stealth_servers, rule.use_stealth)
+
+      for _, primary in ipairs(primaries) do
+         for _, secondary in ipairs(secondaries) do
+            for _, config in ipairs(configs) do
+               for _, stealth in ipairs(stealths) do
+                  idx = idx + 1
+                  local id = build_profile_id(idx)
+                  local name = format_profile_name(primary, secondary, config, stealth, rule.block_live)
+                  local path = build_launch_ini_path(root, id)
+
+                  permutations[#permutations + 1] = {
+                     id = id,
+                     primary = primary,
+                     secondary = secondary,
+                     config = config,
+                     stealth = stealth,
+                     block_live = rule.block_live,
+                     path = path,
+                     name = name,
+                  }
+               end
+            end
+         end
+      end
+   end
+
+   return permutations
+end
+
+----------------------------------------------------------------------
+-- aurora helpers
+----------------------------------------------------------------------
+
+local function permutations_to_list(permutations)
+   local list = {}
+
+   for i, p in ipairs(permutations) do
+      list[i] = p.name
+   end
+
+   return list
+end
 
 local function copy_file(src, dest)
    local in_file = io.open(src, "rb")
+
    if not in_file then
-      return false, "Source file not found"
+      return false, "Source not found: " .. src
    end
 
-   local content = in_file:read("*a")
+   local data = in_file:read("*a")
    in_file:close()
 
    local out_file = io.open(dest, "wb")
    if not out_file then
-      return false, "Cannot write destination"
+      return false, "Cannot write: " .. dest
    end
 
-   out_file:write(content)
+   out_file:write(data)
    out_file:close()
+
    return true
 end
 
-local function get_profile_names()
-   local names = {}
-   for i, profile in ipairs(profiles) do
-      names[i] = profile.name
-   end
-   return names
-end
-
-local function switch_to_profile(index)
-   if index < 1 or index > #profiles then
-      return false
-   end
-
-   local profile = profiles[index]
+local function switch_launch_profile(profile)
    local ok, err = copy_file(profile.path, "Hdd:\\launch.ini")
-   if ok then
-      Script.ShowMessageBox("Success", "Switched to " .. profile.name .. "\nReboot to apply.", "OK")
-   else
-      Script.ShowMessageBox("Error", "Failed: " .. err, "OK")
+
+   if not Script or not Script.ShowMessageBox then
+      return
    end
+
+   if ok then
+      Script.ShowMessageBox(
+         "Profile Switched",
+         "Now using:\n" .. profile.name .. "\nReboot to apply.",
+         "OK"
+      )
+
+      return
+   end
+
+   Script.ShowMessageBox(
+      "Error",
+      "Failed to switch profile:\n" .. err,
+      "OK"
+   )
 end
+
+----------------------------------------------------------------------
+-- main
+----------------------------------------------------------------------
 
 function main()
-   local names = get_profile_names()
-   local dialog = Script.ShowPopupList(scriptTitle, "Select profile", names)
+   local dashboards = load_dashboards()
+   local directory_paths = load_directory_paths()
+   local mount_paths = load_mount_paths()
+   local plugins = load_plugins()
+   local plugin_paths = load_plugin_paths()
+   local stealth_servers = load_stealth_servers()
+   local permutation_matrix = load_permutation_matrix()
 
-   if not dialog.Canceled then
-      switch_to_profile(dialog.Selected.Key)
+   local plugin_lookup = build_plugin_lookup(plugin_paths)
+
+   local db = {
+      dashboards = dashboards,
+      directory_paths = directory_paths,
+      mount_paths = mount_paths,
+      plugins = plugins,
+      plugin_paths = plugin_paths,
+      plugin_lookup = plugin_lookup,
+      stealth_servers = stealth_servers,
+      permutation_matrix = permutation_matrix,
+   }
+
+   local permutations = build_permutations(db)
+
+   if not Script or not Script.ShowPopupList then
+      return
    end
+
+   local names = permutations_to_list(permutations)
+   local dialog = Script.ShowPopupList(scriptTitle, "Select launch.ini profile", names)
+
+   if dialog.Canceled then
+      return
+   end
+
+   local index = dialog.Selected.Key
+   local profile = permutations[index]
+
+   if not profile then
+      return
+   end
+
+   switch_launch_profile(profile)
 end
