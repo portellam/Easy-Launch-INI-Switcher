@@ -27,11 +27,7 @@ This software is provided WITHOUT WARRANTY. Any damages caused to your console, 
 
 This software is FREE. If you paid for it, demand a refund.
 
-The defined `launch.ini` config permutations (database files) have NOT been peer reviewed. However, the default permutations should work as intended.
-
-This software expects dependencies to exist and be found in expected directories. If a dependency cannot be found (does not exist, is in an invalid path, or is mismatched), this may lead to FAILURE or UNEXPECTED BEHAVIOR of the software. 
-
-Unauthorized modifications to configuration files may lead to UNEXPECTED BEHAVIOR. Please use caution when making changes.
+This software expects dependencies to exist and be found in expected directories. If a dependency cannot be found (does not exist, is in an invalid path, or is mismatched), this may lead to FAILURE or UNEXPECTED BEHAVIOR of the software.
 
 ## [3. Documentation](../LAUNCH-INI-README.md)
 Includes [how to information](../LAUNCH-INI-README.md#1-how-to-make-a-launchini), *questions, downloads,* and *more.*
@@ -55,19 +51,12 @@ Includes [how to information](../LAUNCH-INI-README.md#1-how-to-make-a-launchini)
 4. Restart Aurora.
 
 ## 6. Usage
+### 1. Select a Configuration
 1. Launch the script from Aurora's Utility Scripts menu: press "Back button" > select *Scripts* > *Utility Scripts.*
 2. Apply a configuration: select one (1) configuration from the list.
 3. Reboot the console; some changes will require a reboot to take effect (for example: different plugins or boot paths).
 
-### 1. Configuration
-Edit the script's configuration section (or related config file if provided) to define `launch.ini` profiles:
-- Specify the path to your alternate `launch.ini` file.
-  - Given an HDD, to support Backwards Compatibility and use an [online-only stealth server:](../LAUNCH-INI-README.md/#online-only-stealth-servers) `Hdd:\launch.ini.d\launch_ogxbox-compat_online-stealth-server.ini`
-- Add a display name for the new profile in the menu.
-- Set the target path for the active `launch.ini`, typically the root directory (see [Supported Device Paths](../LAUNCH-INI-README.md/#2-supported-device-paths)).
-
-### 2. Permutations
-To review all valid, possible permutations, review the [CSV Databases](../csv/README.md).
+### [2. Define a Configuration](../csv/README.md)
 
 ## [7. How to Contribute](./CONTRIBUTING.md)
 

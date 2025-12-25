@@ -1,5 +1,15 @@
 # Databases
-Comma separated values or `.csv`, are database files.
+The purposes of the database files:
+- to be parseable by the software.
+- flexibility: to define reproduceable `launch.ini` permutations, regardless of homebrew paths.
+- to allow contributor(s) to audit, append to, or subtract as need (homebrew conflicts, new releases).
+
+## Disclaimer
+The database files have NOT been peer reviewed. However, the permutations should work as intended.
+
+Unauthorized modifications to database files may lead to UNEXPECTED BEHAVIOR. Please use caution when making changes.
+
+## Files
 
 | Database                       | Usage                                                             |
 | ------------------------------ | ----------------------------------------------------------------- |
