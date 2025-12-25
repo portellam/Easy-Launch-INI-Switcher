@@ -1,5 +1,5 @@
 <a href="../../../../releases/latest">
-  <img align="left" width="100" height="100" src="../logo.png" alt="Easy Launch INI Switcher"/>
+  <img align="left" width="100" height="100" src="../images/logo.png" alt="Easy Launch INI Switcher"/>
 </a>
 </br>
 
@@ -77,7 +77,7 @@ Inspired by community discussions on [r/360hacks](../REFERENCES.md/#r360hacks).
 Open an [issue](https://gitea.com/portellam/Easy-Launch-INI-Switcher/issues) on the repository.
 
 ## 10. Support
-[![ko-fi](../support_ko-fi.svg)](https://ko-fi.com/portellam)
+[![ko-fi](../images/support_ko-fi.svg)](https://ko-fi.com/portellam)
 
 ## [11. References](../REFERENCES.md)
 
