@@ -25,6 +25,8 @@
     - [x] stealth servers
     - [x] Xbox 360 mods
 
+- [ ] update docs, given new databases.
+
 - [ ] script
   - [ ] Do one (1) of the following, validate for `.xex` paths:
     - [ ] Do the heavy lifting; search for common and specific paths.
