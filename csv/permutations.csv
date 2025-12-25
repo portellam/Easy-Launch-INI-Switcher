@@ -3,3 +3,5 @@ Aurora,Dashboard: Primary,Official,TRUE,FALSE
 Aurora,Dashboard: Primary,Official,FALSE,TRUE
 Legacy,Dashboard: Primary,Dashboard: Primary,TRUE,FALSE
 Legacy,Dashboard: Primary,Dashboard: Primary,FALSE,TRUE
+Official,Dashboard: Primary,Dashboard: Primary,TRUE,FALSE
+Official,Dashboard: Primary,Dashboard: Primary,FALSE,TRUE
