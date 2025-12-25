@@ -1,8 +1,8 @@
-Name,Root Path
-Internal drive,Hdd
-Memory Unit,Mu
-Big Block NAND MU,FlashMu
-Internal Slim 4GB MU,IntMu
-Internal Corona Slim 4G MU,MmcMu
-USB drive,Usb
-USB MU,UsbMu
+Name,Mount
+Internal drive,Hdd:\
+Memory Unit,Mu:\
+Big Block NAND MU,FlashMu:\
+Internal Slim 4GB MU,IntMu:\
+Internal Corona Slim 4G MU,MmcMu:\
+USB drive,Usb:\
+USB MU,UsbMu:\
