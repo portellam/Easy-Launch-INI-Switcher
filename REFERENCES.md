@@ -62,6 +62,32 @@
 <sup>&nbsp;&nbsp;&nbsp;&nbsp;Archive:&nbsp;</sup>
 <sup>https://web.archive.org/web/20251125161256/https://consolemods.org/wiki/Xbox_360:JTAG</sup>
 
+### Logo
+&nbsp;&nbsp;**Download Floppy Disk, Disc, Data. Royalty-Free Vector Graphic - Pixabay**. Pixabay. Accessed 2025-12-23.
+
+<sup>&nbsp;&nbsp;&nbsp;&nbsp;Original:&nbsp;</sup>
+<sup>https://pixabay.com/vectors/floppy-disk-disc-data-pc-1292821/</sup>
+
+<sup>&nbsp;&nbsp;&nbsp;&nbsp;Archive:&nbsp;</sup>
+<sup>Unavailable.</sup>
+
+&nbsp;&nbsp;**OpenClipart-Vectors - Pixabay**. Pixabay. Accessed 2025-12-23.
+
+<sup>&nbsp;&nbsp;&nbsp;&nbsp;Original:&nbsp;</sup>
+<sup>https://pixabay.com/users/openclipart-vectors-30363/</sup>
+
+<sup>&nbsp;&nbsp;&nbsp;&nbsp;Archive:&nbsp;</sup>
+<sup>https://web.archive.org/web/20251217111625/https://pixabay.com/users/openclipart-vectors-30363/</sup>
+
+### Pheonix Team
+&nbsp;&nbsp;**Pheonix**. XboxUnity. Accessed 2025-12-23.
+
+<sup>&nbsp;&nbsp;&nbsp;&nbsp;Original:&nbsp;</sup>
+<sup>https://phoenix.xboxunity.net/#/news</sup>
+
+<sup>&nbsp;&nbsp;&nbsp;&nbsp;Archive:&nbsp;</sup>
+<sup>https://web.archive.org/web/20251218091756/https://phoenix.xboxunity.net/#/news</sup>
+
 ### RGH
 &nbsp;&nbsp;**RGH | ConsoleMods Wiki**. ConsoleMods. Accessed 2025-12-23.
 

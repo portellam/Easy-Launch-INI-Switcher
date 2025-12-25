@@ -66,9 +66,11 @@ Includes [how to information](../LAUNCH-INI-README.md#1-how-to-make-a-launchini)
 ## [8. Contributors](./CONTRIBUTORS.md)
 
 ## 9. Credits
-Thanks to the Phoenix team for Aurora and its Lua scripting support.
+Thanks to the [Pheonix Team](../REFERENCES.md#pheonix-team) for Aurora and its Lua scripting support.
 
 Inspired by community discussions on [r/360hacks](../REFERENCES.md/#r360hacks).
+
+## [Logo](../REFERENCES.md#logo)
 
 ## 10. Contact
 Open an [issue](https://github.com/portellam/Easy-Launch-INI-Switcher/issues) on the repository.
