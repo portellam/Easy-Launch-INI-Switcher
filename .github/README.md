@@ -16,14 +16,27 @@ An [Aurora Dashboard](../REFERENCES.md/#aurora-dashboard) utility script to togg
 Download [here.](https://github.com/portellam/Easy-Launch-INI-Switcher/releases/latest)
 
 ## 1. How It Works
-This is a Lua [utility script](../REFERENCES.md/#aurora-scripts) for the Aurora dashboard on modded Xbox 360 consoles. It allows easy switching between multiple `launch.ini` files without user input (via file manager or FTP). The script presents a menu to select and apply a predefined `launch.ini` configuration, copying it to the active `launch.ini` location.
+This is a Lua [utility script](../REFERENCES.md/#aurora-scripts) for the Aurora dashboard on modded Xbox 360 consoles. It allows easy switching between multiple `launch.ini` files without user input (via file manager or FTP). The script presents a menu to select and apply a predefined configuration.
+
+The [database files](../csv/README.md) define all possible config permutations.
 
 The `launch.ini` file is used by [DashLaunch](../REFERENCES.md/#dashlaunch) to configure boot options and plugins.
 
-## [2. Documentation](../LAUNCH-INI-README.md)
+## 2. Disclaimer
+This software is provided WITHOUT WARRANTY. Any damages caused to your console, personal computer, personal device, or person is YOUR RESPONSIBILITY.
+
+This software is FREE. If you paid for it, demand a refund.
+
+The defined `launch.ini` config permutations (database files) have NOT been peer reviewed. However, the default permutations should work as intended.
+
+This software expects dependencies to exist and be found in expected directories. If a dependency cannot be found (does not exist, is in an invalid path, or is mismatched), this may lead to FAILURE or UNEXPECTED BEHAVIOR of the software. 
+
+Unauthorized modifications to configuration files may lead to UNEXPECTED BEHAVIOR. Please use caution when making changes.
+
+## [3. Documentation](../LAUNCH-INI-README.md)
 Includes [how to information](../LAUNCH-INI-README.md#1-how-to-make-a-launchini), *questions, downloads,* and *more.*
 
-## 3. Requirements
+## 4. Requirements
 - an Xbox 360 console modified via:
   - [BadUpdate](../REFERENCES.md/#badupdate)
   - [JTAG](../REFERENCES.md/#jtag)
@@ -35,13 +48,13 @@ Includes [how to information](../LAUNCH-INI-README.md#1-how-to-make-a-launchini)
 - Aurora Dashboard installed.
 - DashLaunch installed.
 
-## 4. Installation
+## 5. Installation
 1. Download the [latest release.](https://github.com/portellam/Easy-Launch-INI-Switcher/releases/latest)
 2. Extract the script file (typically a `.lua` file) and any supporting files.
 3. Copy the script to the Aurora scripts directory: typically `Hdd:\Aurora\User\Scripts\Utility\`.
 4. Restart Aurora.
 
-## 5. Usage
+## 6. Usage
 1. Launch the script from Aurora's Utility Scripts menu: press "Back button" > select *Scripts* > *Utility Scripts.*
 2. Apply a configuration: select one (1) configuration from the list.
 3. Reboot the console; some changes will require a reboot to take effect (for example: different plugins or boot paths).
@@ -56,23 +69,23 @@ Edit the script's configuration section (or related config file if provided) to 
 ### 2. Permutations
 To review all valid, possible permutations, review the [CSV Databases](../csv/README.md).
 
-## [6. How to Contribute](./CONTRIBUTING.md)
+## [7. How to Contribute](./CONTRIBUTING.md)
 
-## [7. Contributors](./CONTRIBUTORS.md)
+## [8. Contributors](./CONTRIBUTORS.md)
 
-## 8. Credits
+## 9. Credits
 Thanks to the Phoenix team for Aurora and its Lua scripting support.
 
 Inspired by community discussions on [r/360hacks](../REFERENCES.md/#r360hacks).
 
-## 9. Contact
+## 10. Contact
 Open an [issue](https://github.com/portellam/Easy-Launch-INI-Switcher/issues) on the repository.
 
-## 10. Support
+## 11. Support
 [![ko-fi](../images/support_ko-fi.svg)](https://ko-fi.com/portellam)
 
-## [11. References](../REFERENCES.md)
+## [12. References](../REFERENCES.md)
 
-## [12. License](../LICENSE)
+## [13. License](../LICENSE)
 
 #### Click [here](#easy-launch-ini-switcher) to return to the top of this document.
