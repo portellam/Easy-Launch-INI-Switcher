@@ -1,12 +1,3 @@
-/*
-Filename:       MenuSystem.lua
-Author(s):      Swizzy <github.com/Swizzy>
-Maintainer(s):  Swizzy <github.com/Swizzy>
-Source:         https://raw.githubusercontent.com/XboxUnity/AuroraScripts/refs/heads/master/AuroraRepo/MenuSystem.lua
-License:        Unknown
-Version:        Unknown
-*/
-
 local TopLevelMenu = {}
 TopLevelMenu.SubMenu = {}
 local TitleText = "Menu";
