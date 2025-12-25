@@ -23,11 +23,14 @@ The [database files](../csv/README.md) define all possible config permutations.
 The `launch.ini` file is used by [DashLaunch](../REFERENCES.md/#dashlaunch) to configure boot options and plugins.
 
 ## 2. Disclaimer
-This software is provided WITHOUT WARRANTY. Any damages caused to your console, personal computer, personal device, or person is YOUR RESPONSIBILITY.
-
-This software is FREE. If you paid for it, demand a refund.
-
-This software expects dependencies to exist and be found in expected directories. If a dependency cannot be found (does not exist, is in an invalid path, or is mismatched), this may lead to FAILURE or UNEXPECTED BEHAVIOR of the software. 
+> [!WARNING]
+> - Do not go online WITHOUT A STEALTH SERVER. Without a stealth server, the risk of a console and/or account ban IS CERTAIN. With a stealth server, the risk of either ban is low, but NOT ZERO.
+> 
+> - This software is provided WITHOUT WARRANTY. Any damages caused to your console, personal computer, personal device, or person is YOUR RESPONSIBILITY.
+> 
+> - This software is FREE. If you paid for it, demand a refund.
+> 
+> - This software expects dependencies to exist and be found in expected directories. If a dependency cannot be found (does not exist, is in an invalid path, or is mismatched), this may lead to FAILURE or UNEXPECTED BEHAVIOR of the software. 
 
 ## [3. Documentation](../LAUNCH-INI-README.md)
 Includes [how to information](../LAUNCH-INI-README.md#1-how-to-make-a-launchini), *questions, downloads,* and *more.*

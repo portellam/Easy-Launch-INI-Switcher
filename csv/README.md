@@ -4,13 +4,15 @@ The purposes of the database files:
 - flexibility: to define reproduceable `launch.ini` permutations, regardless of homebrew paths.
 - to allow contributor(s) to audit, append to, or subtract as need (homebrew conflicts, new releases).
 
-## Disclaimer
-The database files have NOT been peer reviewed. However, the permutations should work as intended.
+## 1. Disclaimer
+> [!WARNING]
+> - Do not go online WITHOUT A STEALTH SERVER. Without a stealth server, the risk of a console and/or account ban IS CERTAIN. With a stealth server, the risk of either ban is low, but NOT ZERO.
+>
+> - The database files have NOT been peer reviewed. However, the permutations should work as intended.
+>
+> - Unauthorized modifications to database files may lead to UNEXPECTED BEHAVIOR. Please use caution when making changes.
 
-Unauthorized modifications to database files may lead to UNEXPECTED BEHAVIOR. Please use caution when making changes.
-
-## Files
-
+## 2. Files
 | Database                       | Usage                                                             |
 | ------------------------------ | ----------------------------------------------------------------- |
 | [dashboard-paths.csv][01]      | Dashboard directories and `.xex` files.                           |
