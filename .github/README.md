@@ -70,7 +70,7 @@ Thanks to the [Pheonix Team](../REFERENCES.md#pheonix-team) for Aurora and its L
 
 Inspired by community discussions on [r/360hacks](../REFERENCES.md/#r360hacks).
 
-## [Logo](../REFERENCES.md#logo)
+###### [Logo](../REFERENCES.md#logo)
 
 ## 10. Contact
 Open an [issue](https://github.com/portellam/Easy-Launch-INI-Switcher/issues) on the repository.
