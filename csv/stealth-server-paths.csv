@@ -1,0 +1,6 @@
+Name,Keyword,Executable
+Cipher,Cipher,Cipher.xex
+Proto,proto,Proto.xex
+XbGuard,xbGuard,xbGuard.xex
+XbGuard,xbGuard\HDD,xbGuard.xex
+XbGuard,xbGuard\USB,xbGuard.xex
