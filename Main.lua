@@ -26,10 +26,13 @@ scriptAuthor = "Alex Portell"
 scriptVersion = 1
 scriptDescription = "Switch between multiple launch.ini configurations, as defined by .csv databases. github.com/portellam"
 scriptIcon = "../images/icon.png"
+
 scriptPermissions = {
   "filesystem",
   "menusystem"
 }
+
+local MenuSystem = require("MenuSystem")
 
 local CSV = {
   dashboards       = "csv/dashboards.csv",
@@ -126,8 +129,7 @@ local function load_dashboard_paths()
 end
 
 local function load_directory_paths()
-  local csv = read_csv(CSV.directory_paths)
-  return csv.rows
+  return read_csv(CSV.directory_paths).rows
 end
 
 local function load_mount_paths()
@@ -143,10 +145,7 @@ local function load_plugins()
   local csv = read_csv(CSV.plugins)
   local out = {}
   for _, r in ipairs(csv.rows) do
-    out[#out + 1] = {
-      id = r.Name,
-      role = r.Role,
-    }
+    out[#out + 1] = { id = r.Name, role = r.Role }
   end
   return out
 end
@@ -183,9 +182,8 @@ local function load_stealth_paths()
   return out
 end
 
-local function load_permutation_rules()
-  local csv = read_csv(CSV.permutations)
-  return csv.rows
+local function load_rules()
+  return read_csv(CSV.permutations).rows
 end
 
 ----------------------------------------------------------------------
@@ -195,13 +193,13 @@ end
 local function filter_dashboards(dashboards, type_name)
   if type_name == "" then return dashboards end
 
-  local out = {}
-
   if type_name == "Aurora" then
-    out[1] = { id = "Aurora", official = false, legacy = false, backcompat = false }
-    return out
+    return {
+      { id = "Aurora", official = false, legacy = false, backcompat = false }
+    }
   end
 
+  local out = {}
   for _, d in ipairs(dashboards) do
     if type_name == "Official" and d.official then
       out[#out + 1] = d
@@ -278,14 +276,8 @@ local function build_permutations(db)
 end
 
 ----------------------------------------------------------------------
--- Aurora UI
+-- MenuSystem integration
 ----------------------------------------------------------------------
-
-local function list_names(perms)
-  local t = {}
-  for i, p in ipairs(perms) do t[i] = p.name end
-  return t
-end
 
 local function copy_file(src, dest)
   local f = io.open(src, "rb")
@@ -302,12 +294,22 @@ end
 
 local function switch_profile(p)
   local ok = copy_file(p.path, "Hdd:\\launch.ini")
-  if not Script or not Script.ShowMessageBox then return end
   if ok then
-    Script.ShowMessageBox("OK", "Switched:\n" .. p.name, "OK")
+    MenuSystem:MessageBox("Switched", p.name)
   else
-    Script.ShowMessageBox("Error", "Failed to switch", "OK")
+    MenuSystem:MessageBox("Error", "Failed to switch profile")
   end
+end
+
+local function menu_list(perms)
+  local items = {}
+  for i, p in ipairs(perms) do
+    items[#items + 1] = {
+      label = p.name,
+      action = function() switch_profile(p) end
+    }
+  end
+  return items
 end
 
 ----------------------------------------------------------------------
@@ -324,16 +326,11 @@ function main()
     plugin_paths = load_plugin_paths(),
     stealth_servers = load_stealth_servers(),
     stealth_paths = load_stealth_paths(),
-    rules = load_permutation_rules(),
+    rules = load_rules(),
   }
 
   local perms = build_permutations(db)
-  if not Script or not Script.ShowPopupList then return end
+  local items = menu_list(perms)
 
-  local names = list_names(perms)
-  local dlg = Script.ShowPopupList(scriptTitle, "Select Profile", names)
-  if dlg.Canceled then return end
-
-  local p = perms[dlg.Selected.Key]
-  if p then switch_profile(p) end
+  MenuSystem:OpenMenu("Launch.ini Profiles", items)
 end
