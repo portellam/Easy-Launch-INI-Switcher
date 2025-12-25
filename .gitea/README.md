@@ -51,18 +51,10 @@ Edit the script's configuration section (or related config file if provided) to 
 - Specify the path to your alternate `launch.ini` file.
   - Given an HDD, to support Backwards Compatibility and use an [online-only stealth server:](../LAUNCH-INI-README.md/#online-only-stealth-servers) `Hdd:\launch.ini.d\launch_ogxbox-compat_online-stealth-server.ini`
 - Add a display name for the new profile in the menu.
-- Set the target path for the active `launch.ini`, typically the root directory (see [Supported Device Paths](../REFERENCES.md/#2-supported-device-paths)).
+- Set the target path for the active `launch.ini`, typically the root directory (see [Supported Device Paths](../LAUNCH-INI-README.md/#2-supported-device-paths)).
 
-### 2. Supported Device Paths
-```
-; internal hard disk    Hdd:\
-; usb memory stick      Usb:\
-; memory unit           Mu:\
-; USB memory unit       UsbMu:\
-; big block NAND mu     FlashMu:\
-; internal slim 4G mu   IntMu:\
-; internal corona 4g mu MmcMu:\
-```
+### 2. Permutations
+To review all valid, possible permutations, review the [CSV Databases](../csv/README.md).
 
 ## [6. How to Contribute](./CONTRIBUTING.md)
 
