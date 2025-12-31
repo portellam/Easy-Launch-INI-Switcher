@@ -48,6 +48,7 @@ Version:        1.0
     executables       = "csv/executables.csv",
   }
 
+  local launch_ini_name = "launch.ini"
   local launch_ini_path = nil
   local launch_ini_backup_path = nil
 
@@ -129,9 +130,9 @@ Version:        1.0
 
     -- Priority search - these are most common locations
     for _, mount in ipairs(known_mounts) do
-      local candidate = mount .. "launch.ini"
+      local candidate = mount .. launch_ini_name
       if FileSystem.FileExists(candidate) then
-        local backup_path = mount .. "launch.ini.old"
+        local backup_path = mount .. launch_ini_name .. ".old"
         return candidate, backup_path
       end
     end
@@ -145,9 +146,9 @@ Version:        1.0
         if mount:sub(-1) ~= "\\" then
           mount = mount .. "\\"
         end
-        local candidate = mount .. "launch.ini"
+        local candidate = mount .. launch_ini_name
         if FileSystem.FileExists(candidate) then
-          local backup_path = mount .. "launch.ini.old"
+          local backup_path = mount .. launch_ini_name .. ".old"
           return candidate, backup_path
         end
       end
@@ -488,10 +489,10 @@ Version:        1.0
     local ok = write_file(launch_ini_path, ini)
 
     if ok then
-      Script.ShowMessageBox("Success", "launch.ini updated to: " .. p.name .. "\n\nReboot required for changes to take effect.", "OK")
+      Script.ShowMessageBox("Success", "\"" .. launch_ini_name .. "\" updated to: " .. p.name .. "\n\nReboot required for changes to take effect.", "OK")
       Script.ShowNotification("launch.ini updated to " .. p.name)
     else
-      Script.ShowMessageBox("Error", "Failed to write launch.ini at:\n" .. launch_ini_path, "OK")
+      Script.ShowMessageBox("Error", "Failed to write \"" .. launch_ini_name .. "\" at:\n" .. launch_ini_path, "OK")
     end
   end
 
@@ -528,27 +529,76 @@ Version:        1.0
     return true
   end
 
+  function call_function(func_name, msg, failed_msg)
+    if not msg or not func_name then
+      Script.ShowMessageBox("DEBUG", debug.traceback(), "OK")
+      return false
+    end
+
+    Script.SetStatus(msg)
+    local ret = funcs[func_name]()
+
+    if not ret then
+      Script.ShowMessageBox("ERROR", failed_msg, "OK")
+      return nil
+    end
+
+    return ret
+  end
+
   function init()
     set_progress_increment(10)
 
-    Script.ShowMessageBox("Alert", "Detecting launch.ini location...", "OK")
+    Script.SetStatus("Detecting \"" .. launch_ini_name .. "\"...")
     launch_ini_path, launch_ini_backup_path = detect_launch_ini_location()
 
-    Script.ShowMessageBox("Test", "Direct check: Exists? " .. tostring(FileSystem.FileExists("Hdd:\\launch.ini")) .. "\nDetected path: " .. (launch_ini_path or "nil"), "OK")
+    Script.SetStatus("Detected path: " .. (launch_ini_path or "nil"))
 
     if not launch_ini_path then
-      Script.ShowMessageBox("ERROR", "launch.ini not found on any mounted drive.\n\nPlace a valid launch.ini on a drive and retry.", "OK")
+      Script.ShowMessageBox("ERROR", "\"" .. launch_ini_name .. "\" not found on the root directory of any mounted drive.", "OK")
       return false
     end
+
     increment_progress()
 
-    Script.ShowMessageBox("Alert", "Backing up launch.ini...", "OK")
-    if not backup_launch_ini() then return false end
+    local msg = "Backing up \"" .. launch_ini_name .. "\""
+    Script.SetStatus(msg .. "...")
+
+    if not backup_launch_ini() then
+      local ret = Script.ShowMessageBox("ERROR", msg .. " failed.\nContinue?", "No", "Yes");
+
+      if ret.Canceled or ret.Button ~= 2 then
+        return false;
+      end
+
+      increment_progress()
+    end
+
+    msg = "Parsing known directories..."
+    directory_paths = call_function(load_directory_paths, msg, msg .. " failed")
     increment_progress()
 
-    Script.ShowMessageBox("Alert", "Parsing directories & mounts...", "OK")
-    db.directory_paths = load_directory_paths()
+    msg = "Parsing mount paths"
+    Script.SetStatus(msg .. "...")
     db.mount_paths = load_mount_paths()
+
+    if not db.mount_paths then
+      Script.ShowMessageBox("ERROR", msg .. " failed.", "OK")
+      return false
+    end
+
+    increment_progress()
+
+    msg = "Parsing `.csv"
+    Script.SetStatus(msg .. "...")
+    db.dashboards = load_dashboards()
+    db.dashboard_paths = load_dashboard_paths()
+
+    if not db.dashboards then
+      Script.ShowMessageBox("ERROR", msg .. " failed. ", "OK")
+      return false
+    end
+
     increment_progress()
 
     Script.ShowMessageBox("Alert", "Parsing dashboards...", "OK")
