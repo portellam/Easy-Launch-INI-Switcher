@@ -28,6 +28,8 @@
 - [ ] update docs, given new databases.
 
 - [ ] script
+  - [ ] Validate paths
+    - [ ] Get first valid path for each category
   - [ ] Do one (1) of the following, validate for `.xex` paths:
     - [ ] Do the heavy lifting; search for common and specific paths.
     - [ ] Specify in `.ini`; parse config file for exact paths, defined by user.
