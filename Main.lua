@@ -19,7 +19,7 @@ Author(s):      Alex Portell <github.com/portellam>
 Maintainer(s):  Alex Portell <github.com/portellam>
 License:        GNU General Public License v3.0
 Version:        1.0
-]]  
+]]
 
 --[[ parameters ]]
   scriptTitle = "Easy Launch.ini Switcher"
@@ -29,11 +29,14 @@ Version:        1.0
   scriptIcon = "logo.png"
   scriptPermissions = { "filesystem" }
 
-  require("MenuSystem");
+  local print_file_not_found = "File not found or is not valid."
+  local print_file_is_empty = "File is empty."
 
-  local ProgressCount = 0
-  local ProgressMax = 100
-  local ProgressDiff = ProgressMax
+  local print_ok = "OK"
+  local print_yes = "Yes"
+  local print_no = "No"
+
+  require("MenuSystem");
 
   local CSV = {
     dashboards        = "csv/dashboards.csv",
@@ -49,6 +52,7 @@ Version:        1.0
   }
 
   local launch_ini_name = "launch.ini"
+  local launch_ini_backup_name = launch_ini_name .. ".old"
   local launch_ini_path = nil
   local launch_ini_backup_path = nil
 
@@ -65,7 +69,7 @@ Version:        1.0
 
     MakeMainMenu();
     DoShowMenu();
-      
+
     ::scriptend::
   end
 
@@ -132,7 +136,7 @@ Version:        1.0
     for _, mount in ipairs(known_mounts) do
       local candidate = mount .. launch_ini_name
       if FileSystem.FileExists(candidate) then
-        local backup_path = mount .. launch_ini_name .. ".old"
+        local backup_path = mount .. launch_ini_backup_name
         return candidate, backup_path
       end
     end
@@ -148,7 +152,7 @@ Version:        1.0
         end
         local candidate = mount .. launch_ini_name
         if FileSystem.FileExists(candidate) then
-          local backup_path = mount .. launch_ini_name .. ".old"
+          local backup_path = mount .. launch_ini_backup_name
           return candidate, backup_path
         end
       end
@@ -418,6 +422,18 @@ Version:        1.0
   end
 
 --[[ launch.ini generation ]]
+  local function backup_launch_ini()
+    -- launch_ini_backup_path is now same directory + launch.ini.old
+    if FileSystem.FileExists(launch_ini_path) then
+      -- Overwrite existing .old backup
+      if FileSystem.FileExists(launch_ini_backup_path) then
+        FileSystem.DeleteFile(launch_ini_backup_path)
+      end
+      FileSystem.CopyFile(launch_ini_path, launch_ini_backup_path, false)
+    end
+    return true
+  end
+
   local function build_launch_ini(permutation, db)
     local root = permutation.root
     local executables = db.executables or {"dash.xex"}
@@ -460,7 +476,7 @@ Version:        1.0
         has_plugins = true
       end
     end
-    
+
     if not has_plugins then
       table.remove(lines, #lines - 1)  -- remove the blank line before [Plugins]
       table.remove(lines, #lines)      -- remove "[Plugins]"
@@ -489,10 +505,10 @@ Version:        1.0
     local ok = write_file(launch_ini_path, ini)
 
     if ok then
-      Script.ShowMessageBox("Success", "\"" .. launch_ini_name .. "\" updated to: " .. p.name .. "\n\nReboot required for changes to take effect.", "OK")
+      Script.ShowMessageBox("Success", "\"" .. launch_ini_name .. "\" updated to: " .. p.name .. "\n\nReboot required for changes to take effect.", print_ok)
       Script.ShowNotification("launch.ini updated to " .. p.name)
     else
-      Script.ShowMessageBox("Error", "Failed to write \"" .. launch_ini_name .. "\" at:\n" .. launch_ini_path, "OK")
+      Script.ShowMessageBox("Error", "Failed to write \"" .. launch_ini_name .. "\" at:\n" .. launch_ini_path, print_ok)
     end
   end
 
@@ -503,151 +519,236 @@ Version:        1.0
     return nil
   end
 
---[[ Script helpers ]]
-  local function increment_progress()
-    ProgressCount = ProgressCount + ProgressDiff
-    if ProgressCount > 100 then ProgressCount = 100 end
-    Script.SetProgress(ProgressCount);
+--[[ script helpers ]]
+  local function init_set_progress(increment)
+    set_progress(
+      #CSV,
+      increment
+    )
   end
 
-  local function set_progress_increment(steps)
-    if steps < 1 then steps = 1 end
-    ProgressDiff = ProgressMax / steps
-    ProgressCount = 0
-    Script.SetProgress(0)
+  local function set_progress(
+    divisor,
+    increment
+  )
+    if divisor == nil or divisor < 0 then
+      divisor = 1
+    end
+
+    if increment == nil or increment < 0 then
+      increment = 1
+    end
+
+    max_progress = 100
+    val = max_progress / divisor * increment
+
+    if val > 100 then
+      val = 100
+    end
+
+    Script.SetProgress(val)
   end
 
-  local function backup_launch_ini()
-    -- launch_ini_backup_path is now same directory + launch.ini.old
-    if FileSystem.FileExists(launch_ini_path) then
-      -- Overwrite existing .old backup
-      if FileSystem.FileExists(launch_ini_backup_path) then
-        FileSystem.DeleteFile(launch_ini_backup_path)
-      end
-      FileSystem.CopyFile(launch_ini_path, launch_ini_backup_path, false)
-    end
-    return true
-  end
-
-  function call_function(func_name, msg, failed_msg)
-    if not msg or not func_name then
-      Script.ShowMessageBox("DEBUG", debug.traceback(), "OK")
-      return false
+  local function show_message_box_error(msg)
+    if msg == nil then
+      msg = ""
     end
 
-    Script.SetStatus(msg)
-    local ret = funcs[func_name]()
-
-    if not ret then
-      Script.ShowMessageBox("ERROR", failed_msg, "OK")
-      return nil
-    end
-
-    return ret
+    Script.ShowMessageBox(
+      "ERROR",
+      msg,
+      print_ok
+    )
   end
 
   function init()
-    set_progress_increment(10)
+    Script.SetProgress(0)
 
-    Script.SetStatus("Detecting \"" .. launch_ini_name .. "\"...")
+    local msg = "Detecting \"" .. launch_ini_name .. "\""
+    Script.SetStatus(msg .. "...")
     launch_ini_path, launch_ini_backup_path = detect_launch_ini_location()
 
-    Script.SetStatus("Detected path: " .. (launch_ini_path or "nil"))
-
     if not launch_ini_path then
-      Script.ShowMessageBox("ERROR", "\"" .. launch_ini_name .. "\" not found on the root directory of any mounted drive.", "OK")
+      show_message_box_error(msg .. " failed. " .. file_not_found)
       return false
     end
 
-    increment_progress()
-
-    local msg = "Backing up \"" .. launch_ini_name .. "\""
+    msg = "Backing up \"" .. launch_ini_name .. "\""
     Script.SetStatus(msg .. "...")
 
     if not backup_launch_ini() then
-      local ret = Script.ShowMessageBox("ERROR", msg .. " failed.\nContinue?", "No", "Yes");
+      local ret = Script.ShowMessageBox("ERROR", msg .. " failed.\nContinue?", print_no, print_yes);
 
       if ret.Canceled or ret.Button ~= 2 then
-        return false;
+        return false
       end
-
-      increment_progress()
     end
 
-    msg = "Parsing known directories..."
-    directory_paths = call_function(load_directory_paths, msg, msg .. " failed")
-    increment_progress()
+    msg = "Parsing \"" .. CSV.directory_paths .. "\""
+    Script.SetStatus(msg .. "...")
+    db.directory_paths = load_directory_paths()
 
-    msg = "Parsing mount paths"
+    if not db.directory_paths then
+      show_message_box_error(msg .. " failed. " .. file_not_found)
+      return false
+    end
+
+    msg = "Parsing \"" .. CSV.mount_paths .. "\""
     Script.SetStatus(msg .. "...")
     db.mount_paths = load_mount_paths()
 
     if not db.mount_paths then
-      Script.ShowMessageBox("ERROR", msg .. " failed.", "OK")
+      show_message_box_error(msg .. " failed. " .. file_not_found)
       return false
     end
 
-    increment_progress()
-
-    msg = "Parsing `.csv"
+    msg = "Parsing \"" .. CSV.dashboards .. "\""
     Script.SetStatus(msg .. "...")
+
+    Script.ShowMessageBox(
+      "ALERT",
+      msg,
+      print_ok
+    )
+
     db.dashboards = load_dashboards()
-    db.dashboard_paths = load_dashboard_paths()
 
     if not db.dashboards then
-      Script.ShowMessageBox("ERROR", msg .. " failed. ", "OK")
+      show_message_box_error(msg .. " failed. " .. file_not_found)
       return false
     end
 
-    increment_progress()
-
-    Script.ShowMessageBox("Alert", "Parsing dashboards...", "OK")
-    db.dashboards = load_dashboards()
-    db.dashboard_paths = load_dashboard_paths()
-    if not db.dashboards or #db.dashboards == 0 then
-      Script.ShowMessageBox("Error", "Failed to load or empty dashboards.csv", "OK")
+    if #db.dashboards == 0 then
+      show_message_box_error(msg .. " failed. " .. file_is_empty)
       return false
     end
-    increment_progress()
 
-    Script.ShowMessageBox("Alert", "Parsing executables...", "OK")
+    msg = "Parsing \"" .. CSV.executables .. "\""
+    Script.SetStatus(msg .. "...")
+
+    Script.ShowMessageBox(
+      "ALERT",
+      msg,
+      print_ok
+    )
+
     db.executables = load_executables()
-    increment_progress()
 
-    Script.ShowMessageBox("Alert", "Parsing plugins...", "OK")
+    if not db.executables then
+      show_message_box_error(msg .. " failed. " .. file_not_found)
+      return false
+    end
+
+    msg = "Parsing \"" .. CSV.plugins .. "\""
+    Script.SetStatus(msg .. "...")
+
+    Script.ShowMessageBox(
+      "ALERT",
+      msg,
+      print_ok
+    )
+
     db.plugins = load_plugins()
-    db.plugin_paths = load_plugin_paths()
+
     if not db.plugins then
-      Script.ShowMessageBox("Error", "Failed to load plugins.csv", "OK")
+      show_message_box_error(msg .. " failed. " .. file_not_found)
       return false
     end
-    increment_progress()
 
-    Script.ShowMessageBox("Alert", "Parsing stealth servers...", "OK")
+    msg = "Parsing \"" .. CSV.plugin_paths .. "\""
+    Script.SetStatus(msg .. "...")
+
+    Script.ShowMessageBox(
+      "ALERT",
+      msg,
+      print_ok
+    )
+
+    db.plugin_paths = load_plugin_paths()
+
+    if not db.plugin_paths then
+      show_message_box_error(msg .. " failed. " .. file_not_found)
+      return false
+    end
+
+    msg = "Parsing \"" .. CSV.stealth_servers .. "\""
+    Script.SetStatus(msg .. "...")
+
+    Script.ShowMessageBox(
+      "ALERT",
+      msg,
+      print_ok
+    )
+
     db.stealth_servers = load_stealth_servers()
-    db.stealth_paths = load_stealth_paths() or {}
-    increment_progress()
 
-    Script.ShowMessageBox("Alert", "Parsing rules...", "OK")
-    db.rules = load_rules()
-    if not db.rules or #db.rules == 0 then
-      Script.ShowMessageBox("Error", "Failed to load permutations.csv or no rules defined", "OK")
+    if not db.stealth_servers then
+      show_message_box_error(msg .. " failed. " .. file_not_found)
       return false
     end
-    increment_progress()
 
-    Script.ShowMessageBox("Alert", "Building permutations...", "OK")
+    msg = "Parsing \"" .. CSV.stealth_paths .. "\""
+    Script.SetStatus(msg .. "...")
+
+    Script.ShowMessageBox(
+      "ALERT",
+      msg,
+      print_ok
+    )
+
+    db.stealth_paths = load_stealth_paths()
+
+    if not db.stealth_paths then
+      show_message_box_error(msg .. " failed. " .. file_not_found)
+      return false
+    end
+
+    msg = "Parsing \"" .. CSV.rules .. "\""
+    Script.SetStatus(msg .. "...")
+
+    Script.ShowMessageBox(
+      "ALERT",
+      msg,
+      print_ok
+    )
+
+    db.rules = load_rules()
+
+    if not db.rules then
+      show_message_box_error(msg .. " failed. " .. file_not_found)
+      return false
+    end
+
+    if #db.rules == 0 then
+      show_message_box_error(msg .. " failed. " .. file_is_empty)
+      return false
+    end
+
+    msg = "Parsing \"" .. CSV.permutations .. "\""
+    Script.SetStatus(msg .. "...")
+
+    Script.ShowMessageBox(
+      "ALERT",
+      msg,
+      print_ok
+    )
+
     perms = build_permutations(db)
-    increment_progress()
+
+    if not perms then
+      show_message_box_error(msg .. " failed. " .. file_not_found)
+      return false
+    end
 
     if #perms == 0 then
-      Script.ShowMessageBox("Error", "No valid profiles generated. Check permutations.csv rules.", "OK")
+      show_message_box_error(msg .. " failed. " .. file_is_empty)
       return false
     end
 
     Script.SetProgress(100)
     return true
   end
+
 
   function MakeMainMenu()
     Menu.SetTitle(scriptTitle)
@@ -662,32 +763,32 @@ Version:        1.0
 
   function DoShowMenu()
     local ret, menu, canceled, menuItem = Menu.ShowMainMenu()
-    
+
     if canceled or ret == nil then
       return
     end
 
-    Script.ShowMessageBox("Alert", "Processing selection...", "OK")
+    Script.ShowMessageBox("Alert", "Processing selection...", print_ok)
     Script.SetProgress(25)
 
     if ret == "RESET" then
-      Script.ShowMessageBox("Alert", "Restoring original launch.ini...", "OK")
+      Script.ShowMessageBox("Alert", "Restoring original launch.ini...", print_ok)
       Script.SetProgress(50)
       if FileSystem.FileExists(launch_ini_backup_path) then
         FileSystem.CopyFile(launch_ini_backup_path, launch_ini_path, true)
-        Script.ShowMessageBox("Success", "launch.ini restored to original backup.\n\nReboot required for changes.", "OK")
+        Script.ShowMessageBox("Success", "launch.ini restored to original backup.\n\nReboot required for changes.", print_ok)
         Script.ShowNotification("launch.ini restored")
       else
-        Script.ShowMessageBox("Error", "No backup found to restore", "OK")
+        Script.ShowMessageBox("Error", "No backup found to restore", print_ok)
       end
     else
-      Script.ShowMessageBox("Alert", "Switching profile...", "OK")
+      Script.ShowMessageBox("Alert", "Switching profile...", print_ok)
       Script.SetProgress(50)
       local p = find_perm_by_id(ret)
       if p then
         switch_profile(p, db)
       else
-        Script.ShowMessageBox("Error", "Selected profile not found", "OK")
+        Script.ShowMessageBox("Error", "Selected profile not found", print_ok)
       end
     end
 
