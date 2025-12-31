@@ -1,4 +1,4 @@
-Name,Keyword,Executable
+Name,Path,Executable
 Cipher,Cipher,Cipher.xex
 Proto,proto,Proto.xex
 XbGuard,xbGuard,xbGuard.xex
