@@ -18,13 +18,13 @@ Description:    Switch between multiple launch.ini configurations, as defined by
 Author(s):      Alex Portell <github.com/portellam>
 Maintainer(s):  Alex Portell <github.com/portellam>
 License:        GNU General Public License v3.0
-Version:        1.2 (updated)
+Version:        1.0
 ]]  
 
 --[[ parameters ]]
   scriptTitle = "Easy Launch.ini Switcher"
   scriptAuthor = "Alex Portell"
-  scriptVersion = 1.2
+  scriptVersion = 1
   scriptDescription = "Switch between multiple launch.ini configurations, as defined by .csv databases. github.com/portellam"
   scriptIcon = "logo.png"
   scriptPermissions = { "filesystem" }
