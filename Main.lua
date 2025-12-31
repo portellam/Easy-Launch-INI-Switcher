@@ -418,6 +418,18 @@ Version:        1.0
   end
 
 --[[ launch.ini generation ]]
+  local function backup_launch_ini()
+    -- launch_ini_backup_path is now same directory + launch.ini.old
+    if FileSystem.FileExists(launch_ini_path) then
+      -- Overwrite existing .old backup
+      if FileSystem.FileExists(launch_ini_backup_path) then
+        FileSystem.DeleteFile(launch_ini_backup_path)
+      end
+      FileSystem.CopyFile(launch_ini_path, launch_ini_backup_path, false)
+    end
+    return true
+  end
+
   local function build_launch_ini(permutation, db)
     local root = permutation.root
     local executables = db.executables or {"dash.xex"}
@@ -503,7 +515,25 @@ Version:        1.0
     return nil
   end
 
---[[ Script helpers ]]
+--[[ local Script helpers ]]
+  local function call_function(func_name, msg, failed_msg)
+    if not msg or not func_name then
+      -- failed_msg = debug.traceback()
+      Script.ShowMessageBox("DEBUG", failed_msg, "OK")
+      return nil
+    end
+
+    Script.SetStatus(msg)
+    local ret = funcs[func_name]()
+
+    if not ret then
+      Script.ShowMessageBox("ERROR", failed_msg, "OK")
+      return nil
+    end
+
+    return ret
+  end
+  
   local function increment_progress()
     ProgressCount = ProgressCount + ProgressDiff
     if ProgressCount > 100 then ProgressCount = 100 end
@@ -517,35 +547,7 @@ Version:        1.0
     Script.SetProgress(0)
   end
 
-  local function backup_launch_ini()
-    -- launch_ini_backup_path is now same directory + launch.ini.old
-    if FileSystem.FileExists(launch_ini_path) then
-      -- Overwrite existing .old backup
-      if FileSystem.FileExists(launch_ini_backup_path) then
-        FileSystem.DeleteFile(launch_ini_backup_path)
-      end
-      FileSystem.CopyFile(launch_ini_path, launch_ini_backup_path, false)
-    end
-    return true
-  end
-
-  function call_function(func_name, msg, failed_msg)
-    if not msg or not func_name then
-      Script.ShowMessageBox("DEBUG", debug.traceback(), "OK")
-      return false
-    end
-
-    Script.SetStatus(msg)
-    local ret = funcs[func_name]()
-
-    if not ret then
-      Script.ShowMessageBox("ERROR", failed_msg, "OK")
-      return nil
-    end
-
-    return ret
-  end
-
+--[[ Script helpers ]]
   function init()
     set_progress_increment(10)
 
@@ -576,6 +578,11 @@ Version:        1.0
 
     msg = "Parsing known directories..."
     directory_paths = call_function(load_directory_paths, msg, msg .. " failed")
+
+    if not directory_paths then
+      return false;
+    end
+
     increment_progress()
 
     msg = "Parsing mount paths"
