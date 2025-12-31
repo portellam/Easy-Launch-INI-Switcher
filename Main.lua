@@ -515,25 +515,7 @@ Version:        1.0
     return nil
   end
 
---[[ local Script helpers ]]
-  local function call_function(func_name, msg, failed_msg)
-    if not msg or not func_name then
-      -- failed_msg = debug.traceback()
-      Script.ShowMessageBox("DEBUG", failed_msg, "OK")
-      return nil
-    end
-
-    Script.SetStatus(msg)
-    local ret = funcs[func_name]()
-
-    if not ret then
-      Script.ShowMessageBox("ERROR", failed_msg, "OK")
-      return nil
-    end
-
-    return ret
-  end
-  
+--[[ local "Script" helpers ]]
   local function increment_progress()
     ProgressCount = ProgressCount + ProgressDiff
     if ProgressCount > 100 then ProgressCount = 100 end
@@ -547,9 +529,10 @@ Version:        1.0
     Script.SetProgress(0)
   end
 
---[[ Script helpers ]]
+--[[ script helpers ]]
   function init()
-    set_progress_increment(10)
+    set_progress_increment(11)
+    local msg = ""
 
     Script.SetStatus("Detecting \"" .. launch_ini_name .. "\"...")
     launch_ini_path, launch_ini_backup_path = detect_launch_ini_location()
@@ -562,8 +545,7 @@ Version:        1.0
     end
 
     increment_progress()
-
-    local msg = "Backing up \"" .. launch_ini_name .. "\""
+    msg = "Backing up \"" .. launch_ini_name .. "\""
     Script.SetStatus(msg .. "...")
 
     if not backup_launch_ini() then
@@ -576,79 +558,117 @@ Version:        1.0
       increment_progress()
     end
 
-    msg = "Parsing known directories..."
-    directory_paths = call_function(load_directory_paths, msg, msg .. " failed")
+    msg = "Parsing \"" .. CSV.directory_paths .. "\""
+    Script.SetStatus(msg .. "...")
+    db.directory_paths = load_directory_paths()
 
-    if not directory_paths then
-      return false;
+    if not db.directory_paths then
+      Script.ShowMessageBox("ERROR", msg .. " failed. File not found or is invalid.", "OK")
+      return false
     end
 
     increment_progress()
-
-    msg = "Parsing mount paths"
+    msg = "Parsing \"" .. CSV.mount_paths .. "\""
     Script.SetStatus(msg .. "...")
     db.mount_paths = load_mount_paths()
 
     if not db.mount_paths then
-      Script.ShowMessageBox("ERROR", msg .. " failed.", "OK")
+      Script.ShowMessageBox("ERROR", msg .. " failed. File not found or is invalid.", "OK")
       return false
     end
 
     increment_progress()
-
-    msg = "Parsing `.csv"
+    msg = "Parsing \"" .. CSV.dashboards .. "\""
     Script.SetStatus(msg .. "...")
     db.dashboards = load_dashboards()
-    db.dashboard_paths = load_dashboard_paths()
 
     if not db.dashboards then
-      Script.ShowMessageBox("ERROR", msg .. " failed. ", "OK")
+      Script.ShowMessageBox("ERROR", msg .. " failed. File not found or is invalid.", "OK")
+      return false
+    end
+
+    if #db.dashboards == 0 then
+      Script.ShowMessageBox("ERROR", msg .. " failed. File is empty.", "OK")
       return false
     end
 
     increment_progress()
-
-    Script.ShowMessageBox("Alert", "Parsing dashboards...", "OK")
-    db.dashboards = load_dashboards()
-    db.dashboard_paths = load_dashboard_paths()
-    if not db.dashboards or #db.dashboards == 0 then
-      Script.ShowMessageBox("Error", "Failed to load or empty dashboards.csv", "OK")
-      return false
-    end
-    increment_progress()
-
-    Script.ShowMessageBox("Alert", "Parsing executables...", "OK")
+    msg = "Parsing \"" .. CSV.executables .. "\""
+    Script.SetStatus(msg .. "...")
     db.executables = load_executables()
-    increment_progress()
 
-    Script.ShowMessageBox("Alert", "Parsing plugins...", "OK")
+    if not db.executables then
+      Script.ShowMessageBox("ERROR", msg .. " failed. File not found or is invalid.", "OK")
+      return false
+    end
+
+    increment_progress()
+    msg = "Parsing \"" .. CSV.plugins .. "\""
+    Script.SetStatus(msg .. "...")
     db.plugins = load_plugins()
-    db.plugin_paths = load_plugin_paths()
+
     if not db.plugins then
-      Script.ShowMessageBox("Error", "Failed to load plugins.csv", "OK")
+      Script.ShowMessageBox("ERROR", msg .. " failed. File not found or is invalid.", "OK")
       return false
     end
-    increment_progress()
 
-    Script.ShowMessageBox("Alert", "Parsing stealth servers...", "OK")
+    increment_progress()
+    msg = "Parsing \"" .. CSV.plugin_paths .. "\""
+    Script.SetStatus(msg .. "...")
+    db.plugin_paths = load_plugin_paths()
+
+    if not db.plugin_paths then
+      Script.ShowMessageBox("ERROR", msg .. " failed. File not found or is invalid.", "OK")
+      return false
+    end
+
+    increment_progress()
+    msg = "Parsing \"" .. CSV.stealth_servers .. "\""
+    Script.SetStatus(msg .. "...")
     db.stealth_servers = load_stealth_servers()
-    db.stealth_paths = load_stealth_paths() or {}
-    increment_progress()
 
-    Script.ShowMessageBox("Alert", "Parsing rules...", "OK")
-    db.rules = load_rules()
-    if not db.rules or #db.rules == 0 then
-      Script.ShowMessageBox("Error", "Failed to load permutations.csv or no rules defined", "OK")
+    if not db.stealth_servers then
+      Script.ShowMessageBox("ERROR", msg .. " failed. File not found or is invalid.", "OK")
       return false
     end
-    increment_progress()
 
-    Script.ShowMessageBox("Alert", "Building permutations...", "OK")
-    perms = build_permutations(db)
     increment_progress()
+    msg = "Parsing \"" .. CSV.stealth_paths .. "\""
+    Script.SetStatus(msg .. "...")
+    db.stealth_paths = load_stealth_paths()
+
+    if not db.stealth_paths then
+      Script.ShowMessageBox("ERROR", msg .. " failed. File not found or is invalid.", "OK")
+      return false
+    end
+
+    increment_progress()
+    msg = "Parsing \"" .. CSV.rules .. "\""
+    Script.SetStatus(msg .. "...")
+    db.rules = load_rules()
+
+    if not db.rules then
+      Script.ShowMessageBox("ERROR", msg .. " failed. File not found or is invalid.", "OK")
+      return false
+    end
+
+    if #db.rules == 0 then
+      Script.ShowMessageBox("ERROR", msg .. " failed. File is empty.", "OK")
+      return false
+    end
+
+    increment_progress()
+    msg = "Parsing \"" .. CSV.permutations .. "\""
+    Script.SetStatus(msg .. "...")
+    perms = build_permutations(db)
+
+    if not perms then
+      Script.ShowMessageBox("ERROR", msg .. " failed. File not found or is not valid.", "OK")
+      return false
+    end
 
     if #perms == 0 then
-      Script.ShowMessageBox("Error", "No valid profiles generated. Check permutations.csv rules.", "OK")
+      Script.ShowMessageBox("ERROR", msg .. " failed. File is empty.", "OK")
       return false
     end
 
