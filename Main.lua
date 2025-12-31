@@ -520,6 +520,47 @@ Version:        1.0
   end
 
 --[[ script helpers ]]
+  local function init_set_progress(increment)
+    set_progress(
+      #CSV,
+      increment
+    )
+  end
+
+  local function set_progress(
+    divisor,
+    increment
+  )
+    if divisor == nil or divisor < 0 then
+      divisor = 1
+    end
+
+    if increment == nil or increment < 0 then
+      increment = 1
+    end
+
+    max_progress = 100
+    val = max_progress / divisor * increment
+
+    if val > 100 then
+      val = 100
+    end
+
+    Script.SetProgress(val)
+  end
+
+  local function show_message_box_error(msg)
+    if msg == nil then
+      msg = ""
+    end
+
+    Script.ShowMessageBox(
+      "ERROR",
+      msg,
+      print_ok
+    )
+  end
+
   function init()
     Script.SetProgress(0)
 
