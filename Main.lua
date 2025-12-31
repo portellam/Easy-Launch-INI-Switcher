@@ -49,7 +49,6 @@ Version:        1.0
   }
 
   local launch_ini_path = nil
-  local launch_ini_backup_folder = nil
   local launch_ini_backup_path = nil
 
   local db = {}
@@ -125,27 +124,31 @@ Version:        1.0
 
 --[[ launch.ini location detection ]]
   local function detect_launch_ini_location()
-    local csv = read_csv(CSV.mount_paths)
-    if #csv.rows == 0 then return nil end
+    -- List of known Xbox 360 mount points (exact format required by FileSystem)
+    local known_mounts = { "Mu:\\", "Usb:\\", "UsbMu:\\", "Hdd:\\", "IntMu:\\", "MmcMu:\\", "FlashMu:\\" }
 
-    local priority_order = { "Usb:", "UsbMu:", "Hdd:", "IntMu:", "MmcMu:", "FlashMu:" }
-
-    for _, prio in ipairs(priority_order) do
-      for _, r in ipairs(csv.rows) do
-        if r.Path and r.Path:lower() == prio:lower() then
-          local candidate = r.Path .. "launch.ini"
-          if FileSystem.FileExists(candidate) then
-            return candidate, r.Path .. "LaunchIniBackup\\", r.Path .. "LaunchIniBackup\\launch.ini"
-          end
-        end
+    -- Priority search - these are most common locations
+    for _, mount in ipairs(known_mounts) do
+      local candidate = mount .. "launch.ini"
+      if FileSystem.FileExists(candidate) then
+        local backup_path = mount .. "launch.ini.old"
+        return candidate, backup_path
       end
     end
 
-    for _, r in ipairs(csv.rows) do
-      if r.Path then
-        local candidate = r.Path .. "launch.ini"
+    -- Fallback: read from CSV and try all defined mount paths
+    local csv = read_csv(CSV.mount_paths)
+    for _, row in ipairs(csv.rows) do
+      if row.Path then
+        local mount = row.Path
+        -- Ensure it ends with \
+        if mount:sub(-1) ~= "\\" then
+          mount = mount .. "\\"
+        end
+        local candidate = mount .. "launch.ini"
         if FileSystem.FileExists(candidate) then
-          return candidate, r.Path .. "LaunchIniBackup\\", r.Path .. "LaunchIniBackup\\launch.ini"
+          local backup_path = mount .. "launch.ini.old"
+          return candidate, backup_path
         end
       end
     end
@@ -170,7 +173,130 @@ Version:        1.0
     return out
   end
 
-  -- All other loaders unchanged but called with checks in init()
+  local function load_directory_paths()
+    local csv = read_csv(CSV.directory_paths)
+    local out = {}
+    for _, r in ipairs(csv.rows) do
+      if r.Keyword and r.Path then
+        out[r.Keyword] = r.Path
+      end
+    end
+    return out
+  end
+
+  local function load_mount_paths()
+    local csv = read_csv(CSV.mount_paths)
+    local out = {}
+    for _, r in ipairs(csv.rows) do
+      if r.Label and r.Path then
+        out[r.Label] = r.Path
+      end
+    end
+    return out
+  end
+
+  local function load_dashboard_paths()
+    local csv = read_csv(CSV.dashboard_paths)
+    local out = {}
+    for _, r in ipairs(csv.rows) do
+      if r.Name then
+        out[r.Name] = { path = r.Path or "", exe = r.Executable or "" }
+      end
+    end
+    return out
+  end
+
+  local function load_executables()
+    local csv = read_csv(CSV.executables)
+    local out = {}
+    for _, r in ipairs(csv.rows) do
+      if r.Executable ~= "" then out[#out + 1] = r.Executable end
+    end
+    return out
+  end
+
+  local function load_plugins()
+    local csv = read_csv(CSV.plugins)
+    local out = {}
+    for _, r in ipairs(csv.rows) do
+      out[#out + 1] = { index = tonumber(r.Index), id = r.Name, max = tonumber(r["Count: Maximum"]) }
+    end
+    return out
+  end
+
+  local function load_plugin_paths()
+    local csv = read_csv(CSV.plugin_paths)
+    local out = {}
+    for _, r in ipairs(csv.rows) do
+      if r.Name and r.Keyword then
+        out[r.Name] = out[r.Name] or {}
+        table.insert(out[r.Name], r.Keyword)
+      end
+    end
+    return out
+  end
+
+  local function load_stealth_servers()
+    local csv = read_csv(CSV.stealth_servers)
+    local out = {}
+    for _, r in ipairs(csv.rows) do
+      out[r.Name] = r
+    end
+    return out
+  end
+
+  local function load_stealth_paths()
+    local csv = read_csv(CSV.stealth_paths)
+    local out = {}
+    for _, r in ipairs(csv.rows) do
+      out[r.Name] = out[r.Name] or {}
+      table.insert(out[r.Name], { path = r.Path or "", exe = r.Executable or "" })
+    end
+    return out
+  end
+
+  local function load_rules()
+    return read_csv(CSV.permutations).rows
+  end
+
+  local function build_permutations(db)
+    local out = {}
+    for i, rule in ipairs(db.rules) do
+      local primary = rule["Dashboard: Primary"] or ""
+      local secondary = rule["Dashboard: Secondary"] or ""
+      local config = rule["Dashboard: ConfigApp"] or ""
+      local use_stealth = to_bool(rule["Plugin: Use Stealth Server"])
+      local block_live = to_bool(rule["Xbox Live: Is Blocked"])
+
+      local stealth = nil
+      if use_stealth then
+        -- Simple: pick first available stealth server
+        for name, _ in pairs(db.stealth_servers) do
+          stealth = { id = name }
+          break
+        end
+      else
+        stealth = { id = "NULL" }
+      end
+
+      local name = primary
+      if secondary ~= "" then name = name .. " → " .. secondary end
+      if use_stealth and stealth.id ~= "NULL" then name = name .. " + " .. stealth.id end
+      if block_live then name = name .. " (Live Blocked)" end
+
+      out[#out + 1] = {
+        id = i,
+        name = name,
+        primary = { id = primary },
+        secondary = secondary ~= "" and { id = secondary } or nil,
+        config = config ~= "" and { id = config } or nil,
+        stealth = stealth,
+        block_live = block_live,
+        root = "Hdd:\\"  -- adjust if multi-root support needed
+      }
+    end
+    return out
+  end
 
 --[[ lookup helpers ]]
   local function join_paths(base, rel)
@@ -290,9 +416,7 @@ Version:        1.0
     return slots
   end
 
---[[ permutation generation ]] -- unchanged
-
---[[ launch.ini generation - cleaner empty handling ]]
+--[[ launch.ini generation ]]
   local function build_launch_ini(permutation, db)
     local root = permutation.root
     local executables = db.executables or {"dash.xex"}
@@ -335,12 +459,10 @@ Version:        1.0
         has_plugins = true
       end
     end
-    if has_plugins then
-      lines[#lines + 1] = ""
-    else
-      -- Omit empty [Plugins] section entirely if no plugins
-      table.remove(lines)  -- remove header
-      table.remove(lines)  -- remove blank line
+    
+    if not has_plugins then
+      table.remove(lines, #lines - 1)  -- remove the blank line before [Plugins]
+      table.remove(lines, #lines)      -- remove "[Plugins]"
     end
 
     lines[#lines + 1] = "[Settings]"
@@ -395,15 +517,13 @@ Version:        1.0
   end
 
   local function backup_launch_ini()
-    if not FileSystem.FileExists(launch_ini_backup_folder) then
-      if not FileSystem.CreateDirectory(launch_ini_backup_folder) then
-        Script.ShowMessageBox("Error", "Failed to create backup folder:\n" .. launch_ini_backup_folder, "OK")
-        return false
-      end
-    end
-
+    -- launch_ini_backup_path is now same directory + launch.ini.old
     if FileSystem.FileExists(launch_ini_path) then
-      FileSystem.CopyFile(launch_ini_path, launch_ini_backup_path, true)
+      -- Overwrite existing .old backup
+      if FileSystem.FileExists(launch_ini_backup_path) then
+        FileSystem.DeleteFile(launch_ini_backup_path)
+      end
+      FileSystem.CopyFile(launch_ini_path, launch_ini_backup_path, false)
     end
     return true
   end
@@ -412,7 +532,10 @@ Version:        1.0
     set_progress_increment(10)
 
     Script.ShowMessageBox("Alert", "Detecting launch.ini location...", "OK")
-    launch_ini_path, launch_ini_backup_folder, launch_ini_backup_path = detect_launch_ini_location()
+    launch_ini_path, launch_ini_backup_path = detect_launch_ini_location()
+
+    Script.ShowMessageBox("Test", "Direct check: Exists? " .. tostring(FileSystem.FileExists("Hdd:\\launch.ini")) .. "\nDetected path: " .. (launch_ini_path or "nil"), "OK")
+
     if not launch_ini_path then
       Script.ShowMessageBox("ERROR", "launch.ini not found on any mounted drive.\n\nPlace a valid launch.ini on a drive and retry.", "OK")
       return false
