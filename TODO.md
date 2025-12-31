@@ -28,6 +28,7 @@
 - [ ] update docs, given new databases.
 
 - [ ] script
+  - [ ] dynamic progress status
   - [ ] Validate paths
     - [ ] Get first valid path for each category
   - [ ] Do one (1) of the following, validate for `.xex` paths:

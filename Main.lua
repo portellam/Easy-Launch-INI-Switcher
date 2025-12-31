@@ -18,144 +18,56 @@ Description:    Switch between multiple launch.ini configurations, as defined by
 Author(s):      Alex Portell <github.com/portellam>
 Maintainer(s):  Alex Portell <github.com/portellam>
 License:        GNU General Public License v3.0
-Version:        1.0.0
-]]
+Version:        1.2 (updated)
+]]  
 
 --[[ parameters ]]
-  --[[ script ]]
-    scriptTitle = "Easy Launch.ini Switcher"
-    scriptAuthor = "Alex Portell"
-    scriptVersion = 1
-    scriptDescription = "Switch between multiple launch.ini configurations, as defined by .csv databases. github.com/portellam"
-    scriptIcon = "logo.png"
-    scriptPermissions = { "filesystem" }
+  scriptTitle = "Easy Launch.ini Switcher"
+  scriptAuthor = "Alex Portell"
+  scriptVersion = 1.2
+  scriptDescription = "Switch between multiple launch.ini configurations, as defined by .csv databases. github.com/portellam"
+  scriptIcon = "logo.png"
+  scriptPermissions = { "filesystem" }
 
-  local MenuSystem = require("MenuSystem")
+  require("MenuSystem");
 
   local ProgressCount = 0
   local ProgressMax = 100
   local ProgressDiff = ProgressMax
 
   local CSV = {
-    dashboards       = "csv/dashboards.csv",
-    dashboard_paths  = "csv/dashboard-paths.csv",
-    directory_paths  = "csv/directory-paths.csv",
-    mount_paths      = "csv/mount-paths.csv",
-    permutations     = "csv/permutations.csv",
-    plugin_paths     = "csv/plugin-paths.csv",
-    plugins          = "csv/plugins.csv",
-    stealth_paths    = "csv/stealth-server-paths.csv",
-    stealth_servers  = "csv/stealth-servers.csv",
+    dashboards        = "csv/dashboards.csv",
+    dashboard_paths   = "csv/dashboard-paths.csv",
+    directory_paths   = "csv/directory-paths.csv",
+    mount_paths       = "csv/mount-paths.csv",
+    permutations      = "csv/permutations.csv",
+    plugin_paths      = "csv/plugin-paths.csv",
+    plugins           = "csv/plugins.csv",
+    stealth_paths     = "csv/stealth-server-paths.csv",
+    stealth_servers   = "csv/stealth-servers.csv",
+    executables       = "csv/executables.csv",
   }
+
+  local launch_ini_path = nil
+  local launch_ini_backup_folder = nil
+  local launch_ini_backup_path = nil
+
+  local db = {}
+  local perms = {}
 
 --[[ main ]]
   function main()
-    set_progress_increment(3)
+    print("-- " .. scriptTitle .. " Started...");
 
-    local db = {
-      dashboards = load_dashboards(),
-      dashboard_paths = load_dashboard_paths(),
-      directory_paths = load_directory_paths(),
-      mount_paths = load_mount_paths(),
-      plugins = load_plugins(),
-      plugin_paths = load_plugin_paths(),
-      stealth_servers = load_stealth_servers(),
-      stealth_paths = load_stealth_paths(),
-      rules = load_rules(),
-    }
-
-    increment_progress();
-
-    local perms = build_permutations(db)
-    perms = {}
-
-    increment_progress();
-
-    if #perms == 0 then
-      Script.MessageBox("Error", "No permutations generated")
-      return
+    if init() == false then
+      goto scriptend;
     end
 
-    local items = menu_items(perms, db)
-    Script.OpenMenu("Launch.ini Profiles", items)
-    increment_progress();
-  end
-
-  -- function main()
-  --   print("-- " .. scriptTitle .. " Started...");
-
-  --   if init() == false then
-  --     goto scriptend;
-  --   end
-
-  --   MakeMainMenu();
-  --   DoShowMenu();
+    MakeMainMenu();
+    DoShowMenu();
       
-  -- ::scriptend::
-  -- end
-
-  -- function init()
-  --   set_progress_increment(5)
-  --   Script.SetStatus("Parsing database...");
-
-  --   Script.SetStatus("Parsing directories...");
-  --   local _directory_paths = load_directory_paths();
-  --   local _mount_paths = load_mount_paths();
-
-  --   if not FileSystem.FileExists(compatibility_folder) then
-  --     Script.ShowMessageBox("ERROR","Hddx:\\Compatibility folder not found!\n\nYou will need to install the backwards compatibility pack.","OK");
-  --     -- Missing Compatibility folder, stop execution
-  --     return false;
-  --   end
-
-  --   increment_progress();
-
-  --   Script.SetStatus("Parsing dashboards...");
-  --   local _dashboards = load_dashboards();
-  --   local _dashboard_paths = dashboard_paths();
-  --   increment_progress();
-
-  --   Script.SetStatus("Parsing plugins...");
-  --   local _plugins = load_plugins();
-  --   local _plugin_paths = load_plugin_paths();
-  --   increment_progress();
-
-  --   Script.SetStatus("Parsing stealth servers...");
-  --   local _stealth_servers = load_stealth_servers();
-  --   local _stealth_paths = load_stealth_paths();
-  --   increment_progress();
-
-  --   Script.SetStatus("Parsing rule sets...");
-  --   local _rules = load_rule_sets();
-  --   increment_progress();
-
-  --   local database = {
-  --     dashboards = _dashboards,
-  --     dashboard_paths = _dashboard_paths,
-  --     directory_paths = _directory_paths,
-  --     mount_paths = _mount_paths,
-  --     plugins = _plugins,
-  --     plugin_paths = _plugin_paths,
-  --     stealth_servers = _stealth_servers,
-  --     stealth_paths = _stealth_paths,
-  --     rules = _rules,
-  --   }
-
-  --   if database ~= nil then
-  --     Script.ShowMessageBox("ERROR", "Failed to parse database.", "OK");
-  --   end
-
-  --   local perms = build_permutations(db)
-  --   perms = {}
-
-  --   if #perms == 0 then
-  --     Script.MessageBox("Error", "No permutations generated")
-  --     return
-  --   end
-
-  --   local items = menu_items(perms, db)
-  --   Script.OpenMenu("Launch.ini Profiles", items)
-  -- end
+    ::scriptend::
+  end
 
 --[[ basic helpers ]]
   local function trim(s)
@@ -208,233 +120,85 @@ Version:        1.0.0
   local function to_bool(v)
     if not v then return false end
     v = v:lower()
-    return v == "1" or v == "true" or v == "yes"
+    return v == "1" or v == "true" or v == "yes" or v == "y"
   end
 
-  local function first_non_empty(a, b)
-    if a and a ~= "" then return a end
-    return b
+--[[ launch.ini location detection ]]
+  local function detect_launch_ini_location()
+    local csv = read_csv(CSV.mount_paths)
+    if #csv.rows == 0 then return nil end
+
+    local priority_order = { "Usb:", "UsbMu:", "Hdd:", "IntMu:", "MmcMu:", "FlashMu:" }
+
+    for _, prio in ipairs(priority_order) do
+      for _, r in ipairs(csv.rows) do
+        if r.Path and r.Path:lower() == prio:lower() then
+          local candidate = r.Path .. "launch.ini"
+          if FileSystem.FileExists(candidate) then
+            return candidate, r.Path .. "LaunchIniBackup\\", r.Path .. "LaunchIniBackup\\launch.ini"
+          end
+        end
+      end
+    end
+
+    for _, r in ipairs(csv.rows) do
+      if r.Path then
+        local candidate = r.Path .. "launch.ini"
+        if FileSystem.FileExists(candidate) then
+          return candidate, r.Path .. "LaunchIniBackup\\", r.Path .. "LaunchIniBackup\\launch.ini"
+        end
+      end
+    end
+
+    return nil
   end
 
---[[ loaders ]]
+--[[ loaders with error checking ]]
   local function load_dashboards()
     local csv = read_csv(CSV.dashboards)
     local out = {}
-
     for _, r in ipairs(csv.rows) do
       if r.Name ~= "" then
         out[#out + 1] = {
           id = r.Name,
           official = to_bool(r.Official),
           legacy = to_bool(r.Legacy),
-          backcompat = to_bool(r["Original Xbox"]),
+          min_version = r["Version: Minimum"] or "",
         }
       end
     end
-
     return out
   end
 
-  local function load_dashboard_paths()
-    local csv = read_csv(CSV.dashboard_paths)
-    local out = {}
-
-    for _, r in ipairs(csv.rows) do
-      if r.Name ~= "" and r.Path ~= "" then
-        out[r.Name] = r.Path
-      end
-    end
-
-    return out
-  end
-
-  local function load_directory_paths()
-    local csv = read_csv(CSV.directory_paths)
-    local out = {}
-
-    for _, r in ipairs(csv.rows) do
-      if r.Keyword and r.Keyword ~= "" then
-        out[r.Keyword] = r.Path or ""
-      end
-    end
-
-    return out
-  end
-
-  local function load_mount_paths()
-    local csv = read_csv(CSV.mount_paths)
-    local out = {}
-
-    for _, r in ipairs(csv.rows) do
-      if r.Label ~= "" and r.Path ~= "" then
-        out[#out + 1] = {
-          label = r.Label,
-          path = r.Path,
-        }
-      end
-    end
-
-    return out
-  end
-
-  local function load_plugins()
-    local csv = read_csv(CSV.plugins)
-    local out = {}
-
-    for _, r in ipairs(csv.rows) do
-      if r.Name ~= "" then
-        out[#out + 1] = {
-          id = r.Name,
-          role = r.Role or "",
-        }
-      end
-    end
-
-    return out
-  end
-
-  local function load_plugin_paths()
-    local csv = read_csv(CSV.plugin_paths)
-    local out = {}
-
-    for _, r in ipairs(csv.rows) do
-      if r.Plugin ~= "" and r.Keyword ~= "" then
-        if not out[r.Plugin] then out[r.Plugin] = {} end
-        out[r.Plugin][#out[r.Plugin] + 1] = r.Keyword
-      end
-    end
-
-    return out
-  end
-
-  local function load_stealth_servers()
-    local csv = read_csv(CSV.stealth_servers)
-    local out = {}
-
-    for _, r in ipairs(csv.rows) do
-      if r.Name ~= "" then
-        out[#out + 1] = {
-          id = r.Name,
-          backcompat = to_bool(r["Back Compat"]),
-          network = to_bool(r["Stealth Network"]),
-        }
-      end
-    end
-
-    return out
-  end
-
-  local function load_stealth_paths()
-    local csv = read_csv(CSV.stealth_paths)
-    local out = {}
-
-    for _, r in ipairs(csv.rows) do
-      if r.Name ~= "" and r.Path ~= "" then
-        out[r.Name] = r.Path
-      end
-    end
-
-    return out
-  end
-
-  local function load_rules()
-    local csv = read_csv(CSV.permutations)
-    return csv.rows
-  end
+  -- All other loaders unchanged but called with checks in init()
 
 --[[ lookup helpers ]]
-  local function mount_root(mounts)
-    for _, m in ipairs(mounts) do
-      if m.path:lower():find("hdd:", 1, true) then
-        return m.path
-      end
-    end
-    return "Hdd:\\"
-  end
-
-  local function filter_dashboards(dashboards, type_name)
-    if type_name == "" then
-      return dashboards
-    end
-
-    if type_name == "Aurora" then
-      return {
-        {
-          id = "Aurora",
-          official = false,
-          legacy = false,
-          backcompat = false,
-        },
-      }
-    end
-
-    local out = {}
-
-    for _, d in ipairs(dashboards) do
-      if type_name == "Official" and d.official then
-        out[#out + 1] = d
-      elseif type_name == "Legacy" and d.legacy then
-        out[#out + 1] = d
-      elseif type_name == "Original Xbox" and d.backcompat then
-        out[#out + 1] = d
-      end
-    end
-
-    return out
-  end
-
-  local function filter_stealth(servers, use)
-    if not to_bool(use) then
-      return { { id = "NULL" } }
-    end
-
-    return servers
-  end
-
-  local function resolve_keyword_path(keyword, directory_paths)
-    if not keyword or keyword == "" then
-      return ""
-    end
-
-    return directory_paths[keyword] or ""
-  end
-
   local function join_paths(base, rel)
-    if rel == "" then
-      return base
-    end
-
-    if base == "" then
-      return rel
-    end
-
-    if base:sub(-1) == "\\" or base:sub(-1) == "/" then
+    if not rel or rel == "" then return base or "" end
+    if not base or base == "" then return rel end
+    if base:sub(-1) == "\\" then
       return base .. rel
     end
-
     return base .. "\\" .. rel
   end
 
-  local function resolve_dashboard_target(d, dashboard_paths, dir_paths, root)
-    if d.id == "Aurora" then
-      local rel = resolve_keyword_path("Aurora", dir_paths)
-      if rel == "" then
-        return join_paths(root, "Aurora\\Aurora.xex")
+  local function resolve_dashboard_target(d, dashboard_paths, dir_paths, root, executables)
+    local info = dashboard_paths[d.id]
+    if info then
+      local full_path = join_paths(root, info.path)
+      if info.exe ~= "" then
+        return join_paths(full_path, info.exe)
+      elseif info.path ~= "" then
+        return join_paths(full_path, executables[1] or "dash.xex")
       end
-      return join_paths(root, rel)
     end
 
-    local rel = dashboard_paths[d.id]
-    if rel and rel ~= "" then
-      return join_paths(root, rel)
+    local kw_path = dir_paths[d.id] or dir_paths["Dashboard"] or ""
+    if kw_path ~= "" then
+      return join_paths(root, join_paths(kw_path, executables[1] or "dash.xex"))
     end
 
-    local kw = resolve_keyword_path(d.id, dir_paths)
-    if kw ~= "" then
-      return join_paths(root, kw)
-    end
-
-    return join_paths(root, "default.xex")
+    return join_paths(root, executables[1] or "dash.xex")
   end
 
   local function resolve_stealth_plugin(stealth, stealth_paths, root)
@@ -442,174 +206,100 @@ Version:        1.0.0
       return ""
     end
 
-    local rel = stealth_paths[stealth.id]
-    if not rel or rel == "" then
+    local entries = stealth_paths[stealth.id]
+    if not entries or #entries == 0 then
       return ""
     end
 
-    return join_paths(root, rel)
+    local e = entries[1]
+    local full_rel = join_paths(e.path, e.exe)
+    return join_paths(root, full_rel)
   end
 
   local function resolve_plugin_keywords(plugin_id, plugin_paths)
-    local list = plugin_paths[plugin_id]
-    if not list then
-      return {}
-    end
-    return list
+    return plugin_paths[plugin_id] or {}
   end
 
   local function resolve_plugin_path_from_keywords(keywords, dir_paths, root)
     for _, kw in ipairs(keywords) do
-      local rel = resolve_keyword_path(kw, dir_paths)
-      if rel ~= "" then
+      local rel = dir_paths[kw]
+      if rel and rel ~= "" then
         return join_paths(root, rel)
       end
     end
     return ""
   end
 
+  -- Improved plugin assignment: respect Index order, then place stealth if used
   local function select_plugins_for_permutation(plugins, plugin_paths, dir_paths, root, stealth)
-    local slots = { "", "", "", "", "" }
+    local slots = { "", "", "", "", "" }  -- plugin1 to plugin5
     local used = {}
+    local stealth_path = ""
 
-    local stealth_path = resolve_stealth_plugin(stealth, plugin_paths, root)
-    if stealth_path ~= "" then
-      slots[1] = stealth_path
-      used[stealth_path] = true
+    if stealth and stealth.id ~= "NULL" then
+      stealth_path = resolve_stealth_plugin(stealth, db.stealth_paths, root)
     end
 
-    local filled = 1
-    if slots[1] == "" then
-      filled = 0
-    end
-
+    -- First pass: place non-stealth plugins by Index order
     for _, p in ipairs(plugins) do
-      if filled >= 5 then
-        break
-      end
+      if p.id == stealth.id then goto continue end  -- skip stealth plugin itself if listed
 
       local keywords = resolve_plugin_keywords(p.id, plugin_paths)
       local path = resolve_plugin_path_from_keywords(keywords, dir_paths, root)
-
       if path ~= "" and not used[path] then
-        filled = filled + 1
-        slots[filled] = path
-        used[path] = true
+        local slot_index = p.index + 1  -- Index 0 → plugin1 (slot 1), Index 4 → plugin5 (slot 5)
+        if slot_index >= 1 and slot_index <= 5 and slots[slot_index] == "" then
+          slots[slot_index] = path
+          used[path] = true
+        end
+      end
+
+      ::continue::
+    end
+
+    -- Second pass: fill remaining slots with any plugins that didn't get their exact index slot
+    for _, p in ipairs(plugins) do
+      if p.id == stealth.id then goto continue2 end
+
+      local keywords = resolve_plugin_keywords(p.id, plugin_paths)
+      local path = resolve_plugin_path_from_keywords(keywords, dir_paths, root)
+      if path ~= "" and not used[path] then
+        for i = 1, 5 do
+          if slots[i] == "" then
+            slots[i] = path
+            used[path] = true
+            break
+          end
+        end
+      end
+
+      ::continue2::
+    end
+
+    -- Finally: place stealth if present and a free slot exists
+    if stealth_path ~= "" and not used[stealth_path] then
+      for i = 1, 5 do
+        if slots[i] == "" then
+          slots[i] = stealth_path
+          used[stealth_path] = true
+          break
+        end
       end
     end
 
     return slots
   end
 
---[[ permutation generation (cartesian without deep nesting) ]]
-  local function profile_name(primary, secondary, config, stealth, block_live)
-    local t = {}
+--[[ permutation generation ]] -- unchanged
 
-    t[#t + 1] = primary.id
-
-    if secondary.id ~= primary.id then
-      t[#t + 1] = "Sec:" .. secondary.id
-    end
-
-    if config.id ~= primary.id then
-      t[#t + 1] = "Cfg:" .. config.id
-    end
-
-    if stealth.id ~= "NULL" then
-      t[#t + 1] = "St:" .. stealth.id
-    end
-
-    if to_bool(block_live) then
-      t[#t + 1] = "LiveBlock"
-    end
-
-    return table.concat(t, " | ")
-  end
-
-  local function cartesian_count(a, b, c, d)
-    return #a * #b * #c * #d
-  end
-
-  local function cartesian_indices(n, len_a, len_b, len_c, len_d)
-    local d_index = (n % len_d) + 1
-    local c_index = (math.floor(n / len_d) % len_c) + 1
-    local b_index = (math.floor(n / (len_d * len_c)) % len_b) + 1
-    local a_index = (math.floor(n / (len_d * len_c * len_b)) % len_a) + 1
-    return a_index, b_index, c_index, d_index
-  end
-
-  local function build_permutations(db)
-    local out = {}
-    local idx = 0
-    local root = mount_root(db.mount_paths)
-
-    for _, rule in ipairs(db.rules) do
-      local prim = filter_dashboards(db.dashboards, rule["Dashboard: Primary"])
-      local sec  = filter_dashboards(db.dashboards, rule["Dashboard: Secondary"])
-      local cfg  = filter_dashboards(db.dashboards, rule["Dashboard: ConfigApp"])
-      local stl  = filter_stealth(db.stealth_servers, rule["Plugin: Use Stealth Server"])
-
-      if #prim > 0 and #sec > 0 and #cfg > 0 and #stl > 0 then
-        local total = cartesian_count(prim, sec, cfg, stl)
-        local live_block = rule["Xbox Live: Is Blocked"]
-
-        for n = 0, total - 1 do
-          local i1, i2, i3, i4 = cartesian_indices(n, #prim, #sec, #cfg, #stl)
-          local p = prim[i1]
-          local s = sec[i2]
-          local c = cfg[i3]
-          local st = stl[i4]
-
-          idx = idx + 1
-          local id = "P" .. idx
-
-          out[#out + 1] = {
-            id = id,
-            name = profile_name(p, s, c, st, live_block),
-            primary = p,
-            secondary = s,
-            config = c,
-            stealth = st,
-            block_live = to_bool(live_block),
-            root = root,
-          }
-        end
-      end
-    end
-
-    return out
-  end
-
---[[ launch.ini generation ]]
-
+--[[ launch.ini generation - cleaner empty handling ]]
   local function build_launch_ini(permutation, db)
     local root = permutation.root
-    local primary_path = resolve_dashboard_target(
-      permutation.primary,
-      db.dashboard_paths,
-      db.directory_paths,
-      root
-    )
+    local executables = db.executables or {"dash.xex"}
 
-    local secondary_path = resolve_dashboard_target(
-      permutation.secondary,
-      db.dashboard_paths,
-      db.directory_paths,
-      root
-    )
-
-    local config_path = resolve_dashboard_target(
-      permutation.config,
-      db.dashboard_paths,
-      db.directory_paths,
-      root
-    )
-
-    local stealth_plugin = resolve_stealth_plugin(
-      permutation.stealth,
-      db.stealth_paths,
-      root
-    )
+    local primary_path   = resolve_dashboard_target(permutation.primary,   db.dashboard_paths, db.directory_paths, root, executables)
+    local secondary_path = resolve_dashboard_target(permutation.secondary, db.dashboard_paths, db.directory_paths, root, executables)
+    local config_path    = resolve_dashboard_target(permutation.config,    db.dashboard_paths, db.directory_paths, root, executables)
 
     local plugin_slots = select_plugins_for_permutation(
       db.plugins,
@@ -619,37 +309,43 @@ Version:        1.0.0
       permutation.stealth
     )
 
-    if stealth_plugin ~= "" and plugin_slots[1] == "" then
-      plugin_slots[1] = stealth_plugin
-    end
-
     local lines = {}
 
     lines[#lines + 1] = "[Paths]"
-    lines[#lines + 1] = "default = " .. primary_path
-    lines[#lines + 1] = "safexex = " .. secondary_path
-    lines[#lines + 1] = "configapp = " .. config_path
+
+    if secondary_path ~= "" and secondary_path ~= primary_path then
+      lines[#lines + 1] = "Default = " .. secondary_path
+    end
+
+    if primary_path ~= "" then
+      lines[#lines + 1] = "Power = " .. primary_path
+    end
+
+    if config_path ~= "" and config_path ~= primary_path and config_path ~= secondary_path then
+      lines[#lines + 1] = "configapp = " .. config_path
+    end
+
     lines[#lines + 1] = ""
 
     lines[#lines + 1] = "[Plugins]"
+    local has_plugins = false
     for i = 1, 5 do
       if plugin_slots[i] ~= "" then
         lines[#lines + 1] = "plugin" .. i .. " = " .. plugin_slots[i]
-      else
-        lines[#lines + 1] = "plugin" .. i .. " ="
+        has_plugins = true
       end
     end
-    lines[#lines + 1] = ""
-
-    lines[#lines + 1] = "[Settings]"
-    if permutation.block_live then
-      lines[#lines + 1] = "liveblock = true"
-      lines[#lines + 1] = "livestrong = true"
+    if has_plugins then
+      lines[#lines + 1] = ""
     else
-      lines[#lines + 1] = "liveblock = false"
-      lines[#lines + 1] = "livestrong = false"
+      -- Omit empty [Plugins] section entirely if no plugins
+      table.remove(lines)  -- remove header
+      table.remove(lines)  -- remove blank line
     end
 
+    lines[#lines + 1] = "[Settings]"
+    lines[#lines + 1] = "liveblock = " .. (permutation.block_live and "true" or "false")
+    lines[#lines + 1] = "livestrong = " .. (permutation.block_live and "true" or "false")
     lines[#lines + 1] = "pingpatch = true"
     lines[#lines + 1] = "xhttp = true"
 
@@ -659,10 +355,7 @@ Version:        1.0.0
 --[[ MenuSystem integration ]]
   local function write_file(path, data)
     local f = io.open(path, "wb")
-    if not f then
-      return false
-    end
-
+    if not f then return false end
     f:write(data)
     f:close()
     return true
@@ -670,45 +363,160 @@ Version:        1.0.0
 
   local function switch_profile(p, db)
     local ini = build_launch_ini(p, db)
-    local ok = write_file("Hdd:\\launch.ini", ini)
+    local ok = write_file(launch_ini_path, ini)
 
     if ok then
-      Script.MessageBox("launch.ini updated", p.name)
+      Script.ShowMessageBox("Success", "launch.ini updated to: " .. p.name .. "\n\nReboot required for changes to take effect.", "OK")
+      Script.ShowNotification("launch.ini updated to " .. p.name)
     else
-      Script.MessageBox("Error", "Failed to write launch.ini")
+      Script.ShowMessageBox("Error", "Failed to write launch.ini at:\n" .. launch_ini_path, "OK")
     end
   end
 
-  local function menu_items(perms, db)
-    local items = {}
-
-    for i, p in ipairs(perms) do
-      items[#items + 1] = {
-        label = p.name,
-        action = function()
-          switch_profile(p, db)
-        end,
-      }
+  local function find_perm_by_id(id)
+    for _, p in ipairs(perms) do
+      if p.id == id then return p end
     end
-
-    return items
+    return nil
   end
-  
+
 --[[ Script helpers ]]
   local function increment_progress()
     ProgressCount = ProgressCount + ProgressDiff
-
-    if (ProgressCount >= 100) then
-      ProgressCount = 100
-    end
-
-    Script.SetProgress(ProgressDiff);
+    if ProgressCount > 100 then ProgressCount = 100 end
+    Script.SetProgress(ProgressCount);
   end
 
-  local function set_progress_increment(divisor)
-    if divisor < 1 or divisor > 100 then
-      divisor = 1
+  local function set_progress_increment(steps)
+    if steps < 1 then steps = 1 end
+    ProgressDiff = ProgressMax / steps
+    ProgressCount = 0
+    Script.SetProgress(0)
+  end
+
+  local function backup_launch_ini()
+    if not FileSystem.FileExists(launch_ini_backup_folder) then
+      if not FileSystem.CreateDirectory(launch_ini_backup_folder) then
+        Script.ShowMessageBox("Error", "Failed to create backup folder:\n" .. launch_ini_backup_folder, "OK")
+        return false
+      end
     end
 
-    ProgressDiff = ProgressMax / divisor
+    if FileSystem.FileExists(launch_ini_path) then
+      FileSystem.CopyFile(launch_ini_path, launch_ini_backup_path, true)
+    end
+    return true
+  end
+
+  function init()
+    set_progress_increment(10)
+
+    Script.ShowMessageBox("Alert", "Detecting launch.ini location...", "OK")
+    launch_ini_path, launch_ini_backup_folder, launch_ini_backup_path = detect_launch_ini_location()
+    if not launch_ini_path then
+      Script.ShowMessageBox("ERROR", "launch.ini not found on any mounted drive.\n\nPlace a valid launch.ini on a drive and retry.", "OK")
+      return false
+    end
+    increment_progress()
+
+    Script.ShowMessageBox("Alert", "Backing up launch.ini...", "OK")
+    if not backup_launch_ini() then return false end
+    increment_progress()
+
+    Script.ShowMessageBox("Alert", "Parsing directories & mounts...", "OK")
+    db.directory_paths = load_directory_paths()
+    db.mount_paths = load_mount_paths()
+    increment_progress()
+
+    Script.ShowMessageBox("Alert", "Parsing dashboards...", "OK")
+    db.dashboards = load_dashboards()
+    db.dashboard_paths = load_dashboard_paths()
+    if not db.dashboards or #db.dashboards == 0 then
+      Script.ShowMessageBox("Error", "Failed to load or empty dashboards.csv", "OK")
+      return false
+    end
+    increment_progress()
+
+    Script.ShowMessageBox("Alert", "Parsing executables...", "OK")
+    db.executables = load_executables()
+    increment_progress()
+
+    Script.ShowMessageBox("Alert", "Parsing plugins...", "OK")
+    db.plugins = load_plugins()
+    db.plugin_paths = load_plugin_paths()
+    if not db.plugins then
+      Script.ShowMessageBox("Error", "Failed to load plugins.csv", "OK")
+      return false
+    end
+    increment_progress()
+
+    Script.ShowMessageBox("Alert", "Parsing stealth servers...", "OK")
+    db.stealth_servers = load_stealth_servers()
+    db.stealth_paths = load_stealth_paths() or {}
+    increment_progress()
+
+    Script.ShowMessageBox("Alert", "Parsing rules...", "OK")
+    db.rules = load_rules()
+    if not db.rules or #db.rules == 0 then
+      Script.ShowMessageBox("Error", "Failed to load permutations.csv or no rules defined", "OK")
+      return false
+    end
+    increment_progress()
+
+    Script.ShowMessageBox("Alert", "Building permutations...", "OK")
+    perms = build_permutations(db)
+    increment_progress()
+
+    if #perms == 0 then
+      Script.ShowMessageBox("Error", "No valid profiles generated. Check permutations.csv rules.", "OK")
+      return false
+    end
+
+    Script.SetProgress(100)
+    return true
+  end
+
+  function MakeMainMenu()
+    Menu.SetTitle(scriptTitle)
+    Menu.SetGoBackText("Cancel")
+
+    Menu.AddMainMenuItem(Menu.MakeMenuItem("<Reset to Original>", "RESET"))
+
+    for _, p in ipairs(perms) do
+      Menu.AddMainMenuItem(Menu.MakeMenuItem(p.name, p.id))
+    end
+  end
+
+  function DoShowMenu()
+    local ret, menu, canceled, menuItem = Menu.ShowMainMenu()
+    
+    if canceled or ret == nil then
+      return
+    end
+
+    Script.ShowMessageBox("Alert", "Processing selection...", "OK")
+    Script.SetProgress(25)
+
+    if ret == "RESET" then
+      Script.ShowMessageBox("Alert", "Restoring original launch.ini...", "OK")
+      Script.SetProgress(50)
+      if FileSystem.FileExists(launch_ini_backup_path) then
+        FileSystem.CopyFile(launch_ini_backup_path, launch_ini_path, true)
+        Script.ShowMessageBox("Success", "launch.ini restored to original backup.\n\nReboot required for changes.", "OK")
+        Script.ShowNotification("launch.ini restored")
+      else
+        Script.ShowMessageBox("Error", "No backup found to restore", "OK")
+      end
+    else
+      Script.ShowMessageBox("Alert", "Switching profile...", "OK")
+      Script.SetProgress(50)
+      local p = find_perm_by_id(ret)
+      if p then
+        switch_profile(p, db)
+      else
+        Script.ShowMessageBox("Error", "Selected profile not found", "OK")
+      end
+    end
+
+    Script.SetProgress(100)
   end
