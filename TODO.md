@@ -29,6 +29,7 @@
 
 - [ ] script
   - [ ] dynamic progress status
+  - [ ] function `detect_launch_ini_location()` should come after `load_mount_paths()`.
   - [ ] Validate paths
     - [ ] Get first valid path for each category
   - [ ] Do one (1) of the following, validate for `.xex` paths:
