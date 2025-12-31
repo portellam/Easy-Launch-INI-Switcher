@@ -1,28 +1,5 @@
-/*
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-Filename:       Main.lua
-Description:    Switch between multiple launch.ini configurations, as defined by
-                .csv databases.
-Author(s):      Alex Portell <github.com/portellam>
-Maintainer(s):  Alex Portell <github.com/portellam>
-License:        GNU General Public License v3.0
-Version:        1.0.0
-*/
-
-/* parameters */
-  /* script */
+--[[ parameters --]]
+  --[[ script --]]
     scriptTitle = "Easy Launch.ini Switcher"
     scriptAuthor = "Alex Portell"
     scriptVersion = 1
@@ -48,7 +25,7 @@ Version:        1.0.0
     stealth_servers  = "csv/stealth-servers.csv",
   }
 
-/* basic helpers */
+--[[ basic helpers --]]
   local function trim(s)
     if not s then return "" end
     return s:match("^%s*(.-)%s*$") or ""
@@ -107,7 +84,7 @@ Version:        1.0.0
     return b
   end
 
-/* loaders */
+--[[ loaders --]]
   local function load_dashboards()
     local csv = read_csv(CSV.dashboards)
     local out = {}
@@ -233,7 +210,7 @@ Version:        1.0.0
     return csv.rows
   end
 
-/* lookup helpers */
+--[[ lookup helpers --]]
   local function mount_root(mounts)
     for _, m in ipairs(mounts) do
       if m.path:lower():find("hdd:", 1, true) then
@@ -392,7 +369,7 @@ Version:        1.0.0
     return slots
   end
 
-/* permutation generation (cartesian without deep nesting) */
+--[[ permutation generation (cartesian without deep nesting) --]]
   local function profile_name(primary, secondary, config, stealth, block_live)
     local t = {}
 
@@ -471,7 +448,7 @@ Version:        1.0.0
     return out
   end
 
-/* launch.ini generation */
+--[[ launch.ini generation --]]
 
   local function build_launch_ini(permutation, db)
     local root = permutation.root
@@ -547,7 +524,7 @@ Version:        1.0.0
     return table.concat(lines, "\r\n")
   end
 
-/* MenuSystem integration */
+--[[ MenuSystem integration --]]
   local function write_file(path, data)
     local f = io.open(path, "wb")
     if not f then
@@ -585,7 +562,7 @@ Version:        1.0.0
     return items
   end
 
-/* Script helpers */
+--[[ Script helpers --]]
   local function increment_progress()
     ProgressCount += ProgressDiff
 
@@ -604,7 +581,7 @@ Version:        1.0.0
     progress_delta = progress_max / divisor
   end
 
-/* main */
+--[[ main --]]
   function main()
     set_progress_increment(3)
 
@@ -635,4 +612,80 @@ Version:        1.0.0
     local items = menu_items(perms, db)
     Script.OpenMenu("Launch.ini Profiles", items)
     increment_progress()
+  end
+
+  -- function main()
+  --   print("-- " .. scriptTitle .. " Started...");
+
+  --   if init() == false then
+  --     goto scriptend;
+  --   end
+
+  --   MakeMainMenu();
+  --   DoShowMenu();
+      
+  -- ::scriptend::
+  -- end
+
+  function init()
+    set_progress_increment(5)
+    Script.SetStatus("Parsing database...");
+
+    Script.SetStatus("Parsing directories...");
+    local _directory_paths = load_directory_paths()
+    local _mount_paths = load_mount_paths()
+
+    if not FileSystem.FileExists(compatibility_folder) then
+      Script.ShowMessageBox("ERROR","Hddx:\\Compatibility folder not found!\n\nYou will need to install the backwards compatibility pack.","OK");
+      -- Missing Compatibility folder, stop execution
+      return false;
+    end
+
+    increment_progress()
+
+    Script.SetStatus("Parsing dashboards...");
+    local _dashboards = load_dashboards()
+    local _dashboard_paths = dashboard_paths()
+    increment_progress()
+
+    Script.SetStatus("Parsing plugins...");
+    local _plugins = load_plugins()
+    local _plugin_paths = load_plugin_paths()
+    increment_progress()
+
+    Script.SetStatus("Parsing stealth servers...");
+    local _stealth_servers = load_stealth_servers()
+    local _stealth_paths = load_stealth_paths()
+    increment_progress()
+
+    Script.SetStatus("Parsing rule sets...");
+    local _rules = load_rule_sets()
+    increment_progress()
+
+    local database = {
+      dashboards = _dashboards,
+      dashboard_paths = _dashboard_paths,
+      directory_paths = _directory_paths,
+      mount_paths = _mount_paths,
+      plugins = _plugins,
+      plugin_paths = _plugin_paths,
+      stealth_servers = _stealth_servers,
+      stealth_paths = _stealth_paths,
+      rules = _rules,
+    }
+
+    if database ~= nil then
+      Script.ShowMessageBox("ERROR", "Failed to parse database.", "OK");
+    end
+
+    local perms = build_permutations(db)
+    perms = {}
+
+    if #perms == 0 then
+      Script.MessageBox("Error", "No permutations generated")
+      return
+    end
+
+    local items = menu_items(perms, db)
+    Script.OpenMenu("Launch.ini Profiles", items)
   end
