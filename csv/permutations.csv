@@ -1,4 +1,4 @@
-Dashboard: Primary,Dashboard: Secondary,Dashboard: ConfigApp,Plugin: Use Stealth Server,Xbox Live: Is Blocked
+DashboardPrimary,DashboardSecondary,DashboardConfigApp,UseStealthServer,BlockXboxLive
 Aurora,,Official,TRUE,FALSE
 Aurora,,Official,FALSE,TRUE
 Legacy,,Legacy,TRUE,FALSE
