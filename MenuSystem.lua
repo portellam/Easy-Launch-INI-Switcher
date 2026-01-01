@@ -19,7 +19,7 @@ _ShowMenu = function(menuItem)
   local menu = {}
   if SortAlphaBetically then
     table.sort(menuItem, function(a, b) return type(a) == "table" and type(b) == "table" and a.Name < b.Name; end);
-  end  
+  end
   for k, v in ipairs(menuItem) do
     if type(v) == "table" then
       menu[k] = v.Name;
@@ -55,7 +55,7 @@ _ShowMenu = function(menuItem)
 end
 
 Menu = {
-  ShowMenu = function(menuItem) 
+  ShowMenu = function(menuItem)
     return _ShowMenu(menuItem); -- Call the actual function^
   end,
   ShowMainMenu = function()
