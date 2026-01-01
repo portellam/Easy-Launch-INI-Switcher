@@ -32,6 +32,11 @@ Version:        1.0
   local print_file_not_found = "File not found or is not valid."
   local print_file_is_empty = "File is empty."
 
+  local print_alert = "ALERT"
+  local print_error = "ERROR"
+  local print_failure = "FAILURE"
+  local print_success = "SUCCESS"
+
   local print_ok = "OK"
   local print_yes = "Yes"
   local print_no = "No"
@@ -75,35 +80,60 @@ Version:        1.0
 
 --[[ basic helpers ]]
   local function trim(s)
-    if not s then return "" end
-    return s:match("^%s*(.-)%s*$") or ""
+    if not s then
+      return ""
+    end
+
+    return s:match("^%s*(.-)%s*$")
+        or ""
   end
 
-  local function split(line, sep)
-    if not line then return {} end
+  local function split(
+    line,
+    sep
+  )
+    if not line then
+      return {}
+    end
+
     sep = sep or ","
     local out = {}
+
     for field in line:gmatch("([^" .. sep .. "]+)") do
       out[#out + 1] = trim(field)
     end
+
     return out
   end
 
   local function read_lines(path)
-    local f = io.open(path, "r")
-    if not f then return {} end
+    local f = io.open(
+      path,
+      "r"
+    )
+
+    if not f then
+      return {}
+    end
+
     local t = {}
+
     for l in f:lines() do
       t[#t + 1] = l
     end
+
     f:close()
     return t
   end
 
   local function read_csv(path)
     local lines = read_lines(path)
+
     if #lines == 0 then
-      return { header = {}, rows = {} }
+      return {
+        header = {},
+        rows = {}
+      }
     end
 
     local header = split(lines[1])
@@ -112,48 +142,77 @@ Version:        1.0
     for i = 2, #lines do
       local cols = split(lines[i])
       local row = {}
+
       for c = 1, #header do
         row[header[c]] = cols[c] or ""
       end
+
       rows[#rows + 1] = row
     end
 
-    return { header = header, rows = rows }
+    return {
+      header = header,
+      rows = rows
+    }
   end
 
   local function to_bool(v)
-    if not v then return false end
+    if not v then
+      return false
+    end
+
     v = v:lower()
-    return v == "1" or v == "true" or v == "yes" or v == "y"
+
+    return v == "1"
+        or v == "true"
+        or v == "yes"
+        or v == "y"
   end
 
 --[[ launch.ini location detection ]]
   local function detect_launch_ini_location()
     -- List of known Xbox 360 mount points (exact format required by FileSystem)
-    local known_mounts = { "Mu:\\", "Usb:\\", "UsbMu:\\", "Hdd:\\", "IntMu:\\", "MmcMu:\\", "FlashMu:\\" }
+    local known_mounts = {
+      "Mu:\\",
+      "Usb:\\",
+      "UsbMu:\\",
+      "Hdd:\\",
+      "IntMu:\\",
+      "MmcMu:\\",
+      "FlashMu:\\"
+    }
 
     -- Priority search - these are most common locations
     for _, mount in ipairs(known_mounts) do
       local candidate = mount .. launch_ini_name
+
       if FileSystem.FileExists(candidate) then
         local backup_path = mount .. launch_ini_backup_name
-        return candidate, backup_path
+
+        return  candidate,
+                backup_path
       end
     end
 
     -- Fallback: read from CSV and try all defined mount paths
     local csv = read_csv(CSV.mount_paths)
+
     for _, row in ipairs(csv.rows) do
       if row.Path then
         local mount = row.Path
+
         -- Ensure it ends with \
         if mount:sub(-1) ~= "\\" then
           mount = mount .. "\\"
         end
+
         local candidate = mount .. launch_ini_name
+
         if FileSystem.FileExists(candidate) then
           local backup_path = mount .. launch_ini_backup_name
-          return candidate, backup_path
+
+          return  candidate,
+                  backup_path
         end
       end
     end
@@ -165,6 +224,7 @@ Version:        1.0
   local function load_dashboards()
     local csv = read_csv(CSV.dashboards)
     local out = {}
+
     for _, r in ipairs(csv.rows) do
       if r.Name ~= "" then
         out[#out + 1] = {
@@ -175,88 +235,124 @@ Version:        1.0
         }
       end
     end
+
     return out
   end
 
   local function load_directory_paths()
     local csv = read_csv(CSV.directory_paths)
     local out = {}
+
     for _, r in ipairs(csv.rows) do
       if r.Keyword and r.Path then
         out[r.Keyword] = r.Path
       end
     end
+
     return out
   end
 
   local function load_mount_paths()
     local csv = read_csv(CSV.mount_paths)
     local out = {}
+
     for _, r in ipairs(csv.rows) do
       if r.Label and r.Path then
         out[r.Label] = r.Path
       end
     end
+
     return out
   end
 
   local function load_dashboard_paths()
     local csv = read_csv(CSV.dashboard_paths)
     local out = {}
+
     for _, r in ipairs(csv.rows) do
       if r.Name then
-        out[r.Name] = { path = r.Path or "", exe = r.Executable or "" }
+        out[r.Name] = {
+          path = r.Path or "",
+          exe = r.Executable or ""
+        }
       end
     end
+
     return out
   end
 
   local function load_executables()
     local csv = read_csv(CSV.executables)
     local out = {}
+
     for _, r in ipairs(csv.rows) do
-      if r.Executable ~= "" then out[#out + 1] = r.Executable end
+      if r.Executable ~= "" then
+        out[#out + 1] = r.Executable
+      end
     end
+
     return out
   end
 
   local function load_plugins()
     local csv = read_csv(CSV.plugins)
     local out = {}
+
     for _, r in ipairs(csv.rows) do
-      out[#out + 1] = { index = tonumber(r.Index), id = r.Name, max = tonumber(r["Count: Maximum"]) }
+      out[#out + 1] = {
+        index = tonumber(r.Index),
+        id = r.Name,
+        max = tonumber(r["Count: Maximum"])
+      }
     end
+
     return out
   end
 
   local function load_plugin_paths()
     local csv = read_csv(CSV.plugin_paths)
     local out = {}
+
     for _, r in ipairs(csv.rows) do
       if r.Name and r.Keyword then
         out[r.Name] = out[r.Name] or {}
-        table.insert(out[r.Name], r.Keyword)
+
+        table.insert(
+          out[r.Name],
+          r.Keyword
+        )
       end
     end
+
     return out
   end
 
   local function load_stealth_servers()
     local csv = read_csv(CSV.stealth_servers)
     local out = {}
+
     for _, r in ipairs(csv.rows) do
       out[r.Name] = r
     end
+
     return out
   end
 
   local function load_stealth_paths()
     local csv = read_csv(CSV.stealth_paths)
     local out = {}
+
     for _, r in ipairs(csv.rows) do
       out[r.Name] = out[r.Name] or {}
-      table.insert(out[r.Name], { path = r.Path or "", exe = r.Executable or "" })
+      table.insert(
+        out[r.Name],
+        {
+          path = r.Path or "",
+          exe = r.Executable or ""
+        }
+      )
     end
+
     return out
   end
 
@@ -266,6 +362,7 @@ Version:        1.0
 
   local function build_permutations(db)
     local out = {}
+
     for i, rule in ipairs(db.rules) do
       local primary = rule["Dashboard: Primary"] or ""
       local secondary = rule["Dashboard: Secondary"] or ""
@@ -274,20 +371,31 @@ Version:        1.0
       local block_live = to_bool(rule["Xbox Live: Is Blocked"])
 
       local stealth = nil
+
       if use_stealth then
         -- Simple: pick first available stealth server
         for name, _ in pairs(db.stealth_servers) do
           stealth = { id = name }
           break
         end
+
       else
         stealth = { id = "NULL" }
       end
 
       local name = primary
-      if secondary ~= "" then name = name .. " → " .. secondary end
-      if use_stealth and stealth.id ~= "NULL" then name = name .. " + " .. stealth.id end
-      if block_live then name = name .. " (Live Blocked)" end
+
+      if secondary ~= "" then
+        name = name .. " → " .. secondary
+      end
+
+      if use_stealth and stealth.id ~= "NULL" then
+        name = name .. " + " .. stealth.id
+      end
+
+      if block_live then
+        name = name .. " (Live Blocked)"
+      end
 
       out[#out + 1] = {
         id = i,
@@ -300,83 +408,168 @@ Version:        1.0
         root = "Hdd:\\"  -- adjust if multi-root support needed
       }
     end
+
     return out
   end
 
 --[[ lookup helpers ]]
-  local function join_paths(base, rel)
-    if not rel or rel == "" then return base or "" end
-    if not base or base == "" then return rel end
+  local function join_paths(
+    base,
+    rel
+  )
+    if not rel or rel == "" then
+      return base
+          or ""
+    end
+
+    if not base or base == "" then
+      return rel
+    end
+
     if base:sub(-1) == "\\" then
       return base .. rel
     end
+
     return base .. "\\" .. rel
   end
 
-  local function resolve_dashboard_target(d, dashboard_paths, dir_paths, root, executables)
+  local function resolve_dashboard_target(
+    d,
+    dashboard_paths,
+    dir_paths,
+    root,
+    executables
+  )
     local info = dashboard_paths[d.id]
+
     if info then
-      local full_path = join_paths(root, info.path)
+      local full_path = join_paths(
+        root,
+        info.path
+      )
+
       if info.exe ~= "" then
-        return join_paths(full_path, info.exe)
+        return join_paths(
+          full_path,
+          info.exe
+        )
+
       elseif info.path ~= "" then
-        return join_paths(full_path, executables[1] or "dash.xex")
+        return join_paths(
+          full_path,
+          executables[1] or "dash.xex"
+        )
       end
     end
 
     local kw_path = dir_paths[d.id] or dir_paths["Dashboard"] or ""
+
     if kw_path ~= "" then
-      return join_paths(root, join_paths(kw_path, executables[1] or "dash.xex"))
+      return join_paths(
+        root,
+        join_paths(
+          kw_path,
+          executables[1] or "dash.xex"
+        )
+      )
     end
 
-    return join_paths(root, executables[1] or "dash.xex")
+    return join_paths(
+      root,
+      executables[1] or "dash.xex"
+    )
   end
 
-  local function resolve_stealth_plugin(stealth, stealth_paths, root)
+  local function resolve_stealth_plugin(
+    stealth,
+    stealth_paths,
+    root
+  )
     if not stealth or stealth.id == "NULL" then
       return ""
     end
 
     local entries = stealth_paths[stealth.id]
+
     if not entries or #entries == 0 then
       return ""
     end
 
     local e = entries[1]
-    local full_rel = join_paths(e.path, e.exe)
-    return join_paths(root, full_rel)
+
+    local full_rel = join_paths(
+      e.path,
+      e.exe
+    )
+
+    return join_paths(
+      root,
+      full_rel
+    )
   end
 
-  local function resolve_plugin_keywords(plugin_id, plugin_paths)
+  local function resolve_plugin_keywords(
+    plugin_id,
+    plugin_paths
+  )
     return plugin_paths[plugin_id] or {}
   end
 
-  local function resolve_plugin_path_from_keywords(keywords, dir_paths, root)
+  local function resolve_plugin_path_from_keywords(
+    keywords,
+    dir_paths,
+    root
+  )
     for _, kw in ipairs(keywords) do
       local rel = dir_paths[kw]
+
       if rel and rel ~= "" then
-        return join_paths(root, rel)
+        return join_paths(
+          root,
+          rel
+        )
       end
     end
     return ""
   end
 
   -- Improved plugin assignment: respect Index order, then place stealth if used
-  local function select_plugins_for_permutation(plugins, plugin_paths, dir_paths, root, stealth)
+  local function select_plugins_for_permutation(
+    plugins,
+    plugin_paths,
+    dir_paths,
+    root,
+    stealth
+  )
     local slots = { "", "", "", "", "" }  -- plugin1 to plugin5
     local used = {}
     local stealth_path = ""
 
     if stealth and stealth.id ~= "NULL" then
-      stealth_path = resolve_stealth_plugin(stealth, db.stealth_paths, root)
+      stealth_path = resolve_stealth_plugin(
+        stealth,
+        db.stealth_paths,
+        root
+      )
     end
 
     -- First pass: place non-stealth plugins by Index order
     for _, p in ipairs(plugins) do
-      if p.id == stealth.id then goto continue end  -- skip stealth plugin itself if listed
+      if p.id == stealth.id then
+        goto continue
+      end  -- skip stealth plugin itself if listed
 
-      local keywords = resolve_plugin_keywords(p.id, plugin_paths)
-      local path = resolve_plugin_path_from_keywords(keywords, dir_paths, root)
+      local keywords = resolve_plugin_keywords(
+        p.id,
+        plugin_paths
+      )
+
+      local path = resolve_plugin_path_from_keywords(
+        keywords,
+        dir_paths,
+        root
+      )
+
       if path ~= "" and not used[path] then
         local slot_index = p.index + 1  -- Index 0 → plugin1 (slot 1), Index 4 → plugin5 (slot 5)
         if slot_index >= 1 and slot_index <= 5 and slots[slot_index] == "" then
@@ -390,10 +583,21 @@ Version:        1.0
 
     -- Second pass: fill remaining slots with any plugins that didn't get their exact index slot
     for _, p in ipairs(plugins) do
-      if p.id == stealth.id then goto continue2 end
+      if p.id == stealth.id then
+        goto continue2
+      end
 
-      local keywords = resolve_plugin_keywords(p.id, plugin_paths)
-      local path = resolve_plugin_path_from_keywords(keywords, dir_paths, root)
+      local keywords = resolve_plugin_keywords(
+        p.id,
+        plugin_paths
+      )
+
+      local path = resolve_plugin_path_from_keywords(
+        keywords,
+        dir_paths,
+        root
+      )
+
       if path ~= "" and not used[path] then
         for i = 1, 5 do
           if slots[i] == "" then
@@ -429,18 +633,46 @@ Version:        1.0
       if FileSystem.FileExists(launch_ini_backup_path) then
         FileSystem.DeleteFile(launch_ini_backup_path)
       end
-      FileSystem.CopyFile(launch_ini_path, launch_ini_backup_path, false)
+
+      FileSystem.CopyFile(
+        launch_ini_path,
+        launch_ini_backup_path,
+        false
+      )
     end
     return true
   end
 
-  local function build_launch_ini(permutation, db)
+  local function build_launch_ini(
+    permutation,
+    db
+  )
     local root = permutation.root
     local executables = db.executables or {"dash.xex"}
 
-    local primary_path   = resolve_dashboard_target(permutation.primary,   db.dashboard_paths, db.directory_paths, root, executables)
-    local secondary_path = resolve_dashboard_target(permutation.secondary, db.dashboard_paths, db.directory_paths, root, executables)
-    local config_path    = resolve_dashboard_target(permutation.config,    db.dashboard_paths, db.directory_paths, root, executables)
+    local primary_path   = resolve_dashboard_target(
+      permutation.primary,
+      db.dashboard_paths,
+      db.directory_paths,
+      root,
+      executables
+    )
+
+    local secondary_path = resolve_dashboard_target(
+      permutation.secondary,
+      db.dashboard_paths,
+      db.directory_paths,
+      root,
+      executables
+    )
+
+    local config_path    = resolve_dashboard_target(
+      permutation.config,
+      db.dashboard_paths,
+      db.directory_paths,
+      root,
+      executables
+    )
 
     local plugin_slots = select_plugins_for_permutation(
       db.plugins,
@@ -470,6 +702,7 @@ Version:        1.0
 
     lines[#lines + 1] = "[Plugins]"
     local has_plugins = false
+
     for i = 1, 5 do
       if plugin_slots[i] ~= "" then
         lines[#lines + 1] = "plugin" .. i .. " = " .. plugin_slots[i]
@@ -492,30 +725,62 @@ Version:        1.0
   end
 
 --[[ MenuSystem integration ]]
-  local function write_file(path, data)
-    local f = io.open(path, "wb")
-    if not f then return false end
+  local function write_file(
+    path,
+    data
+  )
+    local f = io.open(
+      path,
+      "wb"
+    )
+
+    if not f then
+      return false
+    end
+
     f:write(data)
     f:close()
     return true
   end
 
-  local function switch_profile(p, db)
-    local ini = build_launch_ini(p, db)
-    local ok = write_file(launch_ini_path, ini)
+  local function switch_permutation(
+    p,
+    db
+  )
+    local ini = build_launch_ini(
+      p,
+      db
+    )
+
+    local ok = write_file(
+      launch_ini_path,
+      ini
+    )
 
     if ok then
-      Script.ShowMessageBox("Success", "\"" .. launch_ini_name .. "\" updated to: " .. p.name .. "\n\nReboot required for changes to take effect.", print_ok)
-      Script.ShowNotification("launch.ini updated to " .. p.name)
+      Script.ShowMessageBox(
+        print_success,
+        "\"" .. launch_ini_name .. "\" updated to: " .. p.name .. "\n\nReboot required for changes to take effect.",
+        print_ok
+      )
+
+      Script.ShowNotification("\"" .. launch_ini_name .. "\" updated to " .. p.name)
     else
-      Script.ShowMessageBox("Error", "Failed to write \"" .. launch_ini_name .. "\" at:\n" .. launch_ini_path, print_ok)
+      Script.ShowMessageBox(
+        print_error,
+        "Failed to write \"" .. launch_ini_name .. "\" at:\n" .. launch_ini_path,
+        print_ok
+      )
     end
   end
 
   local function find_perm_by_id(id)
     for _, p in ipairs(perms) do
-      if p.id == id then return p end
+      if p.id == id then
+        return p
+      end
     end
+
     return nil
   end
 
@@ -527,7 +792,7 @@ Version:        1.0
     )
   end
 
-  local function set_progress(
+  function set_progress(
     divisor,
     increment
   )
@@ -549,18 +814,6 @@ Version:        1.0
     Script.SetProgress(val)
   end
 
-  local function show_message_box_error(msg)
-    if msg == nil then
-      msg = ""
-    end
-
-    Script.ShowMessageBox(
-      "ERROR",
-      msg,
-      print_ok
-    )
-  end
-
   function init()
     Script.SetProgress(0)
 
@@ -569,44 +822,68 @@ Version:        1.0
     launch_ini_path, launch_ini_backup_path = detect_launch_ini_location()
 
     if not launch_ini_path then
-      show_message_box_error(msg .. " failed. " .. file_not_found)
+      Script.ShowMessageBox(
+        print_error,
+        msg .. " failed. " .. file_not_found,
+        print_ok
+      )
+
       return false
     end
 
+    init_set_progress(1)
     msg = "Backing up \"" .. launch_ini_name .. "\""
     Script.SetStatus(msg .. "...")
 
     if not backup_launch_ini() then
-      local ret = Script.ShowMessageBox("ERROR", msg .. " failed.\nContinue?", print_no, print_yes);
+      local ret = Script.ShowMessageBox(
+        print_error,
+        msg .. " failed.\n\nContinue?",
+        print_no,
+        print_yes
+      );
 
       if ret.Canceled or ret.Button ~= 2 then
         return false
       end
     end
 
+    init_set_progress(2)
     msg = "Parsing \"" .. CSV.directory_paths .. "\""
     Script.SetStatus(msg .. "...")
     db.directory_paths = load_directory_paths()
 
     if not db.directory_paths then
-      show_message_box_error(msg .. " failed. " .. file_not_found)
+      Script.ShowMessageBox(
+        print_error,
+        msg .. " failed. " .. file_not_found,
+        print_ok
+      )
+
       return false
     end
 
+    init_set_progress(3)
     msg = "Parsing \"" .. CSV.mount_paths .. "\""
     Script.SetStatus(msg .. "...")
     db.mount_paths = load_mount_paths()
 
     if not db.mount_paths then
-      show_message_box_error(msg .. " failed. " .. file_not_found)
+      Script.ShowMessageBox(
+        print_error,
+        msg .. " failed. " .. file_not_found,
+        print_ok
+      )
+
       return false
     end
 
+    init_set_progress(4)
     msg = "Parsing \"" .. CSV.dashboards .. "\""
     Script.SetStatus(msg .. "...")
 
     Script.ShowMessageBox(
-      "ALERT",
+      print_alert,
       msg,
       print_ok
     )
@@ -614,20 +891,31 @@ Version:        1.0
     db.dashboards = load_dashboards()
 
     if not db.dashboards then
-      show_message_box_error(msg .. " failed. " .. file_not_found)
+      Script.ShowMessageBox(
+        print_error,
+        msg .. " failed. " .. file_not_found,
+        print_ok
+      )
+
       return false
     end
 
     if #db.dashboards == 0 then
-      show_message_box_error(msg .. " failed. " .. file_is_empty)
+      Script.ShowMessageBox(
+        print_error,
+        msg .. " failed. " .. file_is_empty,
+        print_ok
+      )
+
       return false
     end
 
+    init_set_progress(5)
     msg = "Parsing \"" .. CSV.executables .. "\""
     Script.SetStatus(msg .. "...")
 
     Script.ShowMessageBox(
-      "ALERT",
+      print_alert,
       msg,
       print_ok
     )
@@ -635,15 +923,18 @@ Version:        1.0
     db.executables = load_executables()
 
     if not db.executables then
-      show_message_box_error(msg .. " failed. " .. file_not_found)
+      Script.ShowMessageBox(
+      print_error,
+      msg .. " failed. " .. file_not_found)
       return false
     end
 
+    init_set_progress(6)
     msg = "Parsing \"" .. CSV.plugins .. "\""
     Script.SetStatus(msg .. "...")
 
     Script.ShowMessageBox(
-      "ALERT",
+      print_alert,
       msg,
       print_ok
     )
@@ -651,15 +942,21 @@ Version:        1.0
     db.plugins = load_plugins()
 
     if not db.plugins then
-      show_message_box_error(msg .. " failed. " .. file_not_found)
+      Script.ShowMessageBox(
+        print_error,
+        msg .. " failed. " .. file_not_found,
+        print_ok
+      )
+
       return false
     end
 
+    init_set_progress(7)
     msg = "Parsing \"" .. CSV.plugin_paths .. "\""
     Script.SetStatus(msg .. "...")
 
     Script.ShowMessageBox(
-      "ALERT",
+      print_alert,
       msg,
       print_ok
     )
@@ -667,15 +964,21 @@ Version:        1.0
     db.plugin_paths = load_plugin_paths()
 
     if not db.plugin_paths then
-      show_message_box_error(msg .. " failed. " .. file_not_found)
+      Script.ShowMessageBox(
+        print_error,
+        msg .. " failed. " .. file_not_found,
+        print_ok
+      )
+
       return false
     end
 
+    init_set_progress(8)
     msg = "Parsing \"" .. CSV.stealth_servers .. "\""
     Script.SetStatus(msg .. "...")
 
     Script.ShowMessageBox(
-      "ALERT",
+      print_alert,
       msg,
       print_ok
     )
@@ -683,15 +986,21 @@ Version:        1.0
     db.stealth_servers = load_stealth_servers()
 
     if not db.stealth_servers then
-      show_message_box_error(msg .. " failed. " .. file_not_found)
+      Script.ShowMessageBox(
+        print_error,
+        msg .. " failed. " .. file_not_found,
+        print_ok
+      )
+
       return false
     end
 
+    init_set_progress(9)
     msg = "Parsing \"" .. CSV.stealth_paths .. "\""
     Script.SetStatus(msg .. "...")
 
     Script.ShowMessageBox(
-      "ALERT",
+      print_alert,
       msg,
       print_ok
     )
@@ -699,15 +1008,21 @@ Version:        1.0
     db.stealth_paths = load_stealth_paths()
 
     if not db.stealth_paths then
-      show_message_box_error(msg .. " failed. " .. file_not_found)
+      Script.ShowMessageBox(
+        print_error,
+        msg .. " failed. " .. file_not_found,
+        print_ok
+      )
+
       return false
     end
 
+    init_set_progress(10)
     msg = "Parsing \"" .. CSV.rules .. "\""
     Script.SetStatus(msg .. "...")
 
     Script.ShowMessageBox(
-      "ALERT",
+      print_alert,
       msg,
       print_ok
     )
@@ -715,20 +1030,30 @@ Version:        1.0
     db.rules = load_rules()
 
     if not db.rules then
-      show_message_box_error(msg .. " failed. " .. file_not_found)
+      Script.ShowMessageBox(
+        print_error,
+        msg .. " failed. " .. file_not_found,
+        print_ok
+      )
       return false
     end
 
     if #db.rules == 0 then
-      show_message_box_error(msg .. " failed. " .. file_is_empty)
+      Script.ShowMessageBox(
+        print_error,
+        msg .. " failed. " .. file_is_empty,
+        print_ok
+      )
+
       return false
     end
 
+    init_set_progress(11)
     msg = "Parsing \"" .. CSV.permutations .. "\""
     Script.SetStatus(msg .. "...")
 
     Script.ShowMessageBox(
-      "ALERT",
+      print_alert,
       msg,
       print_ok
     )
@@ -736,12 +1061,22 @@ Version:        1.0
     perms = build_permutations(db)
 
     if not perms then
-      show_message_box_error(msg .. " failed. " .. file_not_found)
+      Script.ShowMessageBox(
+        print_error,
+        msg .. " failed. " .. file_not_found,
+        print_ok
+      )
+
       return false
     end
 
     if #perms == 0 then
-      show_message_box_error(msg .. " failed. " .. file_is_empty)
+      Script.ShowMessageBox(
+        print_error,
+        msg .. " failed. " .. file_is_empty,
+        print_ok
+      )
+
       return false
     end
 
@@ -749,15 +1084,24 @@ Version:        1.0
     return true
   end
 
-
   function MakeMainMenu()
     Menu.SetTitle(scriptTitle)
     Menu.SetGoBackText("Cancel")
 
-    Menu.AddMainMenuItem(Menu.MakeMenuItem("<Reset to Original>", "RESET"))
+    Menu.AddMainMenuItem(
+      Menu.MakeMenuItem(
+        "<Reset to Original>",
+        "RESET"
+      )
+    )
 
     for _, p in ipairs(perms) do
-      Menu.AddMainMenuItem(Menu.MakeMenuItem(p.name, p.id))
+      Menu.AddMainMenuItem(
+        Menu.MakeMenuItem(
+          p.name,
+          p.id
+        )
+      )
     end
   end
 
@@ -768,27 +1112,67 @@ Version:        1.0
       return
     end
 
-    Script.ShowMessageBox("Alert", "Processing selection...", print_ok)
+    Script.ShowMessageBox(
+      print_alert,
+      "Processing selection...",
+      print_ok
+    )
+
     Script.SetProgress(25)
 
     if ret == "RESET" then
-      Script.ShowMessageBox("Alert", "Restoring original launch.ini...", print_ok)
+      Script.ShowMessageBox(
+        print_alert,
+        "Restoring \"" .. launch_ini_name .. "\"...",
+        print_ok
+      )
+
       Script.SetProgress(50)
+
       if FileSystem.FileExists(launch_ini_backup_path) then
-        FileSystem.CopyFile(launch_ini_backup_path, launch_ini_path, true)
-        Script.ShowMessageBox("Success", "launch.ini restored to original backup.\n\nReboot required for changes.", print_ok)
-        Script.ShowNotification("launch.ini restored")
+        FileSystem.CopyFile(
+          launch_ini_backup_path,
+          launch_ini_path,
+          true
+        )
+
+        Script.ShowMessageBox(
+          print_success,
+          "Restored file from backup.\n\nReboot required for changes to take effect.",
+          print_ok
+        )
+
+        Script.ShowNotification("Restored file.")
       else
-        Script.ShowMessageBox("Error", "No backup found to restore", print_ok)
+        Script.ShowMessageBox(
+          print_error,
+          "No backup found to restore.",
+          print_ok
+        )
       end
     else
-      Script.ShowMessageBox("Alert", "Switching profile...", print_ok)
+      Script.ShowMessageBox(
+        print_alert,
+        "Switching permutation...",
+        print_ok
+      )
+
       Script.SetProgress(50)
+
       local p = find_perm_by_id(ret)
+
       if p then
-        switch_profile(p, db)
+        switch_permutation(
+          p,
+          db
+        )
+
       else
-        Script.ShowMessageBox("Error", "Selected profile not found", print_ok)
+        Script.ShowMessageBox(
+          print_error,
+          "Selected permutation not found.",
+          print_ok
+        )
       end
     end
 
