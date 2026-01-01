@@ -29,9 +29,6 @@ Version:        1.0
   scriptIcon = "logo.png"
   scriptPermissions = { "filesystem" }
 
-  local print_file_not_found = "File not found or is not valid."
-  local print_file_is_empty = "File is empty."
-
   local print_alert = "ALERT"
   local print_error = "ERROR"
   local print_failure = "FAILURE"
@@ -169,9 +166,16 @@ Version:        1.0
         or v == "y"
   end
 
+  local function to_nil_if_null(v)
+    if v == nil or v == "" or v == "NULL" then
+      return nil
+    end
+
+    return v
+  end
+
 --[[ launch.ini location detection ]]
   local function detect_launch_ini_location()
-    -- List of known Xbox 360 mount points (exact format required by FileSystem)
     local known_mounts = {
       "Mu:\\",
       "Usb:\\",
@@ -182,26 +186,21 @@ Version:        1.0
       "FlashMu:\\"
     }
 
-    -- Priority search - these are most common locations
     for _, mount in ipairs(known_mounts) do
       local candidate = mount .. launch_ini_name
 
       if FileSystem.FileExists(candidate) then
-        local backup_path = mount .. launch_ini_backup_name
-
-        return  candidate,
-                backup_path
+        return candidate,
+               mount .. launch_ini_backup_name
       end
     end
 
-    -- Fallback: read from CSV and try all defined mount paths
     local csv = read_csv(CSV.mount_paths)
 
     for _, row in ipairs(csv.rows) do
       if row.Path then
         local mount = row.Path
 
-        -- Ensure it ends with \
         if mount:sub(-1) ~= "\\" then
           mount = mount .. "\\"
         end
@@ -209,15 +208,22 @@ Version:        1.0
         local candidate = mount .. launch_ini_name
 
         if FileSystem.FileExists(candidate) then
-          local backup_path = mount .. launch_ini_backup_name
-
-          return  candidate,
-                  backup_path
+          return candidate,
+                 mount .. launch_ini_backup_name
         end
       end
     end
 
     return nil
+  end
+
+  local function get_root_from_launch_path()
+    if not launch_ini_path then
+      return "Hdd:\\"
+    end
+
+    return launch_ini_path:match("^(.-)[^\\/]+%.ini$")
+        or "Hdd:\\"
   end
 
 --[[ loaders with error checking ]]
@@ -231,7 +237,7 @@ Version:        1.0
           id = r.Name,
           official = to_bool(r.Official),
           legacy = to_bool(r.Legacy),
-          min_version = r["Version: Minimum"] or "",
+          min_version = to_nil_if_null(r["MinimumVersion"]),
         }
       end
     end
@@ -302,7 +308,7 @@ Version:        1.0
       out[#out + 1] = {
         index = tonumber(r.Index),
         id = r.Name,
-        max = tonumber(r["Count: Maximum"])
+        max = tonumber(r["MaximumCount"])
       }
     end
 
@@ -332,7 +338,13 @@ Version:        1.0
     local out = {}
 
     for _, r in ipairs(csv.rows) do
-      out[r.Name] = r
+      local s = {}
+
+      for k, v in pairs(r) do
+        s[k] = to_bool(v)
+      end
+
+      out[r.Name] = s
     end
 
     return out
@@ -344,6 +356,7 @@ Version:        1.0
 
     for _, r in ipairs(csv.rows) do
       out[r.Name] = out[r.Name] or {}
+
       table.insert(
         out[r.Name],
         {
@@ -360,33 +373,108 @@ Version:        1.0
     return read_csv(CSV.permutations).rows
   end
 
+  local function resolve_abstract_dashboard(id, db)
+    if not id then
+      return nil
+    end
+
+    if db.dashboard_paths[id] or id == "Aurora" then
+      return { id = id }
+    end
+
+    if id == "Official" then
+      for _, d in ipairs(db.dashboards) do
+        if d.official and not d.legacy then
+          return { id = d.id }
+        end
+      end
+    elseif id == "Legacy" then
+      for _, d in ipairs(db.dashboards) do
+        if d.legacy then
+          return { id = d.id }
+        end
+      end
+    end
+
+    return nil
+  end
+
   local function build_permutations(db)
     local out = {}
+    local root = get_root_from_launch_path()
+
+    local stealth_order = {}
+
+    for name, s in pairs(db.stealth_servers) do
+      local score = 0
+
+      if s["AvailabilityPaid"] then
+        score = score + 4
+      end
+
+      if s["AvailabilityShareware"] then
+        score = score + 3
+      end
+
+      if s["AvailabilityFreeware"] then
+        score = score + 2
+      end
+
+      if s["BackwardsCompatibilitySupport"] then
+        score = score + 1
+      end
+
+      table.insert(
+        stealth_order,
+        { name = name, score = score }
+      )
+    end
+
+    table.sort(
+      stealth_order,
+      function(a, b)
+        return a.score > b.score
+      end
+    )
 
     for i, rule in ipairs(db.rules) do
-      local primary = rule["Dashboard: Primary"] or ""
-      local secondary = rule["Dashboard: Secondary"] or ""
-      local config = rule["Dashboard: ConfigApp"] or ""
-      local use_stealth = to_bool(rule["Plugin: Use Stealth Server"])
-      local block_live = to_bool(rule["Xbox Live: Is Blocked"])
+      local primary_id = to_nil_if_null(rule["DashboardPrimary"])
+      local secondary_id = to_nil_if_null(rule["DashboardSecondary"])
+      local config_id = to_nil_if_null(rule["DashboardConfigApp"])
+      local use_stealth = to_bool(rule["UseStealthServer"])
+      local block_live = to_bool(rule["BlockXboxLive"])
+
+      local primary = resolve_abstract_dashboard(
+        primary_id,
+        db
+      )
+
+      local secondary = secondary_id and resolve_abstract_dashboard(
+        secondary_id,
+        db
+      ) or nil
+
+      local config = config_id and resolve_abstract_dashboard(
+        config_id,
+        db
+      ) or nil
+
+      if not primary then
+        goto continue
+      end
 
       local stealth = nil
 
-      if use_stealth then
-        -- Simple: pick first available stealth server
-        for name, _ in pairs(db.stealth_servers) do
-          stealth = { id = name }
-          break
-        end
-
+      if use_stealth and #stealth_order > 0 then
+        stealth = { id = stealth_order[1].name }
       else
         stealth = { id = "NULL" }
       end
 
-      local name = primary
+      local name = primary.id
 
-      if secondary ~= "" then
-        name = name .. " → " .. secondary
+      if secondary then
+        name = name .. " → " .. secondary.id
       end
 
       if use_stealth and stealth.id ~= "NULL" then
@@ -400,13 +488,15 @@ Version:        1.0
       out[#out + 1] = {
         id = i,
         name = name,
-        primary = { id = primary },
-        secondary = secondary ~= "" and { id = secondary } or nil,
-        config = config ~= "" and { id = config } or nil,
+        primary = primary,
+        secondary = secondary,
+        config = config,
         stealth = stealth,
         block_live = block_live,
-        root = "Hdd:\\"  -- adjust if multi-root support needed
+        root = root
       }
+
+      ::continue::
     end
 
     return out
@@ -440,6 +530,10 @@ Version:        1.0
     root,
     executables
   )
+    if not d then
+      return ""
+    end
+
     local info = dashboard_paths[d.id]
 
     if info then
@@ -497,14 +591,12 @@ Version:        1.0
 
     local e = entries[1]
 
-    local full_rel = join_paths(
-      e.path,
-      e.exe
-    )
-
     return join_paths(
       root,
-      full_rel
+      join_paths(
+        e.path,
+        e.exe
+      )
     )
   end
 
@@ -530,10 +622,10 @@ Version:        1.0
         )
       end
     end
+
     return ""
   end
 
-  -- Improved plugin assignment: respect Index order, then place stealth if used
   local function select_plugins_for_permutation(
     plugins,
     plugin_paths,
@@ -541,8 +633,10 @@ Version:        1.0
     root,
     stealth
   )
-    local slots = { "", "", "", "", "" }  -- plugin1 to plugin5
-    local used = {}
+    local slots = { "", "", "", "", "" }
+    local used_paths = {}
+    local counts = { Debug = 0, LAN = 0, Stealth = 0, Patch = 0, UI = 0 }
+
     local stealth_path = ""
 
     if stealth and stealth.id ~= "NULL" then
@@ -553,38 +647,9 @@ Version:        1.0
       )
     end
 
-    -- First pass: place non-stealth plugins by Index order
     for _, p in ipairs(plugins) do
-      if p.id == stealth.id then
-        goto continue
-      end  -- skip stealth plugin itself if listed
-
-      local keywords = resolve_plugin_keywords(
-        p.id,
-        plugin_paths
-      )
-
-      local path = resolve_plugin_path_from_keywords(
-        keywords,
-        dir_paths,
-        root
-      )
-
-      if path ~= "" and not used[path] then
-        local slot_index = p.index + 1  -- Index 0 → plugin1 (slot 1), Index 4 → plugin5 (slot 5)
-        if slot_index >= 1 and slot_index <= 5 and slots[slot_index] == "" then
-          slots[slot_index] = path
-          used[path] = true
-        end
-      end
-
-      ::continue::
-    end
-
-    -- Second pass: fill remaining slots with any plugins that didn't get their exact index slot
-    for _, p in ipairs(plugins) do
-      if p.id == stealth.id then
-        goto continue2
+      if counts[p.id] >= p.max then
+        goto next
       end
 
       local keywords = resolve_plugin_keywords(
@@ -598,25 +663,58 @@ Version:        1.0
         root
       )
 
-      if path ~= "" and not used[path] then
-        for i = 1, 5 do
-          if slots[i] == "" then
-            slots[i] = path
-            used[path] = true
-            break
-          end
+      if path == "" then
+        goto next
+      end
+
+      local slot_idx = p.index + 1
+
+      if slots[slot_idx] == "" and not used_paths[path] then
+        slots[slot_idx] = path
+        used_paths[path] = true
+        counts[p.id] = counts[p.id] + 1
+      end
+
+      ::next::
+    end
+
+    for _, p in ipairs(plugins) do
+      if counts[p.id] >= p.max then
+        goto next2
+      end
+
+      local keywords = resolve_plugin_keywords(
+        p.id,
+        plugin_paths
+      )
+
+      local path = resolve_plugin_path_from_keywords(
+        keywords,
+        dir_paths,
+        root
+      )
+
+      if path == "" or used_paths[path] then
+        goto next2
+      end
+
+      for i = 1, 5 do
+        if slots[i] == "" then
+          slots[i] = path
+          used_paths[path] = true
+          counts[p.id] = counts[p.id] + 1
+          break
         end
       end
 
-      ::continue2::
+      ::next2::
     end
 
-    -- Finally: place stealth if present and a free slot exists
-    if stealth_path ~= "" and not used[stealth_path] then
+    if stealth_path ~= "" and not used_paths[stealth_path] then
       for i = 1, 5 do
         if slots[i] == "" then
           slots[i] = stealth_path
-          used[stealth_path] = true
+          used_paths[stealth_path] = true
           break
         end
       end
@@ -627,9 +725,7 @@ Version:        1.0
 
 --[[ launch.ini generation ]]
   local function backup_launch_ini()
-    -- launch_ini_backup_path is now same directory + launch.ini.old
     if FileSystem.FileExists(launch_ini_path) then
-      -- Overwrite existing .old backup
       if FileSystem.FileExists(launch_ini_backup_path) then
         FileSystem.DeleteFile(launch_ini_backup_path)
       end
@@ -640,6 +736,7 @@ Version:        1.0
         false
       )
     end
+
     return true
   end
 
@@ -711,8 +808,8 @@ Version:        1.0
     end
 
     if not has_plugins then
-      table.remove(lines, #lines - 1)  -- remove the blank line before [Plugins]
-      table.remove(lines, #lines)      -- remove "[Plugins]"
+      table.remove(lines, #lines - 1)
+      table.remove(lines, #lines)
     end
 
     lines[#lines + 1] = "[Settings]"
@@ -785,13 +882,6 @@ Version:        1.0
   end
 
 --[[ script helpers ]]
-  local function init_set_progress(increment)
-    set_progress(
-      #CSV,
-      increment
-    )
-  end
-
   function set_progress(
     divisor,
     increment
@@ -804,8 +894,7 @@ Version:        1.0
       increment = 1
     end
 
-    max_progress = 100
-    val = max_progress / divisor * increment
+    local val = 100 / divisor * increment
 
     if val > 100 then
       val = 100
@@ -816,6 +905,7 @@ Version:        1.0
 
   function init()
     Script.SetProgress(0)
+    progress_steps = #CSV + 4
 
     local msg = "Detecting \"" .. launch_ini_name .. "\""
     Script.SetStatus(msg .. "...")
@@ -824,14 +914,18 @@ Version:        1.0
     if not launch_ini_path then
       Script.ShowMessageBox(
         print_error,
-        msg .. " failed. " .. file_not_found,
+        msg .. " failed. File not found or is not valid.",
         print_ok
       )
 
       return false
     end
 
-    init_set_progress(1)
+    set_progress(
+      progress_steps,
+      1
+    )
+
     msg = "Backing up \"" .. launch_ini_name .. "\""
     Script.SetStatus(msg .. "...")
 
@@ -848,232 +942,103 @@ Version:        1.0
       end
     end
 
-    init_set_progress(2)
-    msg = "Parsing \"" .. CSV.directory_paths .. "\""
-    Script.SetStatus(msg .. "...")
+    set_progress(
+      progress_steps,
+      2
+    )
+
+    Script.SetStatus("Parsing databases...")
+
     db.directory_paths = load_directory_paths()
 
-    if not db.directory_paths then
-      Script.ShowMessageBox(
-        print_error,
-        msg .. " failed. " .. file_not_found,
-        print_ok
-      )
+    set_progress(
+      progress_steps,
+      3
+    )
 
-      return false
-    end
-
-    init_set_progress(3)
-    msg = "Parsing \"" .. CSV.mount_paths .. "\""
-    Script.SetStatus(msg .. "...")
     db.mount_paths = load_mount_paths()
 
-    if not db.mount_paths then
-      Script.ShowMessageBox(
-        print_error,
-        msg .. " failed. " .. file_not_found,
-        print_ok
-      )
-
-      return false
-    end
-
-    init_set_progress(4)
-    msg = "Parsing \"" .. CSV.dashboards .. "\""
-    Script.SetStatus(msg .. "...")
-
-    Script.ShowMessageBox(
-      print_alert,
-      msg,
-      print_ok
+    set_progress(
+      progress_steps,
+      4
     )
 
     db.dashboards = load_dashboards()
 
-    if not db.dashboards then
-      Script.ShowMessageBox(
-        print_error,
-        msg .. " failed. " .. file_not_found,
-        print_ok
-      )
+    set_progress(
+      progress_steps,
+      5
+    )
+    db.dashboard_paths = load_dashboard_paths()
 
-      return false
-    end
-
-    if #db.dashboards == 0 then
-      Script.ShowMessageBox(
-        print_error,
-        msg .. " failed. " .. file_is_empty,
-        print_ok
-      )
-
-      return false
-    end
-
-    init_set_progress(5)
-    msg = "Parsing \"" .. CSV.executables .. "\""
-    Script.SetStatus(msg .. "...")
-
-    Script.ShowMessageBox(
-      print_alert,
-      msg,
-      print_ok
+    set_progress(
+      progress_steps,
+      6
     )
 
     db.executables = load_executables()
 
-    if not db.executables then
-      Script.ShowMessageBox(
-      print_error,
-      msg .. " failed. " .. file_not_found)
-      return false
-    end
-
-    init_set_progress(6)
-    msg = "Parsing \"" .. CSV.plugins .. "\""
-    Script.SetStatus(msg .. "...")
-
-    Script.ShowMessageBox(
-      print_alert,
-      msg,
-      print_ok
+    set_progress(
+      progress_steps,
+      7
     )
 
     db.plugins = load_plugins()
 
-    if not db.plugins then
-      Script.ShowMessageBox(
-        print_error,
-        msg .. " failed. " .. file_not_found,
-        print_ok
-      )
-
-      return false
-    end
-
-    init_set_progress(7)
-    msg = "Parsing \"" .. CSV.plugin_paths .. "\""
-    Script.SetStatus(msg .. "...")
-
-    Script.ShowMessageBox(
-      print_alert,
-      msg,
-      print_ok
+    set_progress(
+      progress_steps,
+      8
     )
 
     db.plugin_paths = load_plugin_paths()
 
-    if not db.plugin_paths then
-      Script.ShowMessageBox(
-        print_error,
-        msg .. " failed. " .. file_not_found,
-        print_ok
-      )
-
-      return false
-    end
-
-    init_set_progress(8)
-    msg = "Parsing \"" .. CSV.stealth_servers .. "\""
-    Script.SetStatus(msg .. "...")
-
-    Script.ShowMessageBox(
-      print_alert,
-      msg,
-      print_ok
+    set_progress(
+      progress_steps,
+      9
     )
 
     db.stealth_servers = load_stealth_servers()
 
-    if not db.stealth_servers then
-      Script.ShowMessageBox(
-        print_error,
-        msg .. " failed. " .. file_not_found,
-        print_ok
-      )
-
-      return false
-    end
-
-    init_set_progress(9)
-    msg = "Parsing \"" .. CSV.stealth_paths .. "\""
-    Script.SetStatus(msg .. "...")
-
-    Script.ShowMessageBox(
-      print_alert,
-      msg,
-      print_ok
+    set_progress(
+      progress_steps,
+      10
     )
 
     db.stealth_paths = load_stealth_paths()
 
-    if not db.stealth_paths then
-      Script.ShowMessageBox(
-        print_error,
-        msg .. " failed. " .. file_not_found,
-        print_ok
-      )
-
-      return false
-    end
-
-    init_set_progress(10)
-    msg = "Parsing \"" .. CSV.rules .. "\""
-    Script.SetStatus(msg .. "...")
-
-    Script.ShowMessageBox(
-      print_alert,
-      msg,
-      print_ok
+    set_progress(
+      progress_steps,
+      11
     )
 
     db.rules = load_rules()
 
-    if not db.rules then
-      Script.ShowMessageBox(
-        print_error,
-        msg .. " failed. " .. file_not_found,
-        print_ok
-      )
-      return false
-    end
+    set_progress(
+      progress_steps,
+      12
+    )
 
     if #db.rules == 0 then
       Script.ShowMessageBox(
         print_error,
-        msg .. " failed. " .. file_is_empty,
+        "Permutations database either does not exist, is empty, or is not valid.",
         print_ok
       )
 
       return false
     end
 
-    init_set_progress(11)
-    msg = "Parsing \"" .. CSV.permutations .. "\""
-    Script.SetStatus(msg .. "...")
-
-    Script.ShowMessageBox(
-      print_alert,
-      msg,
-      print_ok
+    set_progress(
+      progress_steps,
+      13
     )
 
     perms = build_permutations(db)
 
-    if not perms then
-      Script.ShowMessageBox(
-        print_error,
-        msg .. " failed. " .. file_not_found,
-        print_ok
-      )
-
-      return false
-    end
-
     if #perms == 0 then
       Script.ShowMessageBox(
         print_error,
-        msg .. " failed. " .. file_is_empty,
+        "No valid permutations could be built.",
         print_ok
       )
 
@@ -1106,29 +1071,15 @@ Version:        1.0
   end
 
   function DoShowMenu()
-    local ret, menu, canceled, menuItem = Menu.ShowMainMenu()
+    local ret, _, canceled = Menu.ShowMainMenu()
 
     if canceled or ret == nil then
       return
     end
 
-    Script.ShowMessageBox(
-      print_alert,
-      "Processing selection...",
-      print_ok
-    )
-
     Script.SetProgress(25)
 
     if ret == "RESET" then
-      Script.ShowMessageBox(
-        print_alert,
-        "Restoring \"" .. launch_ini_name .. "\"...",
-        print_ok
-      )
-
-      Script.SetProgress(50)
-
       if FileSystem.FileExists(launch_ini_backup_path) then
         FileSystem.CopyFile(
           launch_ini_backup_path,
@@ -1138,11 +1089,11 @@ Version:        1.0
 
         Script.ShowMessageBox(
           print_success,
-          "Restored file from backup.\n\nReboot required for changes to take effect.",
+          "Restored \"" .. launch_ini_name .. "\" from backup.\n\nReboot required.",
           print_ok
         )
 
-        Script.ShowNotification("Restored file.")
+        Script.ShowNotification("Restored from backup.")
       else
         Script.ShowMessageBox(
           print_error,
