@@ -1,123 +1,128 @@
-// Use DBML to define your database structure
-// Docs: https://dbml.dbdiagram.io/docs
+// USE DBML TO DEFINE YOUR DATABASE STRUCTURE
+// DOCS: HTTPS://DBML.DBDIAGRAM.IO/DOCS
 
-Table PERMUTATIONS {
-  id integer [pk]
-  first_dashboard_id integer
-  second_dashboard_id integer
-  configapp_dashboard_id integer
-  block_xbox_live boolean
-  first_plugin_id integer
-  second_plugin_id integer
-  third_plugin_id integer
-  fourth_plugin_id integer
-  fifth_plugin_id integer
+TABLE COMMON_EXECUTABLES {
+  ID INTEGER [PK]
+  NAME VARCHAR
 }
 
-Table DASHBOARDS {
-  id integer [pk]
-  mount_path_id integer
-  root_folder_path_id integer
-  executable varchar
-  name varchar
-  this_folder_name varchar
+TABLE DASHBOARDS {
+  ID INTEGER [PK]
+  MOUNT_PATH_ID INTEGER
+  ROOT_FOLDER_PATH_ID INTEGER
+  EXECUTABLE VARCHAR
+  NAME VARCHAR
+  THIS_FOLDER_NAME VARCHAR
 }
 
-Table DASHBOARD_ROOT_PATHS {
-  id integer [pk]
-  is_valid boolean
-  name varchar
+TABLE DASHBOARD_OFFICIAL_PATHS {
+  ID INTEGER [PK]
+  IS_VALID BOOLEAN
+  PATH VARCHAR
 }
 
-Table DASHBOARD_VERSIONS {
-  id integer [pk]
-  dashboard_id integer
-  name varchar
-  official boolean
-  legacy boolean
-  minimum_version int
+TABLE DASHBOARD_ROOT_PATHS {
+  ID INTEGER [PK]
+  IS_VALID BOOLEAN
+  NAME VARCHAR
 }
 
-Table COMMON_EXECUTABLES {
-  id integer [pk]
-  name varchar
+TABLE DASHBOARD_VERSIONS {
+  ID INTEGER [PK]
+  DASHBOARD_ID INTEGER
+  NAME VARCHAR
+  OFFICIAL BOOLEAN
+  LEGACY BOOLEAN
+  MINIMUM_VERSION INT
 }
 
-Table MOUNT_PATHS {
-  id integer [pk]
-  path varchar
-  name varchar
+TABLE MOUNT_PATHS {
+  ID INTEGER [PK]
+  PATH VARCHAR
+  NAME VARCHAR
 }
 
-Table PLUGINS {
-  id integer [pk]
-  mount_path_id integer
-  root_folder_path_id integer
-  type_id integer
-  executable varchar
-  name varchar
-  this_folder_name varchar
+TABLE PERMUTATIONS {
+  ID INTEGER [PK]
+  FIRST_DASHBOARD_ID INTEGER
+  SECOND_DASHBOARD_ID INTEGER
+  CONFIGAPP_DASHBOARD_ID INTEGER
+  BLOCK_XBOX_LIVE BOOLEAN
+  FIRST_PLUGIN_ID INTEGER
+  SECOND_PLUGIN_ID INTEGER
+  THIRD_PLUGIN_ID INTEGER
+  FOURTH_PLUGIN_ID INTEGER
+  FIFTH_PLUGIN_ID INTEGER
+  IS_VALID BOOLEAN
+  NOTES VARCHAR
 }
 
-Table PLUGIN_ROOT_PATHS {
-  id integer [pk]
-  is_valid boolean
-  name varchar
-  path varchar
+TABLE PLUGINS {
+  ID INTEGER [PK]
+  MOUNT_PATH_ID INTEGER
+  ROOT_FOLDER_PATH_ID INTEGER
+  TYPE_ID INTEGER
+  EXECUTABLE VARCHAR
+  NAME VARCHAR
+  THIS_FOLDER_NAME VARCHAR
 }
 
-Table PLUGIN_TYPES {
-  id integer [pk]
-  path_id integer
-  type varchar
+TABLE PLUGIN_RANKS {
+  ID INTEGER [PK]         // MIN: 0; MAX: 4
+  TYPE_ID INTEGER
+  MAXIMUM_COUNT INTEGER   // MIN: 1; MAX: 5
 }
 
-Table PLUGIN_TYPE_PATHS {
-  id integer [pk]
-  type_id integer
-  is_valid boolean
-  path varchar
+TABLE PLUGIN_ROOT_PATHS {
+  ID INTEGER [PK]
+  IS_VALID BOOLEAN
+  NAME VARCHAR
 }
 
-Table PLUGIN_RANKS {
-  id integer [pk]         // Valid: 0-4
-  type_id integer
-  maximum_count integer   // Min: 1; Max: 5
+TABLE PLUGIN_STEALTH_SERVERS {
+  ID INTEGER [PK]
+  PLUGIN_ID INTEGER
+  SUPPORTS_BACKWARDS_COMPATIBILITY BOOLEAN
+  SUPPORTS_CHEATS BOOLEAN
+  HAS_CUSTOM_HUD BOOLEAN
+  SUPPORTS_CUSTOM_HUD BOOLEAN
+  IS_FREEWARE BOOLEAN
+  IS_PAIDWARE BOOLEAN
+  IS_SHAREWARE BOOLEAN
+  IS_ONLINE_ONLY BOOLEAN
+  SUPPORTS_STEALTH_NETWORK BOOLEAN
 }
 
-Table PLUGIN_STEALTH_SERVERS {
-  id integer [pk]
-  plugin_id integer
-  name varchar
-  this_folder_name varchar
-  supports_backwards_compatibility boolean
-  supports_cheats boolean
-  has_custom_hud boolean
-  supports_custom_hud boolean
-  is_freeware boolean
-  is_paidware boolean
-  is_shareware boolean
-  is_online_only boolean
-  supports_stealth_network boolean
+TABLE PLUGIN_TYPES {
+  ID INTEGER [PK]
+  PATH_ID INTEGER
+  TYPE VARCHAR
 }
 
-Ref: "PERMUTATIONS"."first_dashboard_id" < "DASHBOARDS"."id"
-Ref: "PERMUTATIONS"."second_dashboard_id" < "DASHBOARDS"."id"
-Ref: "PERMUTATIONS"."configapp_dashboard_id" < "DASHBOARDS"."id"
-Ref: "PERMUTATIONS"."first_plugin_id" < "PLUGINS"."id"
-Ref: "PERMUTATIONS"."second_plugin_id" < "PLUGINS"."id"
-Ref: "PERMUTATIONS"."third_plugin_id" < "PLUGINS"."id"
-Ref: "PERMUTATIONS"."fourth_plugin_id" < "PLUGINS"."id"
-Ref: "PERMUTATIONS"."fifth_plugin_id" < "PLUGINS"."id"
+TABLE PLUGIN_TYPE_PATHS {
+  ID INTEGER [PK]
+  TYPE_ID INTEGER
+  IS_VALID BOOLEAN
+  PATH VARCHAR
+}
 
-Ref: "DASHBOARDS"."id" < "DASHBOARD_VERSIONS"."dashboard_id"
-Ref: "DASHBOARDS"."root_folder_path_id" < "DASHBOARD_ROOT_PATHS"."id"
-Ref: "DASHBOARDS"."mount_path_id" < "MOUNT_PATHS"."id"
+REF: "PERMUTATIONS"."FIRST_DASHBOARD_ID" < "DASHBOARDS"."ID"
+REF: "PERMUTATIONS"."SECOND_DASHBOARD_ID" < "DASHBOARDS"."ID"
+REF: "PERMUTATIONS"."CONFIGAPP_DASHBOARD_ID" < "DASHBOARDS"."ID"
+REF: "PERMUTATIONS"."FIRST_PLUGIN_ID" < "PLUGINS"."ID"
+REF: "PERMUTATIONS"."SECOND_PLUGIN_ID" < "PLUGINS"."ID"
+REF: "PERMUTATIONS"."THIRD_PLUGIN_ID" < "PLUGINS"."ID"
+REF: "PERMUTATIONS"."FOURTH_PLUGIN_ID" < "PLUGINS"."ID"
+REF: "PERMUTATIONS"."FIFTH_PLUGIN_ID" < "PLUGINS"."ID"
 
-Ref: "PLUGINS"."id" < "PLUGIN_STEALTH_SERVERS"."plugin_id"
-Ref: "PLUGINS"."type_id" < "PLUGIN_TYPES"."id"
-Ref: "PLUGINS"."mount_path_id" < "MOUNT_PATHS"."id"
-Ref: "PLUGINS"."root_folder_path_id" < "PLUGIN_ROOT_PATHS"."id"
+REF: "DASHBOARDS"."ID" < "DASHBOARD_VERSIONS"."DASHBOARD_ID"
+REF: "DASHBOARDS"."ROOT_FOLDER_PATH_ID" < "DASHBOARD_ROOT_PATHS"."ID"
+REF: "DASHBOARDS"."MOUNT_PATH_ID" < "MOUNT_PATHS"."ID"
 
-Ref: "PLUGIN_TYPES"."id" < "PLUGIN_RANKS"."type_id"
-Ref: "PLUGIN_TYPES"."path_id" < "PLUGIN_TYPE_PATHS"."id"
+REF: "PLUGINS"."ID" < "PLUGIN_STEALTH_SERVERS"."PLUGIN_ID"
+REF: "PLUGINS"."TYPE_ID" < "PLUGIN_TYPES"."ID"
+REF: "PLUGINS"."MOUNT_PATH_ID" < "MOUNT_PATHS"."ID"
+REF: "PLUGINS"."ROOT_FOLDER_PATH_ID" < "PLUGIN_ROOT_PATHS"."ID"
+
+REF: "PLUGIN_TYPES"."ID" < "PLUGIN_RANKS"."TYPE_ID"
+REF: "PLUGIN_TYPES"."PATH_ID" < "PLUGIN_TYPE_PATHS"."ID"
