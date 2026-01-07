@@ -1,6 +1,0 @@
-id,dashboard_id,name,official,legacy,minimum_version
-1,1,Aurora,FALSE,NULL,NULL
-2,2,Blades,TRUE,TRUE,1888
-3,3,Kinect,TRUE,TRUE,12611
-4,5,New Xbox Experience,TRUE,TRUE,7357
-5,4,Metro,TRUE,FALSE,14699

@@ -1,4 +1,0 @@
-id,plugin_id,name,this_folder_name,supports_backwards_compatibility,supports_cheats,has_custom_hud,supports_custom_hud,is_freeware,is_paidware,is_shareware,is_online_only,supports_stealth_network
-1,1,Cipher,Cipher,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
-2,2,Proto,proto,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE,FALSE,TRUE,FALSE
-3,3,XbGuard,xbGuard,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE
