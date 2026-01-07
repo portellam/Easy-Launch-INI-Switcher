@@ -28,6 +28,9 @@
 - [ ] update docs, given new databases.
 
 - [ ] script
+  - [ ] migrating to SQLite `.db` instead of `.csv`.
+    - [x] defined schema and tables via `.dbml`.
+    - [ ] initialized new database.
   - [ ] dynamic progress status
   - [ ] function `detect_launch_ini_location()` should come after `load_mount_paths()`.
   - [ ] Validate paths
