@@ -1,51 +1,65 @@
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
 
+Table PERMUTATIONS {
+  id int [pk]
+  primary_dashboard_name varchar
+  secondary_dashboard_name varchar
+  configapp_dashboard_name varchar
+  block_xbox_live boolean
+  stealth_server_name boolean
+  alpha_plugin_name varchar
+  beta_plugin_name varchar
+  gamma_plugin_name varchar
+  delta_plugin_name varchar
+}
+
 Table DASHBOARDS {
-  name varchar [not null]
-  path varchar
+  name varchar [pk]
+  mount_path varchar
+  folder_path varchar
+  folder_name varchar
   executable varchar
 }
 
 Table DASHBOARD_VERSIONS {
-  name varchar [not null]
+  name varchar [pk]
   official boolean
   legacy boolean
   minimum_version int
 }
 
-Table DASHBOARDS_PATHS {
-  path varchar [not null]
-}
-
-Table EXECUTABLES {
-  name varchar [not null]
+Table COMMON_EXECUTABLES {
+  name varchar [pk]
 }
 
 Table MOUNT_PATHS {
-  label varchar [not null]
-  path varchar
+  name varchar [pk]
+  label varchar
 }
 
-Table PLUGIN_PATHS {
-  type varchar [not null]
-  path varchar
+Table PLUGINS {
+  name varchar [pk]
+  type varchar
+  mount_path varchar
+  folder_path varchar
+  folder_name varchar
+  executable varchar
+}
+
+Table PLUGIN_COMMON_PATHS {
+  type varchar [pk]
+  name varchar
 }
 
 Table PLUGIN_RANKS {
-  index integer [not null]
+  index integer [pk]
   type varchar
   maximum_count integer
 }
 
-Table STEALTH_SERVER_PATHS {
-  name varchar [not null]
-  path varchar
-  executable varchar
-}
-
-Table STEALTH_SERVERS {
-  name varchar [not null]
+Table PLUGIN_STEALTH_SERVERS {
+  name varchar [pk]
   supports_backwards_compatibility boolean
   supports_cheats boolean
   has_custom_hud boolean
@@ -56,6 +70,19 @@ Table STEALTH_SERVERS {
   supports_stealth_network boolean
 }
 
-Ref: "STEALTH_SERVERS"."name" > "STEALTH_SERVER_PATHS"."name"
-Ref: "PLUGIN_RANKS"."type" > "PLUGIN_PATHS"."type"
-Ref: "DASHBOARDS"."name" < "DASHBOARD_VERSIONS"."name"
+Ref: "PERMUTATIONS"."primary_dashboard_name" > "DASHBOARDS"."name"
+Ref: "PERMUTATIONS"."secondary_dashboard_name" > "DASHBOARDS"."name"
+Ref: "PERMUTATIONS"."configapp_dashboard_name" > "DASHBOARDS"."name"
+Ref: "PERMUTATIONS"."stealth_server_name" > "PLUGIN_STEALTH_SERVERS"."name"
+Ref: "PERMUTATIONS"."alpha_plugin_name" > "PLUGINS"."name"
+Ref: "PERMUTATIONS"."beta_plugin_name" > "PLUGINS"."name"
+Ref: "PERMUTATIONS"."gamma_plugin_name" > "PLUGINS"."name"
+Ref: "PERMUTATIONS"."delta_plugin_name" > "PLUGINS"."name"
+
+Ref: "DASHBOARDS"."name" > "DASHBOARD_VERSIONS"."name"
+Ref: "DASHBOARDS"."mount_path" < "MOUNT_PATHS"."label"
+Ref: "PLUGIN_STEALTH_SERVERS"."name" > "PLUGINS"."name"
+
+Ref: "PLUGINS"."mount_path" < "MOUNT_PATHS"."label"
+Ref: "PLUGINS"."type" > "PLUGIN_COMMON_PATHS"."type"
+Ref: "PLUGINS"."type" < "PLUGIN_RANKS"."type"
