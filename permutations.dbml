@@ -1,0 +1,61 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table DASHBOARDS {
+  name varchar [not null]
+  path varchar
+  executable varchar
+}
+
+Table DASHBOARD_VERSIONS {
+  name varchar [not null]
+  official boolean
+  legacy boolean
+  minimum_version int
+}
+
+Table DASHBOARDS_PATHS {
+  path varchar [not null]
+}
+
+Table EXECUTABLES {
+  name varchar [not null]
+}
+
+Table MOUNT_PATHS {
+  label varchar [not null]
+  path varchar
+}
+
+Table PLUGIN_PATHS {
+  type varchar [not null]
+  path varchar
+}
+
+Table PLUGIN_RANKS {
+  index integer [not null]
+  type varchar
+  maximum_count integer
+}
+
+Table STEALTH_SERVER_PATHS {
+  name varchar [not null]
+  path varchar
+  executable varchar
+}
+
+Table STEALTH_SERVERS {
+  name varchar [not null]
+  supports_backwards_compatibility boolean
+  supports_cheats boolean
+  has_custom_hud boolean
+  supports_custom_hud boolean
+  is_freeware boolean
+  is_paidware boolean
+  is_shareware boolean
+  supports_stealth_network boolean
+}
+
+Ref: "STEALTH_SERVERS"."name" > "STEALTH_SERVER_PATHS"."name"
+Ref: "PLUGIN_RANKS"."type" > "PLUGIN_PATHS"."type"
+Ref: "DASHBOARDS"."name" < "DASHBOARD_VERSIONS"."name"
