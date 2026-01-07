@@ -1,4 +1,0 @@
-id,first_dashboard_id,second_dashboard_id,configapp_dashboard_id,block_xbox_live,first_plugin_id,second_plugin_id,third_plugin_id,fourth_plugin_id,fifth_plugin_id
-1,1,NULL,2,FALSE,NULL,NULL,1,NULL,NULL
-2,1,NULL,2,TRUE,NULL,NULL,NULL,NULL,NULL
-3,2,NULL,2,FALSE,NULL,NULL,1,NULL,NULL

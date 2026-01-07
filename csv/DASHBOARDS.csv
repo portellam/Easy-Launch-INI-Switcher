@@ -1,0 +1,6 @@
+ID,MOUNT_PATH_ID,ROOT_FOLDER_PATH_ID,EXECUTABLE,NAME,THIS_FOLDER_NAME
+1,1,6,dash.xex,Blades,blades
+2,1,6,dash.xex,New Xbox Experience,nxe
+3,1,6,dash.xex,Kinect,kinect
+4,1,6,dash.xex,Metro,metro
+5,1,6,Aurora.xex,Aurora,aurora
