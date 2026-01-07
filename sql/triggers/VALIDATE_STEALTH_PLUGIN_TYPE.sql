@@ -4,8 +4,8 @@ FOR EACH ROW
 BEGIN
   SELECT CASE
     WHEN (
-      SELECT T.TYPE FROM PLUGINS P 
-      JOIN PLUGIN_TYPES T ON P.TYPE_ID = T.ID 
+      SELECT T.TYPE FROM PLUGINS P
+      JOIN PLUGIN_TYPES T ON P.TYPE_ID = T.ID
       WHERE P.ID = NEW.PLUGIN_ID
     ) != 'Stealth'
     THEN RAISE(ABORT, 'Referenced Plugin must be of type Stealth')
