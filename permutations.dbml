@@ -7,7 +7,7 @@ Table PERMUTATIONS {
   secondary_dashboard_name varchar
   configapp_dashboard_name varchar
   block_xbox_live boolean
-  stealth_server_name boolean
+  stealth_server_name varchar
   alpha_plugin_name varchar
   beta_plugin_name varchar
   gamma_plugin_name varchar
@@ -34,8 +34,8 @@ Table COMMON_EXECUTABLES {
 }
 
 Table MOUNT_PATHS {
-  name varchar [pk]
-  label varchar
+  label varchar [pk]
+  name varchar [not null]
 }
 
 Table PLUGINS {
@@ -54,7 +54,7 @@ Table PLUGIN_COMMON_PATHS {
 
 Table PLUGIN_RANKS {
   index integer [pk]
-  type varchar
+  type varchar [not null]
   maximum_count integer
 }
 
