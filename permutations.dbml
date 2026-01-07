@@ -60,8 +60,9 @@ Table PLUGINS {
 
 Table PLUGIN_ROOT_PATHS {
   id integer [pk]
-  path varchar
+  is_valid boolean
   name varchar
+  path varchar
 }
 
 Table PLUGIN_TYPES {
