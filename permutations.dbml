@@ -25,6 +25,7 @@ Table DASHBOARDS {
 
 Table DASHBOARD_ROOT_PATHS {
   id integer [pk]
+  is_valid boolean
   name varchar
 }
 
@@ -67,8 +68,15 @@ Table PLUGIN_ROOT_PATHS {
 
 Table PLUGIN_TYPES {
   id integer [pk]
-  path varchar
+  path_id integer
   type varchar
+}
+
+Table PLUGIN_TYPE_PATHS {
+  id integer [pk]
+  type_id integer
+  is_valid boolean
+  path varchar
 }
 
 Table PLUGIN_RANKS {
@@ -112,3 +120,4 @@ Ref: "PLUGINS"."mount_path_id" < "MOUNT_PATHS"."id"
 Ref: "PLUGINS"."root_folder_path_id" < "PLUGIN_ROOT_PATHS"."id"
 
 Ref: "PLUGIN_TYPES"."id" < "PLUGIN_RANKS"."type_id"
+Ref: "PLUGIN_TYPES"."path_id" < "PLUGIN_TYPE_PATHS"."id"
