@@ -3,7 +3,7 @@ name: SQLite to CSV Export
 on:
   push:
     paths:
-      - 'app.db'
+      - 'db/app.db'
     branches:
       - '**'
 
@@ -19,16 +19,19 @@ jobs:
 
       - name: Export SQLite Tables to CSV
         run: |
-          DB_FILE="app.db"
+          DB_FILE="db/app.db"
+          OUTPUT_DIR="csv"
+
+          mkdir --parents "$OUTPUT_DIR"
 
           tables=$(sqlite3 "$DB_FILE" ".tables")
 
           for table in $tables; do
             filename=$(echo "$table" | tr '_' '-' | tr '[:upper:]' '[:lower:]').csv
 
-            echo "Exporting $table to $filename..."
+            echo "Exporting $table to $OUTPUT_DIR/$filename..."
 
-            sqlite3 -header -csv "$DB_FILE" "SELECT * FROM $table;" > "$filename"
+            sqlite3 -header -csv "$DB_FILE" "SELECT * FROM $table;" > "$OUTPUT_DIR/$filename"
           done
 
       - name: Commit and Push Changes
