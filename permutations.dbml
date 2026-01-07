@@ -16,11 +16,11 @@ Table PERMUTATIONS {
 
 Table DASHBOARDS {
   id integer [pk]
-  name varchar [pk]
   mount_path_id integer
   root_folder_path_id integer
-  this_folder_name varchar
   executable varchar
+  name varchar
+  this_folder_name varchar
 }
 
 Table DASHBOARD_ROOT_PATHS {
@@ -44,30 +44,35 @@ Table COMMON_EXECUTABLES {
 
 Table MOUNT_PATHS {
   id integer [pk]
-  path varchar [not null]
+  path varchar
   name varchar
 }
 
 Table PLUGINS {
   id integer [pk]
-  name varchar
-  type varchar
   mount_path_id integer
   root_folder_path_id integer
-  this_folder_name varchar
+  type_id integer
   executable varchar
+  name varchar
+  this_folder_name varchar
 }
 
 Table PLUGIN_ROOT_PATHS {
   id integer [pk]
-  type varchar
+  path varchar
   name varchar
+}
+
+Table PLUGIN_TYPES {
+  id integer [pk]
+  path varchar
+  type varchar
 }
 
 Table PLUGIN_RANKS {
   id integer [pk]         // Valid: 0-4
-  plugin_id integer
-  type varchar [not null]
+  type_id integer
   maximum_count integer   // Min: 1; Max: 5
 }
 
@@ -101,6 +106,8 @@ Ref: "DASHBOARDS"."root_folder_path_id" < "DASHBOARD_ROOT_PATHS"."id"
 Ref: "DASHBOARDS"."mount_path_id" < "MOUNT_PATHS"."id"
 
 Ref: "PLUGINS"."id" < "PLUGIN_STEALTH_SERVERS"."plugin_id"
-Ref: "PLUGINS"."id" < "PLUGIN_RANKS"."plugin_id"
+Ref: "PLUGINS"."type_id" < "PLUGIN_TYPES"."id"
 Ref: "PLUGINS"."mount_path_id" < "MOUNT_PATHS"."id"
 Ref: "PLUGINS"."root_folder_path_id" < "PLUGIN_ROOT_PATHS"."id"
+
+Ref: "PLUGIN_TYPES"."id" < "PLUGIN_RANKS"."type_id"
