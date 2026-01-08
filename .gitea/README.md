@@ -2,6 +2,7 @@
   <img align="left" width="100" height="100" src="../images/logo.png" alt="Easy Launch INI Switcher"/>
 </a>
 </br>
+</br>
 
 <h1>
 Easy Launch INI Switcher
@@ -13,11 +14,12 @@ An [Aurora Dashboard](../REFERENCES.md/#aurora-dashboard) utility script to togg
 Download [here.](../../../../releases/latest)
 </br>
 </br>
-<h1>
+<h6>
+Available on
 <a href="https://github.com/portellam/Easy-Launch-INI-Switcher"><img title="GitHub" align="right" height="30" src="../images/github.com.png"/></a>
 <a href="https://gitea.com/portellam/Easy-Launch-INI-Switcher"><img title="Gitea" align="right" height="30" src="../images/gitea.com.png"/></a>
 <a href="https://codeberg.org/portellam/Easy-Launch-INI-Switcher"><img title="Codeberg" align="right" height="30" src="../images/codeberg.org.png"/></a>
-</h1>
+</h6>
 
 ## 1. How It Works
 This is a Lua [utility script](../REFERENCES.md/#aurora-scripts) for the Aurora dashboard on modded Xbox 360 consoles. It allows easy switching between multiple `launch.ini` files without user input (via file manager or FTP). The script presents a menu to select and apply a predefined configuration.
