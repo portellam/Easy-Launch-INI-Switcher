@@ -14,11 +14,11 @@ An [Aurora Dashboard](../REFERENCES.md/#aurora-dashboard) utility script to togg
 Download [here.](https://github.com/portellam/Easy-Launch-INI-Switcher/releases/latest)
 </br>
 </br>
-<h4 align="left">
+<h4>
 Available on&nbsp;&nbsp;
-&nbsp;&nbsp;<a href="https://github.com/portellam/Easy-Launch-INI-Switcher"><img title="GitHub" height="30" src="../images/github.com.png"/></a>
-&nbsp;&nbsp;<a href="https://gitea.com/portellam/Easy-Launch-INI-Switcher"><img title="Gitea" height="30" src="../images/gitea.com.png"/></a>
-&nbsp;&nbsp;<a href="https://codeberg.org/portellam/Easy-Launch-INI-Switcher"><img title="Codeberg" height="30" src="../images/codeberg.org.png"/></a>
+&nbsp;&nbsp;<a href="https://github.com/portellam/Easy-Launch-INI-Switcher"><img title="GitHub" height="30" align="bottom" src="../images/github.com.png"/></a>
+&nbsp;&nbsp;<a href="https://gitea.com/portellam/Easy-Launch-INI-Switcher"><img title="Gitea" height="30"  align="bottom" src="../images/gitea.com.png"/></a>
+&nbsp;&nbsp;<a href="https://codeberg.org/portellam/Easy-Launch-INI-Switcher"><img title="Codeberg" height="30" align="bottom" src="../images/codeberg.org.png"/></a>
 </h4>
 
 ## 1. How It Works
