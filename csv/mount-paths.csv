@@ -1,0 +1,8 @@
+ID,NAME,PATH
+1,"Internal drive",Hdd:\
+2,"Memory Unit",Mu:\
+3,"Big Block NAND MU",FlashMu:\
+4,"Internal Slim 4GB MU",IntMu:\
+5,"Internal Corona Slim 4G MU",MmcMu:\
+6,"USB drive",Usb:\
+7,"USB MU",UsbMu:\
