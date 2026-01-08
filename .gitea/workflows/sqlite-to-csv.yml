@@ -1,0 +1,42 @@
+name: SQLite to CSV Export
+
+on:
+  push:
+    paths:
+      - 'db/app.db'
+    branches:
+      - '**'
+
+jobs:
+  export-and-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Export SQLite Tables to CSV
+        run: |
+          DB_FILE="db/app.db"
+          OUTPUT_DIR="csv"
+
+          mkdir --parents "$OUTPUT_DIR"
+
+          tables=$(sqlite3 "$DB_FILE" ".tables")
+
+          for table in $tables; do
+            filename=$(echo "$table" | tr '_' '-' | tr '[:upper:]' '[:lower:]').csv
+
+            echo "Exporting $table to $OUTPUT_DIR/$filename..."
+
+            sqlite3 -header -csv "$DB_FILE" "SELECT * FROM $table;" > "$OUTPUT_DIR/$filename"
+          done
+
+      - name: Commit and Push Changes
+        uses: github.com
+        with:
+          commit_message: "Automated CSV export from SQLite database [skip ci]"
+          file_pattern: "csv/*.csv"
+          branch: ${{ github.ref_name }}
