@@ -15,11 +15,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Clean up old CSV files
-        run: |
-          rm -rf csv/* || true
+        uses: actions/checkout@v4
 
       - name: Export SQLite Tables to CSV
         run: |
@@ -35,12 +31,12 @@ jobs:
 
             echo "Exporting $table to $OUTPUT_DIR/$filename..."
 
-            sqlite3 -header -csv "$DB_FILE" "SELECT * FROM $table;" > "$OUTPUT_DIR/$filename" || exit 1
+            sqlite3 -header -csv "$DB_FILE" "SELECT * FROM $table;" > "$OUTPUT_DIR/$filename"
           done
 
       - name: Commit and Push Changes
-        uses: EndBug/add-and-commit@v9
+        uses: github.com
         with:
-          message: "Automated CSV export from SQLite database [skip ci]"
-          add: "csv/*.csv"
-          branch: ${{ github.ref }}
+          commit_message: "Automated CSV export from SQLite database [skip ci]"
+          file_pattern: "csv/*.csv"
+          branch: ${{ github.ref_name }}
