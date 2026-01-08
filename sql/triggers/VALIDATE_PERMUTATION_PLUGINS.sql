@@ -11,5 +11,5 @@ WHEN (
   ) GROUP BY PID HAVING COUNT(*) > 1
 ) IS NOT NULL
 BEGIN
-  SELECT RAISE(ABORT, 'Duplicate plugins detected in permutation slots');
-END;
+  SELECT RAISE(ABORT, 'Permutation has duplicate plugins.');
+END

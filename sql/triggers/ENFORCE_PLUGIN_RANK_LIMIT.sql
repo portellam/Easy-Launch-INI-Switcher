@@ -4,12 +4,12 @@ FOR EACH ROW
 BEGIN
   SELECT CASE
     WHEN (
-      SELECT COUNT(*)
+      SELECT COUNT(*) 
       FROM PLUGINS P
       JOIN PLUGIN_RANKS R ON P.TYPE_ID = R.TYPE_ID
       WHERE P.ID IN (NEW.FIRST_PLUGIN_ID, NEW.SECOND_PLUGIN_ID, NEW.THIRD_PLUGIN_ID, NEW.FOURTH_PLUGIN_ID, NEW.FIFTH_PLUGIN_ID)
-      AND R.MAXIMUM_COUNT = 1
-    ) > 1
-    THEN RAISE(ABORT, 'Permutation exceeds the maximum allowed count for specific plugin types')
+      AND R.MAX_COUNT = 1
+    ) > 1 
+    THEN RAISE(ABORT, 'Permutation cannot specify more than the maximum count of a specific plugin type.')
   END;
-END;
+END
