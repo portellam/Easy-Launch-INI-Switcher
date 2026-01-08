@@ -5,15 +5,19 @@
 
 <h1>
 Easy Launch INI Switcher
-<a href="https://github.com/portellam/Easy-Launch-INI-Switcher"><img title="GitHub" align="right" height="30" src="../images/github.com.png"/></a>
-<a href="https://gitea.com/portellam/Easy-Launch-INI-Switcher"><img title="Gitea" align="right" height="30" src="../images/gitea.com.png"/></a>
-<a href="https://codeberg.org/portellam/Easy-Launch-INI-Switcher"><img title="Codeberg" align="right" height="30" src="../images/codeberg.org.png"/></a>
 </h1>
 
 An [Aurora Dashboard](../REFERENCES.md/#aurora-dashboard) utility script to toggle modded [Xbox 360](../REFERENCES.md/#xbox-360) launch configurations.
 </br>
 </br>
 Download [here.](https://github.com/portellam/Easy-Launch-INI-Switcher/releases/latest)
+</br>
+</br>
+<h1>
+<a href="https://github.com/portellam/Easy-Launch-INI-Switcher"><img title="GitHub" align="right" height="30" src="../images/github.com.png"/></a>
+<a href="https://gitea.com/portellam/Easy-Launch-INI-Switcher"><img title="Gitea" align="right" height="30" src="../images/gitea.com.png"/></a>
+<a href="https://codeberg.org/portellam/Easy-Launch-INI-Switcher"><img title="Codeberg" align="right" height="30" src="../images/codeberg.org.png"/></a>
+</h1>
 
 ## 1. How It Works
 This is a Lua [utility script](../REFERENCES.md/#aurora-scripts) for the Aurora dashboard on modded Xbox 360 consoles. It allows easy switching between multiple `launch.ini` files without user input (via file manager or FTP). The script presents a menu to select and apply a predefined configuration.
@@ -25,12 +29,12 @@ The `launch.ini` file is used by [DashLaunch](../REFERENCES.md/#dashlaunch) to c
 ## 2. Disclaimer
 > [!WARNING]
 > - Do not go online WITHOUT A STEALTH SERVER. Without a stealth server, the risk of a console and/or account ban IS CERTAIN. With a stealth server, the risk of either ban is low, but NOT ZERO.
-> 
+>
 > - This software is provided WITHOUT WARRANTY. Any damages caused to your console, personal computer, personal device, or person is YOUR RESPONSIBILITY.
-> 
+>
 > - This software is FREE. If you paid for it, demand a refund.
-> 
-> - This software expects dependencies to exist and be found in expected directories. If a dependency cannot be found (does not exist, is in an invalid path, or is mismatched), this may lead to FAILURE or UNEXPECTED BEHAVIOR of the software. 
+>
+> - This software expects dependencies to exist and be found in expected directories. If a dependency cannot be found (does not exist, is in an invalid path, or is mismatched), this may lead to FAILURE or UNEXPECTED BEHAVIOR of the software.
 
 ## [3. Documentation](../LAUNCH-INI-README.md)
 Includes [how to information](../LAUNCH-INI-README.md#1-how-to-make-a-launchini), *questions, downloads,* and *more.*
