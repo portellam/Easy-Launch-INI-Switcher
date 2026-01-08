@@ -21,7 +21,7 @@ Available on...
 </br>
 <a href="https://github.com/portellam/Easy-Launch-INI-Switcher"><img title="GitHub" align="right" height="30" src="../images/github.com.png"/></a>
 <a href="https://gitea.com/portellam/Easy-Launch-INI-Switcher"><img title="Gitea" align="right" height="30" src="../images/gitea.com.png"/></a>
-<a href="https://codeberg.org/portellam/Easy-Launch-INI-Switcher"><img title="Codeberg" align="right" height="30" src="../images/codeberg.org.png"/></a>
+&nbsp;<a href="https://codeberg.org/portellam/Easy-Launch-INI-Switcher"><img title="Codeberg" align="right" height="30" src="../images/codeberg.org.png"/></a>
 </br>
 </br>
 
