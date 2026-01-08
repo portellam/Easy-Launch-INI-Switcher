@@ -14,7 +14,7 @@ An [Aurora Dashboard](../REFERENCES.md/#aurora-dashboard) utility script to togg
 Download [here.](https://github.com/portellam/Easy-Launch-INI-Switcher/releases/latest)
 </br>
 </br>
-<h6>
+<h6 align="left">
 Available on
 <a href="https://github.com/portellam/Easy-Launch-INI-Switcher"><img title="GitHub" align="right" height="30" src="../images/github.com.png"/></a>
 <a href="https://gitea.com/portellam/Easy-Launch-INI-Switcher"><img title="Gitea" align="right" height="30" src="../images/gitea.com.png"/></a>
